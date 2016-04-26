@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dll", "dll", "{18B73116-7A82-42BD-BA38-961377F1A5E2}"
+	ProjectSection(SolutionItems) = preProject
+		dll\Microsoft.TeamFoundation.Client.dll = dll\Microsoft.TeamFoundation.Client.dll
+		dll\Microsoft.TeamFoundation.Common.dll = dll\Microsoft.TeamFoundation.Common.dll
+		dll\Microsoft.TeamFoundation.Controls.dll = dll\Microsoft.TeamFoundation.Controls.dll
+		dll\Microsoft.TeamFoundation.Diff.dll = dll\Microsoft.TeamFoundation.Diff.dll
+		dll\Microsoft.TeamFoundation.VersionControl.Client.dll = dll\Microsoft.TeamFoundation.VersionControl.Client.dll
+		dll\Microsoft.TeamFoundation.VersionControl.Common.dll = dll\Microsoft.TeamFoundation.VersionControl.Common.dll
+		dll\Microsoft.TeamFoundation.VersionControl.Common.Integration.dll = dll\Microsoft.TeamFoundation.VersionControl.Common.Integration.dll
+		dll\Microsoft.TeamFoundation.VersionControl.Controls.Common.dll = dll\Microsoft.TeamFoundation.VersionControl.Controls.Common.dll
+		dll\Microsoft.TeamFoundation.WorkItemTracking.Client.DataStoreLoader.dll = dll\Microsoft.TeamFoundation.WorkItemTracking.Client.DataStoreLoader.dll
+		dll\Microsoft.TeamFoundation.WorkItemTracking.Client.dll = dll\Microsoft.TeamFoundation.WorkItemTracking.Client.dll
+		dll\Microsoft.TeamFoundation.WorkItemTracking.Client.QueryLanguage.dll = dll\Microsoft.TeamFoundation.WorkItemTracking.Client.QueryLanguage.dll
+		dll\Microsoft.TeamFoundation.WorkItemTracking.Common.dll = dll\Microsoft.TeamFoundation.WorkItemTracking.Common.dll
+		dll\Microsoft.TeamFoundation.WorkItemTracking.Proxy.dll = dll\Microsoft.TeamFoundation.WorkItemTracking.Proxy.dll
+		dll\Microsoft.VisualStudio.ExtensibilityHosting.dll = dll\Microsoft.VisualStudio.ExtensibilityHosting.dll
+		dll\Microsoft.WITDataStore.dll = dll\Microsoft.WITDataStore.dll
+		dll\Newtonsoft.Json.dll = dll\Newtonsoft.Json.dll
+		dll\System.Net.Http.Formatting.dll = dll\System.Net.Http.Formatting.dll
+		dll\System.Web.Http.dll = dll\System.Web.Http.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ru", "ru", "{839E0EC3-11D4-4DD5-A3B4-4B6C75F64119}"
+	ProjectSection(SolutionItems) = preProject
+		dll\ru\Microsoft.TeamFoundation.Client.resources.dll = dll\ru\Microsoft.TeamFoundation.Client.resources.dll
+		dll\ru\Microsoft.TeamFoundation.Common.resources.dll = dll\ru\Microsoft.TeamFoundation.Common.resources.dll
+		dll\ru\Microsoft.TeamFoundation.Controls.resources.dll = dll\ru\Microsoft.TeamFoundation.Controls.resources.dll
+		dll\ru\Microsoft.TeamFoundation.Diff.resources.dll = dll\ru\Microsoft.TeamFoundation.Diff.resources.dll
+		dll\ru\Microsoft.TeamFoundation.VersionControl.Common.Integration.resources.dll = dll\ru\Microsoft.TeamFoundation.VersionControl.Common.Integration.resources.dll
+		dll\ru\Microsoft.TeamFoundation.VersionControl.Common.resources.dll = dll\ru\Microsoft.TeamFoundation.VersionControl.Common.resources.dll
+		dll\ru\Microsoft.TeamFoundation.VersionControl.Controls.Common.resources.dll = dll\ru\Microsoft.TeamFoundation.VersionControl.Controls.Common.resources.dll
+		dll\ru\Microsoft.TeamFoundation.WorkItemTracking.Client.QueryLanguage.resources.dll = dll\ru\Microsoft.TeamFoundation.WorkItemTracking.Client.QueryLanguage.resources.dll
+		dll\ru\Microsoft.TeamFoundation.WorkItemTracking.Client.resources.dll = dll\ru\Microsoft.TeamFoundation.WorkItemTracking.Client.resources.dll
+		dll\ru\Microsoft.TeamFoundation.WorkItemTracking.Common.resources.dll = dll\ru\Microsoft.TeamFoundation.WorkItemTracking.Common.resources.dll
+		dll\ru\Microsoft.TeamFoundation.WorkItemTracking.Proxy.resources.dll = dll\ru\Microsoft.TeamFoundation.WorkItemTracking.Proxy.resources.dll
+		dll\ru\Microsoft.VisualStudio.Services.Client.resources.dll = dll\ru\Microsoft.VisualStudio.Services.Client.resources.dll
+		dll\ru\Microsoft.VisualStudio.Services.Common.resources.dll = dll\ru\Microsoft.VisualStudio.Services.Common.resources.dll
+		dll\ru\Microsoft.VisualStudio.Services.WebApi.resources.dll = dll\ru\Microsoft.VisualStudio.Services.WebApi.resources.dll
+		dll\ru\System.Net.Http.Formatting.resources.dll = dll\ru\System.Net.Http.Formatting.resources.dll
+		dll\ru\System.Web.Http.resources.dll = dll\ru\System.Web.Http.resources.dll
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arcas.Launcer", "Arcas.Launcer\Arcas.Launcer.csproj", "{90E2CF7D-4929-4C50-A11F-140152EEE4E3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{90E2CF7D-4929-4C50-A11F-140152EEE4E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90E2CF7D-4929-4C50-A11F-140152EEE4E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90E2CF7D-4929-4C50-A11F-140152EEE4E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90E2CF7D-4929-4C50-A11F-140152EEE4E3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{839E0EC3-11D4-4DD5-A3B4-4B6C75F64119} = {18B73116-7A82-42BD-BA38-961377F1A5E2}
+	EndGlobalSection
+EndGlobal
