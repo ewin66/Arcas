@@ -45,7 +45,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ru", "ru", "{839E0EC3-11D4-
 		dll\ru\System.Web.Http.resources.dll = dll\ru\System.Web.Http.resources.dll
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arcas.Launcer", "Arcas.Launcer\Arcas.Launcer.csproj", "{90E2CF7D-4929-4C50-A11F-140152EEE4E3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arcas", "Arcas\Arcas.csproj", "{90E2CF7D-4929-4C50-A11F-140152EEE4E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

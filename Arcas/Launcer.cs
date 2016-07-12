@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Arcas
 {
-    public static class Launcer
+    public static class Program
     {
         public static void Main(string[] args)
         {
