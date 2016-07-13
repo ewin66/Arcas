@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Transactions;
+using Cav;
+using Cav.BaseClases;
 using DevTools.BL.TFS;
 using DevTools.DBA;
-using Ppr;
-using Ppr.BaseClases;
 
 namespace DevTools.BL
 {
@@ -129,23 +130,26 @@ EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.N
                 var Scts = SplitSqlTExtOnGO(SqlScript);
 
                 SendStat("Накатка скрипта на БД");
+
+                TransactionScope tran = null;
+
                 try
                 {
                     if (InTaransaction)
-                        adapter.BeginTransaction();
+                        tran = DomainContext.NewTransactionScope();
 
                     foreach (var sct in Scts)
                         adapter.ExecScript(sct);
 
                     adapter.ExecScript(String.Format(verOnDB, CurVerDB));
 
-                    if (InTaransaction)
-                        adapter.CommintTransaction();
+                    if (tran != null)
+                        tran.Complete();
                 }
                 catch (Exception ex)
                 {
-                    if (InTaransaction)
-                        adapter.RollbackTransaction();
+                    if (tran != null)
+                        tran.Dispose();
                     return ex.Expand();
                 }
 

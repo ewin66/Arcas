@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data.SqlClient;
-using Ppr.BaseClases;
+using Cav.BaseClases;
 
 namespace DevTools.DBA
 {

@@ -1,20 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B4E45987-D126-40AB-A6EC-2B1DFB0B5F73}</ProjectGuid>
+    <ProjectGuid>{DC1B475C-B6D8-49A5-8BBA-3B9730E4A6D2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DevTools.BL</RootNamespace>
-    <AssemblyName>DevTools.BL</AssemblyName>
+    <RootNamespace>Arcas.UI</RootNamespace>
+    <AssemblyName>Arcas.UI</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -22,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\_Build\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -30,7 +26,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\_Build\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -46,29 +42,26 @@
       <HintPath>..\packages\Cav.Core.1.1.2\lib\net45\Cav.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.TeamFoundation.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="Cav.WinForms, Version=1.0.1.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cav.WinForms.1.0.1\lib\net45\Cav.WinForms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Client, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dll\Microsoft.TeamFoundation.Client.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.TeamFoundation.VersionControl.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.TeamFoundation.VersionControl.Client, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dll\Microsoft.TeamFoundation.VersionControl.Client.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.TeamFoundation.VersionControl.Common, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dll\Microsoft.TeamFoundation.VersionControl.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.TeamFoundation.VersionControl.Controls.Common, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+    <Reference Include="Microsoft.TeamFoundation.VersionControl.Controls.Common, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dll\Microsoft.TeamFoundation.VersionControl.Controls.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Client, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dll\Microsoft.TeamFoundation.WorkItemTracking.Client.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Transactions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -76,25 +69,76 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DelegatProgress.cs" />
+    <Compile Include="Controls\TabControlBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UpdaterDB.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UpdaterDB.Designer.cs">
+      <DependentUpon>UpdaterDB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\XsltTransform.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\XsltTransform.Designer.cs">
+      <DependentUpon>XsltTransform.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DevToolsMainMindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DevToolsMainMindow.Designer.cs">
+      <DependentUpon>DevToolsMainMindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SettingClass.cs" />
-    <Compile Include="TfsDBSaveBL.cs">
-      <SubType>Component</SubType>
+    <Compile Include="Settings\ConnectionForm.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TFS\TFSRoutine.cs">
-      <SubType>Component</SubType>
+    <Compile Include="Settings\ConnectionForm.Designer.cs">
+      <DependentUpon>ConnectionForm.cs</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DevTools.DBA\DevTools.DBA.csproj">
-      <Project>{a5f19607-8279-4599-8051-e0571d668619}</Project>
-      <Name>DevTools.DBA</Name>
-    </ProjectReference>
+    <Compile Include="Settings\TFSBrowser .cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Settings\TFSBrowser .Designer.cs">
+      <DependentUpon>TFSBrowser .cs</DependentUpon>
+    </Compile>
+    <Compile Include="Settings\TFSDBLink.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Settings\TFSDBLink.Designer.cs">
+      <DependentUpon>TFSDBLink.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="cav.snk" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\UpdaterDB.resx">
+      <DependentUpon>UpdaterDB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\XsltTransform.resx">
+      <DependentUpon>XsltTransform.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DevToolsMainMindow.resx">
+      <DependentUpon>DevToolsMainMindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings\ConnectionForm.resx">
+      <DependentUpon>ConnectionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings\TFSBrowser .resx">
+      <DependentUpon>TFSBrowser .cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings\TFSDBLink.resx">
+      <DependentUpon>TFSDBLink.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DevTools.BL\DevTools.BL.csproj">
+      <Project>{b4e45987-d126-40ab-a6ec-2b1dfb0b5f73}</Project>
+      <Name>DevTools.BL</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

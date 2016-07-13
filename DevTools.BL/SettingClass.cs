@@ -3,10 +3,40 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.IO;
-using Ppr;
+using Cav;
+using Cav.ProgramSettins;
 
 namespace DevTools
 {
+
+
+    public class ArcasSetting : ProgramSettingsBase
+    {
+        private static ArcasSetting instance = null;
+
+        public static ArcasSetting Instance
+        {
+            get
+            {
+                if (instance == null)
+                    instance = ProgramSettingsBase.Create<ArcasSetting>();
+
+                return instance;
+            }
+        }
+
+        /// <summary>
+        /// Выходной каталог
+        /// </summary>
+        public String SelestedTFSDB
+        {
+            get { return this.GetValue<String>("SelestedTFSDB"); }
+            set { this.SetValue(Area.User, "SelestedTFSDB", value); }
+        }
+        
+    }
+
+
     /// <summary>
     /// Настройки приложения
     /// </summary>
@@ -27,21 +57,14 @@ namespace DevTools
             }
         }
 
-        private static String setFile = Path.Combine(DomainContext.AppDataStorage, "DevTools.config");
+        private static String setFile = Path.Combine(DomainContext.AppDataUserStorage, "DevTools.config");
 
         private static void Load()
         {
-            // Смена логики получения DomainContext.AppDataStorage. Посему тут заморочка, чтоб предыдущее место прочитал.
-            if (!File.Exists(setFile))
-                setFile = Path.Combine(Path.Combine(Path.Combine(Path.GetDirectoryName(DomainContext.AppDataStorage), "PPR"), DomainContext.NameEntryAssembly), Path.GetFileName(setFile));
-            if (File.Exists(setFile))
-                settings = setFile.XMLDeserializeFromFile<SettingsType>();
+            settings = setFile.XMLDeserializeFromFile<SettingsType>();
+            
             if (settings == null)
                 settings = new SettingsType();
-
-            setFile = Path.Combine(DomainContext.AppDataStorage, "DevTools.config");
-
-            settings.XMLSerialize(setFile);
         }
 
         public static void Save()
