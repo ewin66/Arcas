@@ -51,13 +51,13 @@ namespace DevTools.Settings
             try
             {
                 ConnectionString = DomainContext.InitConnection(
-                DBName: tbDBName.Text,
-                Server: tbServer.Text,
-                Login: tbLogin.Text,
-                Pass: tbPass.Text,
+                dbName: tbDBName.Text,
+                server: tbServer.Text,
+                login: tbLogin.Text,
+                pass: tbPass.Text,
                 MARS: false,
-                IntegratedSecurity: chbWindowsAuth.Checked,
-                ApplicationName: "DevTools " + Environment.MachineName + @":" + Environment.UserDomainName + @"\" + Environment.UserName);
+                integratedSecurity: chbWindowsAuth.Checked,
+                applicationName: "DevTools " + Environment.MachineName + @":" + Environment.UserDomainName + @"\" + Environment.UserName);
 
                 btOk.Enabled = true;
             }

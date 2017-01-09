@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Transactions;
 using Cav;
 using Cav.BaseClases;
 using DevTools.BL.TFS;
@@ -131,12 +130,12 @@ EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.N
 
                 SendStat("Накатка скрипта на БД");
 
-                TransactionScope tran = null;
+                DbTransactionScope tran = null;
 
                 try
                 {
                     if (InTaransaction)
-                        tran = DomainContext.NewTransactionScope();
+                        tran = new DbTransactionScope();
 
                     foreach (var sct in Scts)
                         adapter.ExecScript(sct);
@@ -149,7 +148,7 @@ EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.N
                 catch (Exception ex)
                 {
                     if (tran != null)
-                        tran.Dispose();
+                        ((IDisposable)tran).Dispose();
                     return ex.Expand();
                 }
 
