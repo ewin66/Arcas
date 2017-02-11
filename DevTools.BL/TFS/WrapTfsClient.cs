@@ -53,6 +53,53 @@ namespace Cav.Ttf
         CheckOut,
         Unchanged
     }
+
+    #region объекты обмена
+
+    public struct WorkspaceInfo
+    {
+        internal Object WSI { get; set; }
+    }
+    public struct VersionControlServer
+    {
+        internal Object VCS { get; set; }
+    }
+
+    public struct Workspace
+    {
+        internal Object WS { get; set; }
+    }
+
+    public struct VersionSpec
+    {
+        internal Object VS { get; set; }
+    }
+
+    public struct QueryHistoryParameters
+    {
+        internal Object QHP { get; set; }
+    }
+
+    public struct Changeset
+    {
+        public int ChangesetId { get; internal set; }
+        public DateTime CreationDate { get; internal set; }
+    }
+
+    public struct PendingChange
+    {
+        internal Object PC { get; set; }
+    }
+
+    public class WorkingFolder
+    {
+        public String ServerItem { get; internal set; }
+        public String LocalItem { get; internal set; }
+        public bool IsCloaked { get; internal set; }
+    }
+
+    #endregion
+
     public class WrapTfs
     {
         private const string tfsClient12 = @"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\ReferenceAssemblies\v2.0\";
@@ -66,51 +113,6 @@ namespace Cav.Ttf
         private static Assembly tfsClientAssembly = null;
         private static Assembly tfsVersionClientAssembly = null;
         private static Assembly tfsVersionControlCommonAssembly = null;
-
-        #region объекты обмена
-        public struct WorkspaceInfo
-        {
-            internal Object WSI { get; set; }
-        }
-        public struct VersionControlServer
-        {
-            internal Object VCS { get; set; }
-        }
-
-        public struct Workspace
-        {
-            internal Object WS { get; set; }
-        }
-
-        public struct VersionSpec
-        {
-            internal Object VS { get; set; }
-        }
-
-        public struct QueryHistoryParameters
-        {
-            internal Object QHP { get; set; }
-        }
-
-        public struct Changeset
-        {
-            public int ChangesetId { get; internal set; }
-            public DateTime CreationDate { get; internal set; }
-        }
-
-        public struct PendingChange
-        {
-            internal Object PC { get; set; }
-        }
-
-        public struct WorkingFolder
-        {
-            public String ServerItem { get; internal set; }
-            public String LocalItem { get; internal set; }
-            public bool IsCloaked { get; internal set; }
-        }
-
-        #endregion
 
         static WrapTfs()
         {
@@ -140,6 +142,16 @@ namespace Cav.Ttf
 
             assemblyFile += ".dll";
             var path = Path.Combine(pathTfsdll, assemblyFile);
+            if (!File.Exists(path))
+            {
+                var culture = args.Name.Split(new Char[] { ',' }).Where(x => x.Contains("Culture")).FirstOrDefault();
+                if (culture == null)
+                    throw new FileLoadException($"Not define culture for {args.Name}");
+                var targetculture = culture.Split(new char[] { '=', '-' }).Where(x => !x.Contains("Culture")).FirstOrDefault();
+                if (targetculture == null)
+                    throw new FileLoadException($"Not compute culture for {args.Name}");
+                path = Path.Combine(Path.Combine(pathTfsdll, targetculture), assemblyFile);
+            }
             return Assembly.LoadFile(path);
 
         }
@@ -301,7 +313,7 @@ namespace Cav.Ttf
             ws.WS.InvokeMethod("CheckIn", wscp);
         }
 
-        public PendingChange WorkspaceGetPendingChanges(Workspace ws)
+        private PendingChange WorkspaceGetPendingChanges(Workspace ws)
         {
             var res = new PendingChange();
             res.PC = ws.WS.InvokeMethod("GetPendingChanges");
@@ -375,8 +387,6 @@ namespace Cav.Ttf
             var TeamProjectPickerModeNoProject = tfsClientAssembly.GetEnumValue("TeamProjectPickerMode", "NoProject");
 
             var tpp = tfsClientAssembly.CreateInstance("TeamProjectPicker", TeamProjectPickerModeNoProject, false);
-
-            tpp.SetPropertyValue("ShowInTaskbar", false);
             var dr = (DialogResult)tpp.InvokeMethod("ShowDialog", parentWindow);
             if (dr != DialogResult.OK)
                 return null;
@@ -395,6 +405,73 @@ namespace Cav.Ttf
 
             return (String)dcsf.GetPropertyValue("CurrentServerItem");
         }
+
+        //http://stackoverflow.com/questions/25923734/how-can-i-retrieve-a-list-of-workitems-from-tfs-in-c
+
+
+        //public Object get_querys()
+        //{
+        //        string selectedProject = this.listProjects.SelectedItem.ToString();
+        //        TfsTeamProjectCollection teamProjectCollection = TFSDetail.GetTeamProjectDetails(UrlPath);
+        //if (teamProjectCollection != null)
+        //{
+        //     Project detailsOfTheSelectedProject = null;
+        //        WorkItemStore workItemStore =
+        //              (WorkItemStore)teamProjectCollection.GetService(typeof(WorkItemStore));
+
+        //        string folder = "My Queries";
+        //    var project = workItemStore.Projects[selectedProject];
+        //    QueryHierarchy queryHierarchy = project.QueryHierarchy;
+        //    var queryFolder = queryHierarchy as QueryFolder;
+        //    QueryItem queryItem = queryFolder[folder];
+        //    queryFolder = queryItem as QueryFolder;
+        //    foreach (var item in queryFolder)
+        //    {
+        //        listQueries.Items.Add(item.Name);
+        //    }
+        //}
+
+
+        //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        ///Handles nested query folders    
+        //private static Guid FindQuery(QueryFolder folder, string queryName)
+        //{
+        //    foreach (var item in folder)
+        //    {
+        //        if (item.Name.Equals(queryName, StringComparison.InvariantCultureIgnoreCase))
+        //        {
+        //            return item.Id;
+        //        }
+
+        //        var itemFolder = item as QueryFolder;
+        //        if (itemFolder != null)
+        //        {
+        //            var result = FindQuery(itemFolder, queryName);
+        //            if (!result.Equals(Guid.Empty))
+        //            {
+        //                return result;
+        //            }
+        //        }
+        //    }
+        //    return Guid.Empty;
+        //}
+
+        //static void Main(string[] args)
+        //{
+        //    var collectionUri = new Uri("http://TFS/tfs/DefaultCollection");
+        //    var server = new TfsTeamProjectCollection(collectionUri);
+        //    var workItemStore = server.GetService<WorkItemStore>();
+
+        //    var teamProject = workItemStore.Projects["TeamProjectName"];
+
+        //    var x = teamProject.QueryHierarchy;
+        //    var queryId = FindQuery(x, "QueryNameHere");
+
+        //    var queryDefinition = workItemStore.GetQueryDefinition(queryId);
+        //    var variables = new Dictionary<string, string>() { { "project", "TeamProjectName" } };
+
+        //    var result = workItemStore.Query(queryDefinition.QueryText, variables); //https://msdn.microsoft.com/ru-ru/library/bb140400(v=vs.120).aspx
+        //}
     }
 }
 

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Cav;
 using Cav.BaseClases;
-using Microsoft.TeamFoundation.Client;
-using Microsoft.TeamFoundation.VersionControl.Client;
-using Microsoft.TeamFoundation.VersionControl.Common;
+using Cav.Ttf;
 
 namespace DevTools.BL.TFS
 {
@@ -14,7 +13,6 @@ namespace DevTools.BL.TFS
     /// </summary>
     public class TFSRoutineBL : BusinessLogicBase
     {
-
         public TFSRoutineBL()
         {
             // чистим папку
@@ -24,37 +22,19 @@ namespace DevTools.BL.TFS
             Directory.CreateDirectory(Tempdir);
         }
 
+        private WrapTfs wrapTfs = new WrapTfs();
+
+        private VersionControlServer? vcs = null;
         /// <summary>
         /// Получение сервиса управления хранилищем
         /// </summary>
         /// <param name="TfsServer">Url сервера TFS</param>
         /// <returns>Контроллер хранилища</returns>
-        public VersionControlServer VersionControl(String TfsServer)
+        public void VersionControl(String TfsServer)
         {
-            if (tpc == null)
-                ProjectCollection(TfsServer);
-            return tpc.GetService<VersionControlServer>();
+            vcs = wrapTfs.VersionControlServerGet(new Uri(TfsServer));
         }
 
-        //private VersionControlServer verControl
-        //{
-        //    get
-        //    {
-        //        return tpc.GetService<VersionControlServer>();
-        //    }
-        //}
-
-        /// <summary>
-        /// Получение коллекции проектов на сервере
-        /// </summary>
-        /// <param name="TfsServer">Url сервера TFS</param>
-        /// <returns>Коллекция проектов</returns>
-        private TfsTeamProjectCollection ProjectCollection(String TfsServer)
-        {
-            if (tpc == null)
-                tpc = new TfsTeamProjectCollection(new Uri(TfsServer));
-            return tpc;
-        }
 
         public String Tempdir
         {
@@ -63,26 +43,21 @@ namespace DevTools.BL.TFS
 
         private String tempdir = Path.Combine(DomainContext.TempPath, Guid.NewGuid().ToString());
 
-        private TfsTeamProjectCollection tpc = null;
-        private Workspace tempWorkspace = null;
+        private Workspace? tempWorkspace = null;
         private String serverPath = null;
 
         // Создаем временную рабочую область
         private Workspace getTempWorkspace()
         {
-            if (tpc == null)
-                throw new Exception("");
+            if (vcs == null)
+                throw new ArgumentException("Не установленна связь с TFS");
 
-            if (tempWorkspace == null)
-            {
-                var cwp = new CreateWorkspaceParameters(Guid.NewGuid().ToString());
-                cwp.Comment = "DevTools Workspace";
-                cwp.OwnerName = tpc.AuthorizedIdentity.UniqueName;
-                cwp.Location = WorkspaceLocation.Server;
-                tempWorkspace = tpc.GetService<VersionControlServer>().CreateWorkspace(cwp);
-            }
+            if (tempWorkspace != null)
+                return tempWorkspace.Value;
 
-            return tempWorkspace;
+            tempWorkspace = wrapTfs.WorkspaceCreate(vcs.Value, Guid.NewGuid().ToString(), "DevTools Workspace", true);
+
+            return tempWorkspace.Value;
         }
 
         /// <summary>
@@ -93,28 +68,32 @@ namespace DevTools.BL.TFS
         {
             try
             {
-                // Если в процесе ремапят, то надо удалить предыдущюю раб.обл.
-                if (tempWorkspace != null &&
-                    tempWorkspace.Folders[0].LocalItem != Tempdir &&
-                    tempWorkspace.Folders[0].ServerItem != ServerPath)
+                if (tempWorkspace != null)
                 {
-                    if (tempWorkspace.GetPendingChanges().Length > 0)
-                        tempWorkspace.Undo(tempWorkspace.GetPendingChanges());
-                    tempWorkspace.Delete();
-                    tempWorkspace = null;
-                }
+                    var mfdr = wrapTfs.WorkspaceFoldersGet(tempWorkspace.Value).FirstOrDefault();
 
+                    // Если в процесе ремапят, то надо удалить предыдущюю раб.обл.
+                    if (mfdr != null &&
+                    mfdr.LocalItem != Tempdir &&
+                    mfdr.ServerItem != ServerPath)
+
+                    {
+                        wrapTfs.WorkspaceUndo(tempWorkspace.Value);
+                        wrapTfs.WorkspaceDelete(tempWorkspace.Value);
+                        tempWorkspace = null;
+                    }
+
+                }
                 serverPath = ServerPath;
                 // Для этого рабочего пространства папка на сервере сопоставляется с локальной папкой 
-                getTempWorkspace().Map(serverPath, Tempdir);
+                wrapTfs.WorkspaceMap(getTempWorkspace(), serverPath, Tempdir);
             }
             catch
             {
                 if (tempWorkspace != null)
                 {
-                    if (tempWorkspace.GetPendingChanges().Length > 0)
-                        tempWorkspace.Undo(tempWorkspace.GetPendingChanges());
-                    tempWorkspace.Delete();
+                    wrapTfs.WorkspaceUndo(tempWorkspace.Value);
+                    wrapTfs.WorkspaceDelete(tempWorkspace.Value);
                     tempWorkspace = null;
                 }
                 throw;
@@ -128,11 +107,7 @@ namespace DevTools.BL.TFS
         /// <returns>Кол-во новых файлов</returns>
         public long GetLastFile(String FileName)
         {
-            // Создание ItemSpec для определения списка получаемых файлов и папок 
-            // Получение всего содержимого папки на сервере 
-            var fileRequest = new GetRequest(new ItemSpec(serverPath + "/" + FileName, RecursionType.None), VersionSpec.Latest);
-            // Получение новейшего кода 
-            return getTempWorkspace().Get(fileRequest, GetOptions.GetAll | GetOptions.Overwrite).NumFiles;
+            return wrapTfs.WorkspaceGetLastItem(getTempWorkspace(), serverPath + "/" + FileName);
         }
 
         /// <summary>
@@ -141,7 +116,7 @@ namespace DevTools.BL.TFS
         /// <param name="PathFileName">Полный путь файла, находящийся в папке, замапленой в рабочей области</param>
         public void AddFile(string PathFileName)
         {
-            getTempWorkspace().PendAdd(PathFileName);
+            wrapTfs.WorkspaceAddFile(getTempWorkspace(), PathFileName);
         }
 
         /// <summary>
@@ -151,14 +126,7 @@ namespace DevTools.BL.TFS
         /// <param name="NumberTasks">Номера задач для чекина</param>
         public void CheckIn(string CommentOnCheckIn, List<int> NumberTasks = null)
         {
-            var wscp = new WorkspaceCheckInParameters(getTempWorkspace().GetPendingChanges(), CommentOnCheckIn);
-            if (NumberTasks != null)
-            {
-                // TODO Получить рабочие элементы
-                //wscp.AssociatedWorkItems
-            }
-
-            getTempWorkspace().CheckIn(wscp);
+            wrapTfs.WorkspaceCheckIn(getTempWorkspace(), CommentOnCheckIn, NumberTasks);
         }
 
         /// <summary>
@@ -169,17 +137,7 @@ namespace DevTools.BL.TFS
         /// <returns>true - успешно, false - неуспешно</returns>
         public bool LockFile(string FileName)
         {
-            bool res = false;
-            try
-            {
-                var rsl = getTempWorkspace().SetLock(serverPath + "/" + FileName, LockLevel.CheckOut);
-                res = rsl != 0;
-            }
-            catch
-            {
-
-            }
-            return res;
+            return wrapTfs.WorkspaceLockFile(getTempWorkspace(), serverPath + "/" + FileName, LockLevel.CheckOut);
         }
 
         /// <summary>
@@ -189,8 +147,7 @@ namespace DevTools.BL.TFS
         /// <returns>true - успешно, false - неуспешно</returns>
         public bool CheckOut(string PathFileName)
         {
-            var xx = getTempWorkspace().PendEdit(PathFileName);
-            return xx != 0;
+            return wrapTfs.WorkspaceCheckOut(getTempWorkspace(), PathFileName);
         }
 
         protected override void Dispose(bool disposing)
@@ -199,9 +156,8 @@ namespace DevTools.BL.TFS
             {
                 if (tempWorkspace != null)
                 {
-                    if (tempWorkspace.GetPendingChanges().Length > 0)
-                        tempWorkspace.Undo(tempWorkspace.GetPendingChanges());
-                    tempWorkspace.Delete();
+                    wrapTfs.WorkspaceUndo(tempWorkspace.Value);
+                    wrapTfs.WorkspaceDelete(tempWorkspace.Value);
                     tempWorkspace = null;
                 }
 
