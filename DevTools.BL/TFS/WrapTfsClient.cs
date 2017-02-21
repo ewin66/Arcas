@@ -107,12 +107,14 @@ namespace Cav.Ttf
         private static String pathTfsdll = null;
 
         private const string tfsClientDll = "Microsoft.TeamFoundation.Client.dll";
-        private const string tfsVersionClientDll = "Microsoft.TeamFoundation.VersionControl.Client.dll";
-        private const string tfsVersionControlCommonDLL = "Microsoft.TeamFoundation.VersionControl.Controls.Common.dll";
+        private const string tfsVersionControlClientDll = "Microsoft.TeamFoundation.VersionControl.Client.dll";
+        private const string tfsVersionControlCommonDll = "Microsoft.TeamFoundation.VersionControl.Common.dll";
+        private const string tfsVersionControlControlsCommonDLL = "Microsoft.TeamFoundation.VersionControl.Controls.Common.dll";
 
         private static Assembly tfsClientAssembly = null;
-        private static Assembly tfsVersionClientAssembly = null;
         private static Assembly tfsVersionControlCommonAssembly = null;
+        private static Assembly tfsVersionControlClientAssembly = null;
+        private static Assembly tfsVersionControlControlsCommonAssembly = null;
 
         static WrapTfs()
         {
@@ -126,8 +128,9 @@ namespace Cav.Ttf
             AppDomain.CurrentDomain.AssemblyResolve += WrapTfs.CurrentDomain_AssemblyResolve;
 
             tfsClientAssembly = AppDomain.CurrentDomain.Load(File.ReadAllBytes(Path.Combine(pathTfsdll, tfsClientDll)));
-            tfsVersionClientAssembly = AppDomain.CurrentDomain.Load(File.ReadAllBytes(Path.Combine(pathTfsdll, tfsVersionClientDll)));
-            tfsVersionControlCommonAssembly = AppDomain.CurrentDomain.Load(File.ReadAllBytes(Path.Combine(pathTfsdll, tfsVersionControlCommonDLL)));
+            tfsVersionControlClientAssembly = AppDomain.CurrentDomain.Load(File.ReadAllBytes(Path.Combine(pathTfsdll, tfsVersionControlClientDll)));
+            tfsVersionControlControlsCommonAssembly = AppDomain.CurrentDomain.Load(File.ReadAllBytes(Path.Combine(pathTfsdll, tfsVersionControlControlsCommonDLL)));
+            tfsVersionControlCommonAssembly = AppDomain.CurrentDomain.Load(File.ReadAllBytes(Path.Combine(pathTfsdll, tfsVersionControlCommonDll)));
         }
 
         private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
@@ -161,7 +164,7 @@ namespace Cav.Ttf
         {
             if (ws != null)
                 return ws;
-            ws = tfsVersionClientAssembly.GetStaticPropertyValue("Workstation", "Current");
+            ws = tfsVersionControlClientAssembly.GetStaticPropertyValue("Workstation", "Current");
             return ws;
         }
 
@@ -191,7 +194,7 @@ namespace Cav.Ttf
         public VersionControlServer VersionControlServerGet(Uri serverUri)
         {
             var tpc = TeamProjectCollectionGet(serverUri);
-            Type vcsType = tfsVersionClientAssembly.ExportedTypes.Single(x => x.Name == "VersionControlServer");
+            Type vcsType = tfsVersionControlClientAssembly.ExportedTypes.Single(x => x.Name == "VersionControlServer");
 
             var res = new VersionControlServer();
             res.VCS = tpc.InvokeMethod("GetService", vcsType);
@@ -209,15 +212,15 @@ namespace Cav.Ttf
         public VersionSpec WorkspaceVersionSpecCreate(Workspace ws)
         {
             var res = new VersionSpec();
-            res.VS = tfsVersionClientAssembly.CreateInstance("WorkspaceVersionSpec", ws.WS);
+            res.VS = tfsVersionControlClientAssembly.CreateInstance("WorkspaceVersionSpec", ws.WS);
             return res;
         }
 
         public QueryHistoryParameters QueryHistoryParametersCreate(String localFileName, VersionSpec vs)
         {
-            var RecursionTypeFull = tfsVersionClientAssembly.GetEnumValue("RecursionType", "Full");
+            var RecursionTypeFull = tfsVersionControlClientAssembly.GetEnumValue("RecursionType", "Full");
             var res = new QueryHistoryParameters();
-            res.QHP = tfsVersionClientAssembly.CreateInstance("QueryHistoryParameters", localFileName, RecursionTypeFull);
+            res.QHP = tfsVersionControlClientAssembly.CreateInstance("QueryHistoryParameters", localFileName, RecursionTypeFull);
             res.QHP.SetPropertyValue("ItemVersion", vs.VS);
             res.QHP.SetPropertyValue("VersionEnd", vs.VS);
             res.QHP.SetPropertyValue("MaxResults", 1);
@@ -245,7 +248,7 @@ namespace Cav.Ttf
             Boolean workspaceLocationOnServer)
         {
             var tpc = vcs.VCS.GetPropertyValue("TeamProjectCollection");
-            var cwp = tfsVersionClientAssembly.CreateInstance("CreateWorkspaceParameters", workspaceName);
+            var cwp = tfsVersionControlClientAssembly.CreateInstance("CreateWorkspaceParameters", workspaceName);
             cwp.SetPropertyValue("Comment", workspaceComment);
             cwp.SetPropertyValue("OwnerName", tpc.GetPropertyValue("AuthorizedIdentity").GetPropertyValue("UniqueName"));
 
@@ -303,7 +306,7 @@ namespace Cav.Ttf
         public void WorkspaceCheckIn(Workspace ws, string commentOnCheckIn, List<int> numberTasks = null)
         {
             var gpc = WorkspaceGetPendingChanges(ws);
-            var wscp = tfsVersionClientAssembly.CreateInstance("WorkspaceCheckInParameters", gpc.PC, commentOnCheckIn);
+            var wscp = tfsVersionControlClientAssembly.CreateInstance("WorkspaceCheckInParameters", gpc.PC, commentOnCheckIn);
             if (numberTasks != null)
             {
                 // TODO Получить рабочие элементы
@@ -353,7 +356,7 @@ namespace Cav.Ttf
             bool res = false;
             try
             {
-                var llenum = tfsVersionClientAssembly.GetEnumValue("LockLevel", lockLevel.ToString());
+                var llenum = tfsVersionControlClientAssembly.GetEnumValue("LockLevel", lockLevel.ToString());
                 res = (int)ws.WS.InvokeMethod("SetLock", serverPathItem, llenum) != 0;
             }
             catch
@@ -365,18 +368,17 @@ namespace Cav.Ttf
 
         public long WorkspaceGetLastItem(Workspace ws, String serverItemPath)
         {
-            var RecursionTypeFull = tfsVersionClientAssembly.GetEnumValue("RecursionType", "Full");
-            var ItemSpec = tfsVersionClientAssembly.CreateInstance("ItemSpec", serverItemPath, RecursionTypeFull);
+            var RecursionTypeFull = tfsVersionControlClientAssembly.GetEnumValue("RecursionType", "Full");
+            var ItemSpec = tfsVersionControlClientAssembly.CreateInstance("ItemSpec", serverItemPath, RecursionTypeFull);
 
-            var VersionSpecLatest = tfsVersionClientAssembly.GetStaticPropertyValue("VersionSpec", "Latest");
+            var VersionSpecLatest = tfsVersionControlClientAssembly.GetStaticPropertyValue("VersionSpec", "Latest");
 
-            var GetRequest = tfsVersionClientAssembly.CreateInstance("GetRequest", ItemSpec, VersionSpecLatest);
+            var GetRequest = tfsVersionControlClientAssembly.CreateInstance("GetRequest", ItemSpec, VersionSpecLatest);
 
-            var GetOptionsType = tfsVersionClientAssembly.ExportedTypes.Single(x => x.Name == "GetOptions");
-            int GetOptionsGetAll = (int)tfsVersionClientAssembly.GetEnumValue("GetOptions", "GetAll");
-            int GetOptionsOverwrit = (int)tfsVersionClientAssembly.GetEnumValue("GetOptions", "Overwrite");
-            var GetOptionsValue = Convert.ChangeType(GetOptionsGetAll + GetOptionsOverwrit, GetOptionsType);
-
+            var GetOptionsType = tfsVersionControlClientAssembly.ExportedTypes.Single(x => x.Name == "GetOptions");
+            int GetOptionsGetAll = (int)tfsVersionControlClientAssembly.GetEnumValue("GetOptions", "GetAll");
+            int GetOptionsOverwrit = (int)tfsVersionControlClientAssembly.GetEnumValue("GetOptions", "Overwrite");
+            var GetOptionsValue = Enum.ToObject(GetOptionsType, GetOptionsGetAll + GetOptionsOverwrit);
             var GetLastFile = ws.WS.InvokeMethod("Get", GetRequest, GetOptionsValue);
 
             return (long)GetLastFile.GetPropertyValue("NumFiles");
@@ -396,7 +398,7 @@ namespace Cav.Ttf
 
         public String ShowDialogChooseServerFolder(IWin32Window parentWindow, VersionControlServer vcs, String initalPath)
         {
-            var dcsf = tfsVersionControlCommonAssembly.CreateInstance("DialogChooseServerFolder", vcs.VCS, initalPath);
+            var dcsf = tfsVersionControlControlsCommonAssembly.CreateInstance("DialogChooseServerFolder", vcs.VCS, initalPath);
 
             dcsf.SetPropertyValue("ShowInTaskbar", false);
             var dr = (DialogResult)dcsf.InvokeMethod("ShowDialog", parentWindow);
