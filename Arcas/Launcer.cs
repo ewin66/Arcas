@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DevTools;
+using Arcas;
 
 namespace Arcas
 {
@@ -18,7 +18,7 @@ namespace Arcas
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new DevToolsMainMindow());
+            Application.Run(new ArcasMainMindow());
         }
     }
 }

@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Arcas.BL;
 
-namespace DevTools.Controls
-{    
+namespace Arcas.Controls
+{
     public class TabControlBase : UserControl
     {
         public TabControlBase()
         {
-            this.Name = "TabControlBase";
+            this.Name = this.GetType().FullName;
         }
 
         public virtual void RefreshTab() { }

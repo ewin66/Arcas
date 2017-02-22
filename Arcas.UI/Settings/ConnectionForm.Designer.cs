@@ -1,4 +1,4 @@
-﻿namespace DevTools.Settings
+﻿namespace Arcas.Settings
 {
     partial class ConnectionForm
     {

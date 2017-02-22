@@ -1,4 +1,4 @@
-﻿namespace DevTools.Controls
+﻿namespace Arcas.Controls
 {
     partial class UpdaterDB
     {
@@ -75,13 +75,13 @@
             this.tbComment.Multiline = true;
             this.tbComment.Name = "tbComment";
             this.tbComment.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbComment.Size = new System.Drawing.Size(631, 50);
+            this.tbComment.Size = new System.Drawing.Size(491, 50);
             this.tbComment.TabIndex = 12;
             // 
             // btSaveScript
             // 
             this.btSaveScript.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btSaveScript.Location = new System.Drawing.Point(525, 390);
+            this.btSaveScript.Location = new System.Drawing.Point(385, 204);
             this.btSaveScript.Name = "btSaveScript";
             this.btSaveScript.Size = new System.Drawing.Size(109, 23);
             this.btSaveScript.TabIndex = 11;
@@ -98,7 +98,7 @@
             this.tbScriptBody.Multiline = true;
             this.tbScriptBody.Name = "tbScriptBody";
             this.tbScriptBody.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbScriptBody.Size = new System.Drawing.Size(631, 251);
+            this.tbScriptBody.Size = new System.Drawing.Size(491, 65);
             this.tbScriptBody.TabIndex = 10;
             // 
             // label1
@@ -123,7 +123,7 @@
             // btClear
             // 
             this.btClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btClear.Location = new System.Drawing.Point(505, 107);
+            this.btClear.Location = new System.Drawing.Point(365, 107);
             this.btClear.Name = "btClear";
             this.btClear.Size = new System.Drawing.Size(129, 23);
             this.btClear.TabIndex = 16;
@@ -145,7 +145,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cbxTfsDbLinc);
             this.Name = "UpdaterDB";
-            this.Size = new System.Drawing.Size(637, 418);
+            this.Size = new System.Drawing.Size(497, 232);
             this.ResumeLayout(false);
             this.PerformLayout();
 

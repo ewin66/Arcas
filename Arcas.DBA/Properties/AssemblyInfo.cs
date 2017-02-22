@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Управление общими сведениями о сборке осуществляется с помощью 
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("DevTools.BL")]
+[assembly: AssemblyTitle("Arcas.DBA")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("DevTools.BL")]
+[assembly: AssemblyProduct("Arcas.DBA")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Следующий GUID служит для идентификации библиотеки типов, если этот проект будет видимым для COM
-[assembly: Guid("c7d44263-c0f0-415a-9c15-cfe4c5bd21a6")]
+[assembly: Guid("fb98d314-96ee-4d4b-a68e-40d159f5b3fa")]
 
 // Сведения о версии сборки состоят из следующих четырех значений:
 //

@@ -65,6 +65,12 @@
     <Compile Include="Controls\UpdaterDB.Designer.cs">
       <DependentUpon>UpdaterDB.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\IbmMqTest.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\IbmMqTest.Designer.cs">
+      <DependentUpon>IbmMqTest.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\XsltTransform.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -107,6 +113,9 @@
     <EmbeddedResource Include="Controls\UpdaterDB.resx">
       <DependentUpon>UpdaterDB.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\IbmMqTest.resx">
+      <DependentUpon>IbmMqTest.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\XsltTransform.resx">
       <DependentUpon>XsltTransform.cs</DependentUpon>
     </EmbeddedResource>
@@ -124,9 +133,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DevTools.BL\DevTools.BL.csproj">
+    <ProjectReference Include="..\Arcas.BL\Arcas.BL.csproj">
       <Project>{b4e45987-d126-40ab-a6ec-2b1dfb0b5f73}</Project>
-      <Name>DevTools.BL</Name>
+      <Name>Arcas.BL</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

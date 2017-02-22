@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using DevTools.BL;
 using Cav;
+using Arcas.BL;
 
-namespace DevTools.Controls
+namespace Arcas.Controls
 {
     public partial class UpdaterDB : TabControlBase
     {
         public UpdaterDB()
         {
             InitializeComponent();
+            this.Text = "Накатка БД";
             try
             {
                 cbxTfsDbLinc.Text = ArcasSetting.Instance.SelestedTFSDB;
@@ -25,7 +26,7 @@ namespace DevTools.Controls
         {
 
             if (!textChanged)
-                if (MessageBox.Show(this, "Текст скрипта не изменился с предыдущего запуска. Повторить?", "DevTools", MessageBoxButtons.YesNo) != System.Windows.Forms.DialogResult.Yes)
+                if (MessageBox.Show(this, "Текст скрипта не изменился с предыдущего запуска. Повторить?", "Arcas", MessageBoxButtons.YesNo) != System.Windows.Forms.DialogResult.Yes)
                     return;
 
             btSaveScript.Enabled = false;
@@ -59,7 +60,7 @@ namespace DevTools.Controls
             #region заполняем cbxTfsBbLinc
 
             var SelName = ArcasSetting.Instance.SelestedTFSDB;
-            cbxTfsDbLinc.DataSource = DevToolsSettings.Settings.TfsDbLinks;
+            cbxTfsDbLinc.DataSource = ArcasSettings.Settings.TfsDbLinks;
             cbxTfsDbLinc.SelectedItem = ((List<TfsDbLink>)cbxTfsDbLinc.DataSource).FirstOrDefault(x => x.Name == SelName);
             if (cbxTfsDbLinc.SelectedItem == null && cbxTfsDbLinc.Items.Count > 0)
                 cbxTfsDbLinc.SelectedIndex = 0;

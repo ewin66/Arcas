@@ -6,7 +6,7 @@ using Cav;
 using Cav.BaseClases;
 using Cav.Tfs;
 
-namespace DevTools.BL.TFS
+namespace Arcas.BL.TFS
 {
     /// <summary>
     /// Взаимодействие с ТФС
@@ -55,7 +55,7 @@ namespace DevTools.BL.TFS
             if (tempWorkspace != null)
                 return tempWorkspace.Value;
 
-            tempWorkspace = wrapTfs.WorkspaceCreate(vcs.Value, Guid.NewGuid().ToString(), "DevTools Workspace", true);
+            tempWorkspace = wrapTfs.WorkspaceCreate(vcs.Value, Guid.NewGuid().ToString(), "Arcas Workspace", true);
 
             return tempWorkspace.Value;
         }

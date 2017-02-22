@@ -1,9 +1,9 @@
 ﻿using System;
 using Cav.DataAcces;
 
-namespace DevTools.DBA
+namespace Arcas.DBA
 {
-    public class DevToolDBAdapter : DataAccesBase
+    public class ArcasDBAdapter : DataAccesBase
     {
         public void ExecScript(String SqlText)
         {

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Cav;
 
-namespace DevTools.Settings
+namespace Arcas.Settings
 {
     public partial class TFSDBLinkForm : Form
     {
@@ -13,7 +13,7 @@ namespace DevTools.Settings
             dgvTFSDB.DataSource = link;
         }
 
-        private TFSDBList link = DevToolsSettings.Settings.TfsDbLinks;
+        private TFSDBList link = ArcasSettings.Settings.TfsDbLinks;
 
         private void btAdd_Click(object sender, EventArgs e)
         {
@@ -100,8 +100,8 @@ namespace DevTools.Settings
 
         private void btSave_Click(object sender, EventArgs e)
         {
-            DevToolsSettings.Settings.TfsDbLinks = link;
-            DevToolsSettings.Save();
+            ArcasSettings.Settings.TfsDbLinks = link;
+            ArcasSettings.Save();
         }
     }
 }

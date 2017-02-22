@@ -7,8 +7,8 @@
     <ProjectGuid>{A5F19607-8279-4599-8051-E0571D668619}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DevTools.DBA</RootNamespace>
-    <AssemblyName>DevTools.DBA</AssemblyName>
+    <RootNamespace>Arcas.DBA</RootNamespace>
+    <AssemblyName>Arcas.DBA</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -54,7 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DevToolDBAdapter.cs" />
+    <Compile Include="ArcasDBAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

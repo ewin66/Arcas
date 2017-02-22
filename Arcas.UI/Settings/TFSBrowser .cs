@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Windows.Forms;
+using Arcas;
 using Cav;
 using Cav.Tfs;
 
-namespace DevTools.Settings
+namespace Arcas.Settings
 {
     public partial class TFSBrowser : Form
     {

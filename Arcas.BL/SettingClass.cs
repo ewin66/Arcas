@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.IO;
+using Arcas.BL.IbmMq;
 using Cav;
 using Cav.ProgramSettins;
 
-namespace DevTools
+namespace Arcas
 {
-
-
     public class ArcasSetting : ProgramSettingsBase
     {
         private static ArcasSetting instance = null;
@@ -33,14 +32,20 @@ namespace DevTools
             get { return this.GetValue<String>("SelestedTFSDB"); }
             set { this.SetValue(Area.User, "SelestedTFSDB", value); }
         }
-        
+
+        public MqUserSetting MqSets
+        {
+            get { return this.GetValue<MqUserSetting>("MqSets"); }
+            set { this.SetValue(Area.User, "MqSets", value); }
+        }
+
     }
 
 
     /// <summary>
     /// Настройки приложения
     /// </summary>
-    public static class DevToolsSettings
+    public static class ArcasSettings
     {
         private static SettingsType settings = null;
         public static SettingsType Settings
@@ -62,7 +67,7 @@ namespace DevTools
         private static void Load()
         {
             settings = setFile.XMLDeserializeFromFile<SettingsType>();
-            
+
             if (settings == null)
                 settings = new SettingsType();
         }

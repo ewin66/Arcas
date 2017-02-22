@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 using System.Windows.Forms;
 using Cav;
 
-namespace DevTools.Settings
+namespace Arcas.Settings
 {
     public partial class ConnectionForm : Form
     {
@@ -57,7 +57,7 @@ namespace DevTools.Settings
                 pass: tbPass.Text,
                 MARS: false,
                 integratedSecurity: chbWindowsAuth.Checked,
-                applicationName: "DevTools " + Environment.MachineName + @":" + Environment.UserDomainName + @"\" + Environment.UserName);
+                applicationName: "Arcas " + Environment.MachineName + @":" + Environment.UserDomainName + @"\" + Environment.UserName);
 
                 btOk.Enabled = true;
             }

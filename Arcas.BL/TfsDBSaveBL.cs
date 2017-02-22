@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using Arcas;
 using Cav;
 using Cav.BaseClases;
-using DevTools.BL.TFS;
-using DevTools.DBA;
+using Arcas.BL.TFS;
+using Arcas.DBA;
 
-namespace DevTools.BL
+namespace Arcas.BL
 {
+    public delegate void ProgressStateDelegat(String Message);
+
     /// <summary>
     /// БЛ сохранения скрипта и в БД и в TFS
     /// </summary>
@@ -51,7 +54,7 @@ END CATCH";
 
 EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.NewLine;
 
-        private DevToolDBAdapter adapter = new DevToolDBAdapter();
+        private ArcasDBAdapter adapter = new ArcasDBAdapter();
 
 
         /// <summary>

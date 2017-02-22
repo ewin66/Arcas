@@ -5,9 +5,9 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arcas", "Arcas\Arcas.csproj", "{90E2CF7D-4929-4C50-A11F-140152EEE4E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevTools.BL", "DevTools.BL\DevTools.BL.csproj", "{B4E45987-D126-40AB-A6EC-2B1DFB0B5F73}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arcas.BL", "Arcas.BL\Arcas.BL.csproj", "{B4E45987-D126-40AB-A6EC-2B1DFB0B5F73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevTools.DBA", "DevTools.DBA\DevTools.DBA.csproj", "{A5F19607-8279-4599-8051-E0571D668619}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arcas.DBA", "Arcas.DBA\Arcas.DBA.csproj", "{A5F19607-8279-4599-8051-E0571D668619}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{FAFBCB6E-4A16-4823-A0AC-D5DA4687AD1D}"
 	ProjectSection(SolutionItems) = preProject

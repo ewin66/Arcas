@@ -3,13 +3,14 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using Cav;
 
-namespace DevTools.Controls
+namespace Arcas.Controls
 {
     public partial class XsltTransform : TabControlBase
     {
         public XsltTransform()
         {
             InitializeComponent();
+            this.Text = "Xslt - преобразование";
 
             splitContainer1_DoubleClick(null, null);
             splitContainer2_DoubleClick(null, null);

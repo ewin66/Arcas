@@ -1,26 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
-using DevTools.Controls;
-using DevTools.Settings;
 using Cav;
+using Arcas.Controls;
+using Arcas.Settings;
 
 
-namespace DevTools
+namespace Arcas
 {
-    public partial class DevToolsMainMindow : Form
+    public partial class ArcasMainMindow : Form
     {
-        public DevToolsMainMindow()
+        public ArcasMainMindow()
         {
             InitializeComponent();
 
-            foreach (TabPage tab in tcTabs.TabPages)
-                foreach (Control cntl in tab.Controls)
-                    if (cntl is TabControlBase)
-                    {
-                        refreshTabAction.Add((cntl as TabControlBase).RefreshTab);
-                        (cntl as TabControlBase).StateProgress += savbl_StatusMessages;
-                    }
+            var tabsTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetExportedTypes()).Where(x => x.IsSubclassOf(typeof(TabControlBase))).ToList();
+
+            foreach (var tabType in tabsTypes)
+            {
+                TabControlBase tb = (TabControlBase)Activator.CreateInstance(tabType);
+                var ts = new TabPage();
+
+                ts.Controls.Add(tb);
+                ts.Name = tb.Name;
+                ts.Text = tb.Text;
+                ts.UseVisualStyleBackColor = true;
+                refreshTabAction.Add(tb.RefreshTab);
+                tb.StateProgress += savbl_StatusMessages;
+                tb.Dock = DockStyle.Fill;
+                ts.TabIndex = tabsTypes.IndexOf(tabType) + 1;
+                tcTabs.TabPages.Add(ts);
+            }
+
+            tabPageDBVer_Enter(null, null);
         }
 
         private List<Action> refreshTabAction = new List<Action>();
@@ -56,7 +69,7 @@ namespace DevTools
             this.Refresh();
         }
 
-        private void DevToolsMainMindow_FormClosing(object sender, FormClosingEventArgs e)
+        private void ArcasMainMindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             ArcasSetting.Instance.Save();
         }

@@ -1,4 +1,4 @@
-﻿namespace DevTools.Controls
+﻿namespace Arcas.Controls
 {
     partial class XsltTransform
     {

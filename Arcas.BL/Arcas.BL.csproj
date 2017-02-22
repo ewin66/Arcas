@@ -7,8 +7,8 @@
     <ProjectGuid>{B4E45987-D126-40AB-A6EC-2B1DFB0B5F73}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DevTools.BL</RootNamespace>
-    <AssemblyName>DevTools.BL</AssemblyName>
+    <RootNamespace>Arcas.BL</RootNamespace>
+    <AssemblyName>Arcas.BL</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
@@ -42,6 +42,10 @@
     <AssemblyOriginatorKeyFile>cav.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="amqmdnet, Version=8.0.0.5, Culture=neutral, PublicKeyToken=dd3cb1c9aae9ec97, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>IbmMq\amqmdnet.dll</HintPath>
+    </Reference>
     <Reference Include="Cav.Core, Version=2.4.0.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
       <HintPath>..\packages\Cav.Core.2.4.0\lib\net45\Cav.Core.dll</HintPath>
       <Private>True</Private>
@@ -54,7 +58,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DelegatProgress.cs" />
+    <Compile Include="IbmMq\IbmMqClient.cs" />
+    <Compile Include="IbmMq\MqMessageGeneric.cs" />
+    <Compile Include="IbmMq\MqSettingGeneric.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingClass.cs" />
     <Compile Include="TfsDBSaveBL.cs">
@@ -66,14 +72,17 @@
     <Compile Include="TFS\WrapTfsClient.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DevTools.DBA\DevTools.DBA.csproj">
+    <ProjectReference Include="..\Arcas.DBA\Arcas.DBA.csproj">
       <Project>{a5f19607-8279-4599-8051-e0571d668619}</Project>
-      <Name>DevTools.DBA</Name>
+      <Name>Arcas.DBA</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="cav.snk" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="IbmMq\amqmdnet.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
