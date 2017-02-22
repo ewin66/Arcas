@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Xml.Serialization;
+using System.Reflection;
+
+using System.Web.Script.Serialization;
 
 namespace Cav.ProgramSettins2
 {
@@ -26,19 +27,20 @@ namespace Cav.ProgramSettins2
         CommonApp
     }
 
-    [AttributeUsage(AttributeTargets.Property)]
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
     public sealed class ProgramSettinsUserAreaAttribute : Attribute
     {
         public ProgramSettinsUserAreaAttribute(Area AreaSetting)
         {
-            this.Area = AreaSetting;
+            this.Value = AreaSetting;
         }
-        public Area Area { get; private set; }
+        internal Area Value { get; private set; }
     }
 
-    public abstract class PSB<T>
-        where T : PSB<T>, new()
+    public abstract class ProgramSettingsBase<T> where T : ProgramSettingsBase<T>
     {
+        protected ProgramSettingsBase() { }
+
         private static T _instance = null;
         public static T Instance
         {
@@ -46,7 +48,7 @@ namespace Cav.ProgramSettins2
             {
                 if (_instance == null)
                 {
-                    T _instance = (T)Activator.CreateInstance(typeof(T));
+                    _instance = (T)Activator.CreateInstance(typeof(T));
 
                     String filename = null;
                     if (!_instance.FileName.IsNullOrWhiteSpace())
@@ -56,7 +58,7 @@ namespace Cav.ProgramSettins2
                     }
 
                     if (filename.IsNullOrWhiteSpace())
-                        filename = typeof(T).FullName + ".xml";
+                        filename = typeof(T).FullName + ".prstg";
 
                     _instance.fileNameApp = Path.Combine(Path.GetDirectoryName(typeof(T).Assembly.Location), filename);
                     _instance.fileNameUser = Path.Combine(DomainContext.AppDataUserStorage, filename);
@@ -72,240 +74,127 @@ namespace Cav.ProgramSettins2
         private String fileNameUser = null;
         private String fileNameAppCommon = null;
 
-        protected String FileName = null;
+        protected String FileName;
+        private void FromJsonDeserialize(String fileName, PropertyInfo[] prinfs)
+        {
+            if (!prinfs.Any())
+                return;
+
+            if (!File.Exists(fileName))
+                return;
+
+            List<PropNameVal> pvl = null;
+
+            var jss = new JavaScriptSerializer();
+            pvl = jss.Deserialize<List<PropNameVal>>(File.ReadAllText(fileName));
+
+            if (pvl == null)
+            {
+                File.Delete(fileName);
+                return;
+            }
+
+            foreach (var pv in pvl)
+            {
+                var pi = prinfs.FirstOrDefault(x => x.Name == pv.Name);
+                if (pi == null)
+                    continue;
+                pi.SetValue(this, jss.Deserialize(pv.Value, pi.PropertyType));
+            }
+        }
+
+        private void ToJsonSerialize(String fileName, List<PropNameVal> props)
+        {
+            if (File.Exists(fileName))
+                File.Delete(fileName);
+
+            if (!props.Any())
+                return;
+            var jss = new JavaScriptSerializer();
+            var jsonStr = jss.Serialize(props);
+
+            File.WriteAllText(fileName, jsonStr);
+        }
+
+
+        private class PropNameVal
+        {
+            public String Name { get; set; }
+            public String Value { get; set; }
+        }
 
         public void Reload()
         {
+            lock (this)
+            {
+                PropertyInfo[] prinfs = this.GetType().GetProperties();
+
+                foreach (var pinfo in prinfs)
+                    pinfo.SetValue(this, pinfo.PropertyType.GetDefault());
+
+                FromJsonDeserialize(fileNameApp,
+                    prinfs
+                    .Where(pinfo =>
+                        pinfo.GetCustomAttribute<ProgramSettinsUserAreaAttribute>() != null && pinfo.GetCustomAttribute<ProgramSettinsUserAreaAttribute>().Value == Area.App
+                        ).ToArray()
+                    );
+
+                FromJsonDeserialize(fileNameAppCommon,
+                    prinfs
+                    .Where(pinfo =>
+                        pinfo.GetCustomAttribute<ProgramSettinsUserAreaAttribute>() != null && pinfo.GetCustomAttribute<ProgramSettinsUserAreaAttribute>().Value == Area.CommonApp
+                        ).ToArray()
+                    );
+
+                FromJsonDeserialize(fileNameUser,
+                    prinfs
+                    .Where(pinfo =>
+                        pinfo.GetCustomAttribute<ProgramSettinsUserAreaAttribute>() == null || pinfo.GetCustomAttribute<ProgramSettinsUserAreaAttribute>().Value == Area.User
+                        ).ToArray()
+                    );
+            }
         }
 
         public void Save()
         {
-        }
-
-
-    }
-
-    public class XXX : PSB<XXX>
-    {
-
-    }
-
-    public abstract class ProgramSettingsBase : INotifyPropertyChanged, INotifyPropertyChanging
-    {
-        /// <summary>
-        /// Создание экземпляра настроек
-        /// </summary>
-        /// <typeparam name="T">Класс настроек</typeparam>
-        /// <param name="FileName">Имя файла. Если null = полное имя типа класса, в котором находится свойство, с расширением .prstg. Путь в зависимости от <c>Area</c> свойств</param>
-        /// <returns>созданый экземпляр</returns>
-        protected static T Create<T>(String FileName = null) where T : ProgramSettingsBase
-        {
-            ProgramSettingsBase res = (ProgramSettingsBase)Activator.CreateInstance(typeof(T));
-
-            if (FileName.IsNullOrWhiteSpace())
-                FileName = typeof(T).FullName + ".prstg";
-
-            res.fileNameApp = Path.Combine(Path.GetDirectoryName(typeof(T).Assembly.Location), FileName);
-            res.fileNameUser = Path.Combine(DomainContext.AppDataUserStorage, FileName);
-            res.fileNameAppCommon = Path.Combine(DomainContext.AppDataCommonStorage, FileName);
-            res.Reload();
-
-            return (T)res;
-        }
-
-        /// <summary>
-        /// Элемент настроек
-        /// </summary>
-        public class SetItem
-        {
-            /// <summary>
-            /// Для сериализатора
-            /// </summary>
-            public SetItem() { }
-
-            /// <summary>
-            /// </summary>
-            /// <param name="PropName">Имя свойства</param>
-            public SetItem(String PropName)
+            lock (this)
             {
-                this.PropName = PropName;
-            }
+                PropertyInfo[] prinfs = this.GetType().GetProperties();
 
-            /// <summary>
-            /// Имя свойства
-            /// </summary>
-            public String PropName;
+                List<PropNameVal> appVal = new List<PropNameVal>();
+                List<PropNameVal> appCommonVal = new List<PropNameVal>();
+                List<PropNameVal> userVal = new List<PropNameVal>();
 
-            /// <summary>
-            /// Область хранения
-            /// </summary>
-            public Area AreaVal;
+                var jss = new JavaScriptSerializer();
 
-            /// <summary>
-            /// Сериализованонное значение свойства
-            /// </summary>
-            public String SelzeVal;
-
-            /// <summary>
-            /// Значение свойства(типа кэш)
-            /// </summary>
-            [XmlIgnore]
-            public Object ValVal;
-        }
-
-        private String fileNameApp = null;
-        private String fileNameUser = null;
-        private String fileNameAppCommon = null;
-
-        private object lockobj = new object();
-        private List<SetItem> storage = new List<SetItem>();
-
-        /// <summary>
-        /// Получения значения свойства по его имени 
-        /// </summary>
-        /// <typeparam name="T">Тип</typeparam>
-        /// <param name="PropName">Имя свойства</param>
-        /// <returns></returns>
-        protected T GetValue<T>(String PropName)
-        {
-            T res = default(T);
-            lock (lockobj)
-            {
-                SetItem item = storage.FirstOrDefault(x => x.PropName == PropName);
-                if (item != null)
-                    if (item.ValVal != null)
-                        res = (T)item.ValVal;
-                    else
-                        if (!item.SelzeVal.IsNullOrWhiteSpace())
-                    {
-                        item.ValVal = item.SelzeVal.XMLDeserialize<T>();
-                        res = (T)item.ValVal;
-                    }
-            }
-
-            return res;
-        }
-
-        /// <summary>
-        /// Сохранение значения в экземпляре настроек
-        /// </summary>
-        /// <param name="AreaProp">область хранения</param>
-        /// <param name="PropName">Имя свойства</param>
-        /// <param name="Value">Значение свойства</param>
-        protected void SetValue(Area AreaProp, String PropName, Object Value)
-        {
-
-            lock (lockobj)
-            {
-                SetItem item = storage.FirstOrDefault(x => x.PropName == PropName);
-                if (item == null)
+                foreach (var pinfo in prinfs)
                 {
-                    item = new SetItem(PropName);
-                    storage.Add(item);
+                    Object val = pinfo.GetValue(this);
+                    if (val == null)
+                        continue;
+
+                    var psatr = pinfo.GetCustomAttribute<ProgramSettinsUserAreaAttribute>() ?? new ProgramSettinsUserAreaAttribute(Area.User);
+
+                    switch (psatr.Value)
+                    {
+                        case Area.User:
+                            userVal.Add(new PropNameVal() { Name = pinfo.Name, Value = jss.Serialize(val) });
+                            break;
+                        case Area.App:
+                            appVal.Add(new PropNameVal() { Name = pinfo.Name, Value = jss.Serialize(val) });
+                            break;
+                        case Area.CommonApp:
+                            appCommonVal.Add(new PropNameVal() { Name = pinfo.Name, Value = jss.Serialize(val) });
+                            break;
+                        default:
+                            throw new ArgumentException("ProgramSettinsUserAreaAttribute.Value");
+                    }
                 }
 
-                if (item.SelzeVal == null & Value == null)
-                    return;
-
-                if ((item.ValVal != null & Value != null) && item.ValVal.Equals(Value))
-                    return;
-
-
-                NotifyPropertyChanging(PropName);
-
-                item.AreaVal = AreaProp;
-                item.SelzeVal = Value == null ? null : Value.XMLSerialize().ToString();
-                item.ValVal = Value;
-
-                NotifyPropertyChanged(PropName);
+                ToJsonSerialize(fileNameUser, userVal);
+                ToJsonSerialize(fileNameAppCommon, appCommonVal);
+                ToJsonSerialize(fileNameApp, appVal);
             }
         }
-
-        /// <summary>
-        /// Загрузить все настройки заново
-        /// </summary>
-        public void Reload()
-        {
-            lock (lockobj)
-            {
-                storage.Clear();
-                if (File.Exists(fileNameApp))
-                    foreach (var item in fileNameApp.XMLDeserializeFromFile<List<SetItem>>())
-                    {
-                        if (storage.Any(x => x.PropName == item.PropName))
-                            continue;
-                        NotifyPropertyChanging(item.PropName);
-                        storage.Add(item);
-                        NotifyPropertyChanged(item.PropName);
-                    }
-                if (File.Exists(fileNameAppCommon))
-                    foreach (var item in fileNameAppCommon.XMLDeserializeFromFile<List<SetItem>>())
-                    {
-                        if (storage.Any(x => x.PropName == item.PropName))
-                            continue;
-                        NotifyPropertyChanging(item.PropName);
-                        storage.Add(item);
-                        NotifyPropertyChanged(item.PropName);
-                    }
-                if (File.Exists(fileNameUser))
-                    foreach (var item in fileNameUser.XMLDeserializeFromFile<List<SetItem>>())
-                    {
-                        if (storage.Any(x => x.PropName == item.PropName))
-                            continue;
-                        NotifyPropertyChanging(item.PropName);
-                        storage.Add(item);
-                        NotifyPropertyChanged(item.PropName);
-                    }
-            }
-        }
-
-        /// <summary>
-        /// Сохранить настройки
-        /// </summary>
-        public void Save()
-        {
-            lock (lockobj)
-            {
-
-                if (storage.Any(x => x.AreaVal == Area.User))
-                    storage.Where(x => x.AreaVal == Area.User).ToList().XMLSerialize(fileNameUser);
-                else
-                    File.Delete(fileNameUser);
-
-                if (storage.Any(x => x.AreaVal == Area.CommonApp))
-                    storage.Where(x => x.AreaVal == Area.CommonApp).ToList().XMLSerialize(fileNameAppCommon);
-                else
-                    File.Delete(fileNameAppCommon);
-
-                if (storage.Any(x => x.AreaVal == Area.App))
-                    storage.Where(x => x.AreaVal == Area.App).ToList().XMLSerialize(fileNameApp);
-                else
-                    File.Delete(fileNameApp);
-            }
-
-        }
-
-        #region Члены INotifyPropertyChanging
-        /// <summary/>
-        public event PropertyChangingEventHandler PropertyChanging;
-
-        private void NotifyPropertyChanging(String PName)
-        {
-            if (PropertyChanging != null)
-                PropertyChanging(this, new PropertyChangingEventArgs(PName));
-        }
-
-        #endregion
-
-        #region Члены INotifyPropertyChanged
-        /// <summary/>
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged(String PName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(PName));
-        }
-
-        #endregion
     }
 }
