@@ -1,14 +1,15 @@
 ﻿using System;
-using System.Data.SqlClient;
-using Cav.BaseClases;
+using Cav.DataAcces;
 
 namespace DevTools.DBA
 {
-    public class DevToolDBAdapter : DBAdapterBase
+    public class DevToolDBAdapter : DataAccesBase
     {
         public void ExecScript(String SqlText)
         {
-            ExecuteNonQuery(new SqlCommand(SqlText));
+            var cmd = this.CreateCommandObject();
+            cmd.CommandText = SqlText;
+            ExecuteNonQuery(cmd);
         }
     }
 }

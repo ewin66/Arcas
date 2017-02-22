@@ -5,47 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using Cav.ReflectHelpers;
 
-namespace Cav.Ttf
+namespace Cav.Tfs
 {
-    internal static class ReflectHelpers
-    {
-        public static Object GetPropertyValue(this object obj, String PropertyName)
-        {
-            return obj.GetType().GetProperty(PropertyName).GetValue(obj);
-        }
-
-        public static Object GetStaticPropertyValue(this Assembly asm, String className, String PropertyName)
-        {
-            return asm.ExportedTypes.Single(x => x.Name == className).GetProperty(PropertyName).GetValue(null);
-        }
-
-        public static void SetPropertyValue(this object obj, String PropertyName, Object value)
-        {
-            obj.GetType().GetProperty(PropertyName).SetValue(obj, value);
-        }
-
-        public static Object CreateInstance(this Assembly asm, String className, params object[] args)
-        {
-            Type clType = asm.ExportedTypes.Single(x => x.Name == className);
-            return Activator.CreateInstance(clType, args);
-        }
-
-        public static Object GetEnumValue(this Assembly asm, String enumTypeName, String VelueName)
-        {
-            Type rtType = asm.ExportedTypes.Single(x => x.Name == enumTypeName);
-            return Enum.Parse(rtType, VelueName);
-        }
-
-        public static Object InvokeMethod(this Object obj, String methidName, params object[] arg)
-        {
-            if (arg == null)
-                arg = new object[0];
-            var minfo = obj.GetType().GetMethod(methidName, arg.Select(x => x.GetType()).ToArray());
-            return minfo.Invoke(obj, arg);
-        }
-    }
-
     public enum LockLevel
     {
         None,
@@ -175,9 +138,7 @@ namespace Cav.Ttf
 
         private Object TeamProjectCollectionGet(Uri serverUri)
         {
-            Type TTPCFType = tfsClientAssembly.ExportedTypes.Single(x => x.Name == "TfsTeamProjectCollectionFactory");
-            var minfo = TTPCFType.GetMethod("GetTeamProjectCollection", new Type[] { typeof(Uri) });
-            return minfo.Invoke(null, new object[] { serverUri });
+            return tfsClientAssembly.InvokeStaticMethod("TfsTeamProjectCollectionFactory", "GetTeamProjectCollection", serverUri);
         }
 
         public WorkspaceInfo WorkspaceInfoGet(String localFileName)

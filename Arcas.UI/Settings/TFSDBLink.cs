@@ -14,14 +14,14 @@ namespace DevTools.Settings
         }
 
         private TFSDBList link = DevToolsSettings.Settings.TfsDbLinks;
-        
+
         private void btAdd_Click(object sender, EventArgs e)
         {
             var nl = new TfsDbLink();
 
             do
             {
-                nl.Name = Cav.Dialogs.InputBox(this, "Наименование связки TFS-DB.", "Наименование связки", "Новая связка");
+                nl.Name = Dialogs.InputBox(this, "Наименование связки TFS-DB.", "Наименование связки", "Новая связка");
 
                 if (nl.Name.IsNullOrWhiteSpace())
                 {
@@ -35,11 +35,11 @@ namespace DevTools.Settings
             } while (link.Any(x => x.Name == nl.Name));
 
             var tb = new TFSBrowser();
-            if (tb.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+            if (tb.ShowDialog(this) == DialogResult.OK)
                 nl.TFS = tb.TFS;
 
             var cf = new ConnectionForm();
-            if (cf.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+            if (cf.ShowDialog(this) == DialogResult.OK)
                 nl.DB.ConnectionString = cf.ConnectionString;
 
             link.Add(nl);
@@ -58,15 +58,13 @@ namespace DevTools.Settings
 
                 link.Remove((TfsDbLink)item.DataBoundItem);
             }
-
-
         }
 
         private void dgvTFSDB_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.RowIndex == -1)
                 return;
-            if (e.Button != System.Windows.Forms.MouseButtons.Left)
+            if (e.Button != MouseButtons.Left)
                 return;
             if (dgvTFSDB.SelectedRows.Count == 0)
                 return;
@@ -74,7 +72,7 @@ namespace DevTools.Settings
 
             if (e.ColumnIndex == 0)
             {
-                var nn = Cav.Dialogs.InputBox(this, "Наименование связки TFS-DB.", "Наименование связки", tdbli.Name);
+                var nn = Dialogs.InputBox(this, "Наименование связки TFS-DB.", "Наименование связки", tdbli.Name);
                 if (nn.IsNullOrWhiteSpace())
                 {
                     MessageBox.Show(this, "Не указано наименование связки");
@@ -87,7 +85,7 @@ namespace DevTools.Settings
             {
                 var tb = new TFSBrowser();
                 tb.TFS = tdbli.TFS;
-                if (tb.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                if (tb.ShowDialog(this) == DialogResult.OK)
                     tdbli.TFS = tb.TFS;
             }
 
@@ -95,7 +93,7 @@ namespace DevTools.Settings
             {
                 var cf = new ConnectionForm();
                 cf.ConnectionString = tdbli.DB.ConnectionString;
-                if (cf.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                if (cf.ShowDialog(this) == DialogResult.OK)
                     tdbli.DB.ConnectionString = cf.ConnectionString;
             }
         }

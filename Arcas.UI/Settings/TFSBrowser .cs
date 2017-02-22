@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using Cav;
-using Cav.Ttf;
+using Cav.Tfs;
 
 namespace DevTools.Settings
 {
