@@ -5,7 +5,6 @@ using System.Windows.Forms;
 using Arcas.Controls;
 using Arcas.Settings;
 using Cav;
-using Cav.ProgramSettins2;
 
 namespace Arcas
 {
@@ -34,17 +33,6 @@ namespace Arcas
             }
 
             tabPageDBVer_Enter(null, null);
-
-            var xxx = MySets.Instance.Aaa;
-            var dd = MySets.Instance.DT;
-            var tl = MySets.Instance.tfsLincs;
-
-            MySets.Instance.Aaa = DateTime.Now.ToString();
-            MySets.Instance.DT = DateTime.Now;
-            MySets.Instance.tfsLincs = new List<TfsDbLink>();
-            MySets.Instance.tfsLincs.Add(new TfsDbLink() { Name = "GgggGG!" });
-
-            MySets.Instance.Save();
         }
 
         private List<Action> refreshTabAction = new List<Action>();
@@ -84,19 +72,5 @@ namespace Arcas
         {
             ArcasSetting.Instance.Save();
         }
-    }
-
-
-    public class MySets : ProgramSettingsBase<MySets>
-    {
-        public MySets()
-        {
-            this.FileName = "XXX.Q";
-        }
-        public String Aaa { get; set; }
-
-        [ProgramSettinsUserArea(Area.CommonApp)]
-        public DateTime DT { get; set; }
-        public List<TfsDbLink> tfsLincs { get; set; }
     }
 }

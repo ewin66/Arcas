@@ -59,7 +59,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="IbmMq\IbmMqClient.cs" />
     <Compile Include="IbmMq\MqMessageGeneric.cs" />
     <Compile Include="IbmMq\MqSettingGeneric.cs" />
