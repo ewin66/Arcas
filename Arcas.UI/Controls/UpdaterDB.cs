@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Cav;
 using Arcas.BL;
+using Cav;
 
 namespace Arcas.Controls
 {
@@ -42,6 +42,9 @@ namespace Arcas.Controls
             textChanged = false;
             btSaveScript.Enabled = true;
             savbl_StatusMessages(String.Empty);
+            ArcasSetting.Instance.SelestedTFSDB =
+                Config.Instance.SelestedTFSDB =
+                 cbxTfsDbLinc.Text;
             Cursor.Current = Cursors.Default;
         }
 
@@ -59,8 +62,8 @@ namespace Arcas.Controls
         {
             #region заполняем cbxTfsBbLinc
 
-            var SelName = ArcasSetting.Instance.SelestedTFSDB;
-            cbxTfsDbLinc.DataSource = ArcasSettings.Settings.TfsDbLinks;
+            var SelName = ArcasSetting.Instance.SelestedTFSDB ?? Config.Instance.SelestedTFSDB;
+            cbxTfsDbLinc.DataSource = ArcasSettings.Settings.TfsDbLinks ?? Config.Instance.TfsDbLinks;
             cbxTfsDbLinc.SelectedItem = ((List<TfsDbLink>)cbxTfsDbLinc.DataSource).FirstOrDefault(x => x.Name == SelName);
             if (cbxTfsDbLinc.SelectedItem == null && cbxTfsDbLinc.Items.Count > 0)
                 cbxTfsDbLinc.SelectedIndex = 0;

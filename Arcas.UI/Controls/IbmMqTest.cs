@@ -17,9 +17,9 @@ namespace Arcas.Controls
             APKeyCol.DataPropertyName = nameof(MqUserSetting.KeyVal.Key);
             APValueCol.DataPropertyName = nameof(MqUserSetting.KeyVal.Value);
 
-            if (ArcasSetting.Instance.MqSets != null)
+            if ((ArcasSetting.Instance.MqSets ?? Config.Instance.MqSets) != null)
             {
-                var st = ArcasSetting.Instance.MqSets;
+                var st = ArcasSetting.Instance.MqSets ?? Config.Instance.MqSets;
 
                 tbHost.Text = st.Host;
                 tbManagerName.Text = st.ManagerName;
@@ -98,8 +98,12 @@ namespace Arcas.Controls
 
                 tbMessageID.Text = sb.ToString();
 
-                ArcasSetting.Instance.MqSets = new MqUserSetting(sets, addpoplist);
+                Config.Instance.MqSets =
+                    ArcasSetting.Instance.MqSets =
+                        new MqUserSetting(sets, addpoplist);
+
                 ArcasSetting.Instance.Save();
+                Config.Instance.Save();
             }
             catch (Exception ex)
             {
@@ -153,8 +157,12 @@ namespace Arcas.Controls
 
                 }
 
-                ArcasSetting.Instance.MqSets = new MqUserSetting(sets);
+                Config.Instance.MqSets =
+                    ArcasSetting.Instance.MqSets =
+                        new MqUserSetting(sets);
+
                 ArcasSetting.Instance.Save();
+                Config.Instance.Save();
 
                 if (chbRollbakGet.Checked)
                     clnt.RollbackGet();

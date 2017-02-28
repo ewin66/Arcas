@@ -13,7 +13,7 @@ namespace Arcas.Settings
             dgvTFSDB.DataSource = link;
         }
 
-        private TFSDBList link = ArcasSettings.Settings.TfsDbLinks;
+        private TFSDBList link = ArcasSettings.Settings.TfsDbLinks ?? Config.Instance.TfsDbLinks;
 
         private void btAdd_Click(object sender, EventArgs e)
         {
@@ -102,6 +102,9 @@ namespace Arcas.Settings
         {
             ArcasSettings.Settings.TfsDbLinks = link;
             ArcasSettings.Save();
+
+            Config.Instance.TfsDbLinks = link;
+            Config.Instance.Save();
         }
     }
 }

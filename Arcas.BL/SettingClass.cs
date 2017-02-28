@@ -9,6 +9,7 @@ using Cav.ProgramSettins;
 
 namespace Arcas
 {
+    [Obsolete()]
     public class ArcasSetting : ProgramSettingsBase
     {
         private static ArcasSetting instance = null;
@@ -23,16 +24,11 @@ namespace Arcas
                 return instance;
             }
         }
-
-        /// <summary>
-        /// Выходной каталог
-        /// </summary>
         public String SelestedTFSDB
         {
             get { return this.GetValue<String>("SelestedTFSDB"); }
             set { this.SetValue(Area.User, "SelestedTFSDB", value); }
         }
-
         public MqUserSetting MqSets
         {
             get { return this.GetValue<MqUserSetting>("MqSets"); }
@@ -45,6 +41,7 @@ namespace Arcas
     /// <summary>
     /// Настройки приложения
     /// </summary>
+    [Obsolete()]
     public static class ArcasSettings
     {
         private static SettingsType settings = null;
@@ -85,7 +82,6 @@ namespace Arcas
         {
             TfsDbLinks = new List<TfsDbLink>();
         }
-
         public List<TfsDbLink> TfsDbLinks { get; set; }
     }
 

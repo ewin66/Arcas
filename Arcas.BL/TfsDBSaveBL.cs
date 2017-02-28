@@ -11,11 +11,8 @@ using Arcas.DBA;
 namespace Arcas.BL
 {
     public delegate void ProgressStateDelegat(String Message);
-
-    /// <summary>
-    /// БЛ сохранения скрипта и в БД и в TFS
-    /// </summary>
-    public class TfsDBSaveBL : BusinessLogicBase
+       
+    public class TfsDBSaveBL
     {
         public event ProgressStateDelegat StatusMessages;
         private void SendStat(String mess)

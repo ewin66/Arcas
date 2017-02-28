@@ -94,9 +94,7 @@
     </None>
     <None Include="cav.snk" />
     <None Include="ChernenkoAV.p12" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>
   <ItemGroup>
@@ -107,8 +105,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Cav.Core, Version=2.4.0.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cav.Core.2.4.0\lib\net45\Cav.Core.dll</HintPath>
+    <Reference Include="Cav.Core, Version=2.5.0.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cav.Core.2.5.0\lib\net45\Cav.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

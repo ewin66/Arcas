@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Cav;
-using Cav.BaseClases;
 using Cav.Tfs;
 
 namespace Arcas.BL.TFS
@@ -11,7 +10,7 @@ namespace Arcas.BL.TFS
     /// <summary>
     /// Взаимодействие с ТФС
     /// </summary>
-    public class TFSRoutineBL : BusinessLogicBase
+    public class TFSRoutineBL : IDisposable
     {
         public TFSRoutineBL()
         {
@@ -150,7 +149,7 @@ namespace Arcas.BL.TFS
             return wrapTfs.WorkspaceCheckOut(getTempWorkspace(), PathFileName);
         }
 
-        protected override void Dispose(bool disposing)
+        void IDisposable.Dispose()
         {
             try
             {
@@ -168,8 +167,6 @@ namespace Arcas.BL.TFS
             {
                 // очистка мусора неуспешна. жаль. ну а что поделать..
             }
-
-            base.Dispose(disposing);
         }
     }
 }

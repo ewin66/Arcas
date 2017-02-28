@@ -208,17 +208,17 @@
             this.tbBodyMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbBodyMessage.Location = new System.Drawing.Point(3, 249);
+            this.tbBodyMessage.Location = new System.Drawing.Point(3, 282);
             this.tbBodyMessage.Multiline = true;
             this.tbBodyMessage.Name = "tbBodyMessage";
             this.tbBodyMessage.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbBodyMessage.Size = new System.Drawing.Size(731, 149);
+            this.tbBodyMessage.Size = new System.Drawing.Size(731, 218);
             this.tbBodyMessage.TabIndex = 16;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(3, 233);
+            this.label9.Location = new System.Drawing.Point(0, 266);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(92, 13);
             this.label9.TabIndex = 17;
@@ -301,7 +301,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Name = "IbmMqTest";
-            this.Size = new System.Drawing.Size(751, 410);
+            this.Size = new System.Drawing.Size(751, 512);
             ((System.ComponentModel.ISupportInitialize)(this.dgvAddProperties)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
