@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 using Arcas.BL.IbmMq;
 using Cav;
 
@@ -8,14 +11,15 @@ namespace Arcas.Controls
 {
     public partial class IbmMqTest : TabControlBase
     {
-        public IbmMqTest()
+        public IbmMqTest(
+            MqBL mqBL)
         {
             InitializeComponent();
             this.Text = "Взаимодействие с IBM Mq";
             dgvAddProperties.AutoGenerateColumns = false;
             dgvAddProperties.DataSource = addpoplist;
-            APKeyCol.DataPropertyName = nameof(MqUserSetting.KeyVal.Key);
-            APValueCol.DataPropertyName = nameof(MqUserSetting.KeyVal.Value);
+            APKeyCol.DataPropertyName = nameof(KeyValuePair<string, string>.Key);
+            APValueCol.DataPropertyName = nameof(KeyValuePair<string, string>.Value);
 
             if ((ArcasSetting.Instance.MqSets ?? Config.Instance.MqSets) != null)
             {
@@ -31,76 +35,32 @@ namespace Arcas.Controls
                 foreach (var item in st.Properties)
                     addpoplist.Add(item);
             }
+
+            this.mqBL = mqBL;
         }
 
-        private BindingList<MqUserSetting.KeyVal> addpoplist = new BindingList<MqUserSetting.KeyVal>();
+        private BindingList<KeyValuePair<String, String>> addpoplist = new BindingList<KeyValuePair<string, string>>();
+        private MqBL mqBL;
 
-        private Boolean ChekSettings()
-        {
-            if (tbHost.Text.IsNullOrWhiteSpace())
-            {
-                Dialogs.ErrorF(this, "Не указан хост");
-                return false;
-            }
-
-            if (tbQueueName.Text.IsNullOrWhiteSpace())
-            {
-                Dialogs.ErrorF(this, "Не указано имя очереди");
-                return false;
-            }
-
-            if (tbChannelName.Text.IsNullOrWhiteSpace())
-            {
-                Dialogs.ErrorF(this, "Не указано имя канала");
-                return false;
-            }
-            return true;
-        }
         private void btSend_Click(object sender, EventArgs e)
         {
             tbMessageID.Text = null;
             tbPutDate.Text = null;
 
-            if (!ChekSettings())
-                return;
-
-            MqMessageGeneric msg = new MqMessageGeneric();
-            msg.Body = tbBodyMessage.Text.GetNullIfIsNullOrWhiteSpace();
             try
             {
-                foreach (var item in addpoplist)
-                    msg.AddedProperties.Add(item.Key, item.Value);
-            }
-            catch
-            {
-                Dialogs.ErrorF(this, "Указаны повторяющиеся значения ключа");
-                return;
-            }
+                MqSettingGeneric sets = CreateMqSetting();
 
+                tbMessageID.Text = mqBL.Send(
+                    sets,
+                    tbBodyMessage.Text.GetNullIfIsNullOrWhiteSpace(),
+                    addpoplist.ToDictionary(x => x.Key, x => x.Value)
+                    );
 
-
-            MqSettingGeneric sets = new MqSettingGeneric();
-            sets.Host = tbHost.Text.GetNullIfIsNullOrWhiteSpace();
-            sets.ManagerName = tbManagerName.Text.GetNullIfIsNullOrWhiteSpace();
-            sets.ChannelName = tbChannelName.Text.GetNullIfIsNullOrWhiteSpace();
-            sets.QueueName = tbQueueName.Text.GetNullIfIsNullOrWhiteSpace();
-            sets.UserName = tbUser.Text.GetNullIfIsNullOrWhiteSpace();
-            sets.Password = tbPass.Text.GetNullIfIsNullOrWhiteSpace();
-
-            try
-            {
-                var clnt = IBMMqClient.CreateClient(sets);
-                clnt.Send(msg);
-
-                StringBuilder sb = new StringBuilder(msg.MessageID.Length * 2);
-                foreach (var b in msg.MessageID)
-                    sb.AppendFormat("{0:X2}", b);
-
-                tbMessageID.Text = sb.ToString();
 
                 Config.Instance.MqSets =
-                    ArcasSetting.Instance.MqSets =
-                        new MqUserSetting(sets, addpoplist);
+             ArcasSetting.Instance.MqSets =
+                 new MqUserSetting(sets, addpoplist);
 
                 ArcasSetting.Instance.Save();
                 Config.Instance.Save();
@@ -109,7 +69,18 @@ namespace Arcas.Controls
             {
                 Dialogs.ErrorF(this, ex.Expand());
             }
+        }
 
+        private MqSettingGeneric CreateMqSetting()
+        {
+            MqSettingGeneric sets = new MqSettingGeneric();
+            sets.Host = tbHost.Text.GetNullIfIsNullOrWhiteSpace();
+            sets.ManagerName = tbManagerName.Text.GetNullIfIsNullOrWhiteSpace();
+            sets.ChannelName = tbChannelName.Text.GetNullIfIsNullOrWhiteSpace();
+            sets.QueueName = tbQueueName.Text.GetNullIfIsNullOrWhiteSpace();
+            sets.UserName = tbUser.Text.GetNullIfIsNullOrWhiteSpace();
+            sets.Password = tbPass.Text.GetNullIfIsNullOrWhiteSpace();
+            return sets;
         }
 
         private void btGetMessage_Click(object sender, EventArgs e)
@@ -118,44 +89,24 @@ namespace Arcas.Controls
             tbPutDate.Text = null;
             tbBodyMessage.Text = null;
 
-            if (!ChekSettings())
-                return;
-
-            MqSettingGeneric sets = new MqSettingGeneric();
-            sets.Host = tbHost.Text.GetNullIfIsNullOrWhiteSpace();
-            sets.ManagerName = tbManagerName.Text.GetNullIfIsNullOrWhiteSpace();
-            sets.ChannelName = tbChannelName.Text.GetNullIfIsNullOrWhiteSpace();
-            sets.QueueName = tbQueueName.Text.GetNullIfIsNullOrWhiteSpace();
-            sets.UserName = tbUser.Text.GetNullIfIsNullOrWhiteSpace();
-            sets.Password = tbPass.Text.GetNullIfIsNullOrWhiteSpace();
-
-            IBMMqClient clnt = null;
+            MqSettingGeneric sets = CreateMqSetting();
 
             try
             {
-                clnt = IBMMqClient.CreateClient(sets);
-                var msg = clnt.GetNextMessage();
+                var msg = mqBL.Get(sets, chbRollbakGet.Checked);
 
-                if (msg == null)
-                {
-                    tbBodyMessage.Text = "В очереди нет сообщений";
-                }
-                else
-                {
-                    addpoplist.Clear();
-                    foreach (var item in msg.AddedProperties)
-                        addpoplist.Add(new MqUserSetting.KeyVal() { Key = item.Key, Value = item.Value });
+                addpoplist.Clear();
+                foreach (var item in msg.AddedProperties)
+                    addpoplist.Add(item);
 
-                    StringBuilder sb = new StringBuilder(msg.MessageID.Length * 2);
-                    foreach (var b in msg.MessageID)
-                        sb.AppendFormat("{0:X2}", b);
+                StringBuilder sb = new StringBuilder(msg.MessageID.Length * 2);
+                foreach (var b in msg.MessageID)
+                    sb.AppendFormat("{0:X2}", b);
 
-                    tbMessageID.Text = sb.ToString();
+                tbMessageID.Text = sb.ToString();
 
-                    tbPutDate.Text = msg.PutDateTime.ToString("dd.MM.yyyy HH:mm:ss");
-                    tbBodyMessage.Text = msg.Body;
-
-                }
+                tbPutDate.Text = msg.PutDateTime.ToString("dd.MM.yyyy HH:mm:ss");
+                tbBodyMessage.Text = msg.Body;
 
                 Config.Instance.MqSets =
                     ArcasSetting.Instance.MqSets =
@@ -163,17 +114,72 @@ namespace Arcas.Controls
 
                 ArcasSetting.Instance.Save();
                 Config.Instance.Save();
-
-                if (chbRollbakGet.Checked)
-                    clnt.RollbackGet();
-                else
-                    clnt.CommitGet();
             }
             catch (Exception ex)
             {
                 Dialogs.ErrorF(this, ex.Expand());
-                clnt.RollbackGet();
             }
+        }
+
+        private string FillAddPropFromFile(String file)
+        {
+            addpoplist.Clear();
+            var xl = XDocument.Load(file);
+
+            if (xl.Root.Name.LocalName == "Message")
+            {
+                addpoplist.Add(new KeyValuePair<string, string>("Method", "SendRequest"));
+
+                XName enoNode = xl.Root.Name.Namespace + "ServiceNumber";
+
+                var sn = xl.Descendants(enoNode).FirstOrDefault();
+                if (sn == null)
+                    throw new Exception("Не найден элемент ServiceNumber");
+
+                addpoplist.Add(new KeyValuePair<string, string>("ServiceTypeCode", sn.Value));
+            }
+
+
+            return xl.ToString();
+        }
+
+        private void btSendFromFile_Click(object sender, EventArgs e)
+        {
+            var files = Dialogs.FileBrowser(
+            Owner: this,
+            Title: "Выбор файлов с XML сообщений",
+            Multiselect: true,
+            CheckFileExists: true);
+
+            foreach (var file in files)
+                try
+                {
+                    tbMessageID.Text = null;
+                    tbPutDate.Text = null;
+
+                    var body = FillAddPropFromFile(file);
+                    tbBodyMessage.Text = body;
+
+                    MqSettingGeneric sets = CreateMqSetting();
+
+                    tbMessageID.Text = mqBL.Send(
+                        sets,
+                        tbBodyMessage.Text.GetNullIfIsNullOrWhiteSpace(),
+                        addpoplist.ToDictionary(x => x.Key, x => x.Value)
+                        );
+
+                    Config.Instance.MqSets =
+                ArcasSetting.Instance.MqSets =
+                    new MqUserSetting(sets);
+
+                    ArcasSetting.Instance.Save();
+                    Config.Instance.Save();
+
+                }
+                catch (Exception ex)
+                {
+                    Dialogs.ErrorF(this, ex.Expand());
+                }
         }
     }
 }

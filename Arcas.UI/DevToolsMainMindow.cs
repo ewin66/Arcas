@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 using Arcas.Controls;
 using Arcas.Settings;
 using Cav;
+using Cav.Container;
 
 namespace Arcas
 {
@@ -14,11 +14,8 @@ namespace Arcas
         {
             InitializeComponent();
 
-            var tabsTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetExportedTypes()).Where(x => x.IsSubclassOf(typeof(TabControlBase))).ToList();
-
-            foreach (var tabType in tabsTypes)
+            foreach (var tb in Locator.GetInstances<TabControlBase>())
             {
-                TabControlBase tb = (TabControlBase)Activator.CreateInstance(tabType);
                 var ts = new TabPage();
 
                 ts.Controls.Add(tb);
@@ -28,7 +25,6 @@ namespace Arcas
                 refreshTabAction.Add(tb.RefreshTab);
                 tb.StateProgress += savbl_StatusMessages;
                 tb.Dock = DockStyle.Fill;
-                ts.TabIndex = tabsTypes.IndexOf(tabType) + 1;
                 tcTabs.TabPages.Add(ts);
             }
 

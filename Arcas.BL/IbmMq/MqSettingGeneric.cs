@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Arcas.BL.IbmMq
@@ -18,7 +19,7 @@ namespace Arcas.BL.IbmMq
 
         public MqUserSetting()
         {
-            Properties = new BindingList<KeyVal>();
+            Properties = new BindingList<KeyValuePair<String, String>>();
         }
 
         public MqUserSetting(MqSettingGeneric sets) : this()
@@ -31,17 +32,12 @@ namespace Arcas.BL.IbmMq
             this.Password = sets.Password;
         }
 
-        public MqUserSetting(MqSettingGeneric sets, BindingList<KeyVal> addpoplist) : this(sets)
+        public MqUserSetting(MqSettingGeneric sets, BindingList<KeyValuePair<String, String>> addpoplist) : this(sets)
         {
             foreach (var item in addpoplist)
                 Properties.Add(item);
         }
 
-        public BindingList<KeyVal> Properties { get; set; }
-        public class KeyVal
-        {
-            public String Key { get; set; }
-            public String Value { get; set; }
-        }
+        public BindingList<KeyValuePair<String, String>> Properties { get; set; }
     }
 }

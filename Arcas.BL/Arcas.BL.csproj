@@ -62,6 +62,7 @@
     <Compile Include="Config.cs" />
     <Compile Include="IbmMqBL.cs" />
     <Compile Include="IbmMq\IbmMqClient.cs" />
+    <Compile Include="IbmMq\MqBL.cs" />
     <Compile Include="IbmMq\MqMessageGeneric.cs" />
     <Compile Include="IbmMq\MqSettingGeneric.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

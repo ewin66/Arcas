@@ -54,6 +54,7 @@
             this.chbRollbakGet = new System.Windows.Forms.CheckBox();
             this.label10 = new System.Windows.Forms.Label();
             this.tbPutDate = new System.Windows.Forms.TextBox();
+            this.btSendFromFile = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAddProperties)).BeginInit();
             this.SuspendLayout();
             // 
@@ -273,10 +274,21 @@
             this.tbPutDate.Size = new System.Drawing.Size(206, 20);
             this.tbPutDate.TabIndex = 22;
             // 
+            // btSendFromFile
+            // 
+            this.btSendFromFile.Location = new System.Drawing.Point(135, 253);
+            this.btSendFromFile.Name = "btSendFromFile";
+            this.btSendFromFile.Size = new System.Drawing.Size(179, 23);
+            this.btSendFromFile.TabIndex = 23;
+            this.btSendFromFile.Text = "Посыл в Mq из файла(ов)";
+            this.btSendFromFile.UseVisualStyleBackColor = true;
+            this.btSendFromFile.Click += new System.EventHandler(this.btSendFromFile_Click);
+            // 
             // IbmMqTest
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btSendFromFile);
             this.Controls.Add(this.tbPutDate);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.chbRollbakGet);
@@ -336,5 +348,6 @@
         private System.Windows.Forms.CheckBox chbRollbakGet;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox tbPutDate;
+        private System.Windows.Forms.Button btSendFromFile;
     }
 }
