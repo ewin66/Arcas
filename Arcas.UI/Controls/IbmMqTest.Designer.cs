@@ -215,6 +215,7 @@
             this.tbBodyMessage.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.tbBodyMessage.Size = new System.Drawing.Size(731, 218);
             this.tbBodyMessage.TabIndex = 16;
+            this.tbBodyMessage.TextChanged += new System.EventHandler(this.tbBodyMessage_TextChanged);
             // 
             // label9
             // 

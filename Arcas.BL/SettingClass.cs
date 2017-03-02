@@ -29,9 +29,9 @@ namespace Arcas
             get { return this.GetValue<String>("SelestedTFSDB"); }
             set { this.SetValue(Area.User, "SelestedTFSDB", value); }
         }
-        public MqUserSetting MqSets
+        public MqSettingGeneric MqSets
         {
-            get { return this.GetValue<MqUserSetting>("MqSets"); }
+            get { return this.GetValue<MqSettingGeneric>("MqSets"); }
             set { this.SetValue(Area.User, "MqSets", value); }
         }
 

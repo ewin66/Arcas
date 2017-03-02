@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
@@ -31,9 +32,6 @@ namespace Arcas.Controls
                 tbQueueName.Text = st.QueueName;
                 tbUser.Text = st.UserName;
                 tbPass.Text = st.Password;
-
-                foreach (var item in st.Properties)
-                    addpoplist.Add(item);
             }
 
             this.mqBL = mqBL;
@@ -59,8 +57,7 @@ namespace Arcas.Controls
 
 
                 Config.Instance.MqSets =
-             ArcasSetting.Instance.MqSets =
-                 new MqUserSetting(sets, addpoplist);
+             ArcasSetting.Instance.MqSets = sets;
 
                 ArcasSetting.Instance.Save();
                 Config.Instance.Save();
@@ -109,8 +106,7 @@ namespace Arcas.Controls
                 tbBodyMessage.Text = msg.Body;
 
                 Config.Instance.MqSets =
-                    ArcasSetting.Instance.MqSets =
-                        new MqUserSetting(sets);
+                    ArcasSetting.Instance.MqSets = sets;
 
                 ArcasSetting.Instance.Save();
                 Config.Instance.Save();
@@ -121,20 +117,33 @@ namespace Arcas.Controls
             }
         }
 
-        private string FillAddPropFromFile(String file)
+        private string FillAddProp(String xml)
         {
             addpoplist.Clear();
-            var xl = XDocument.Load(file);
+            var xl = XDocument.Parse(xml);
 
             if (xl.Root.Name.LocalName == "Message")
             {
                 addpoplist.Add(new KeyValuePair<string, string>("Method", "SendRequest"));
 
-                XName enoNode = xl.Root.Name.Namespace + "ServiceNumber";
+                XName enoNode = xl.Root.Name.Namespace + "ServiceTypeCode";
 
                 var sn = xl.Descendants(enoNode).FirstOrDefault();
                 if (sn == null)
-                    throw new Exception("Не найден элемент ServiceNumber");
+                    throw new Exception("Не найден элемент ServiceTypeCode");
+
+                addpoplist.Add(new KeyValuePair<string, string>("ServiceTypeCode", sn.Value));
+            }
+
+            if (xl.Root.Name.LocalName == "StatusMessage")
+            {
+                addpoplist.Add(new KeyValuePair<string, string>("Method", "SetFilesAndStatus"));
+
+                XName enoNode = xl.Root.Name.Namespace + "ServiceTypeCode";
+
+                var sn = xl.Descendants(enoNode).FirstOrDefault();
+                if (sn == null)
+                    throw new Exception("Не найден элемент ServiceTypeCode");
 
                 addpoplist.Add(new KeyValuePair<string, string>("ServiceTypeCode", sn.Value));
             }
@@ -156,9 +165,8 @@ namespace Arcas.Controls
                 {
                     tbMessageID.Text = null;
                     tbPutDate.Text = null;
-
-                    var body = FillAddPropFromFile(file);
-                    tbBodyMessage.Text = body;
+                    tbBodyMessage.Text = File.ReadAllText(file);
+                    FillAddProp(tbBodyMessage.Text);
 
                     MqSettingGeneric sets = CreateMqSetting();
 
@@ -169,8 +177,7 @@ namespace Arcas.Controls
                         );
 
                     Config.Instance.MqSets =
-                ArcasSetting.Instance.MqSets =
-                    new MqUserSetting(sets);
+                ArcasSetting.Instance.MqSets = sets;
 
                     ArcasSetting.Instance.Save();
                     Config.Instance.Save();
@@ -180,6 +187,15 @@ namespace Arcas.Controls
                 {
                     Dialogs.ErrorF(this, ex.Expand());
                 }
+        }
+
+        private void tbBodyMessage_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                FillAddProp(tbBodyMessage.Text);
+            }
+            catch { }
         }
     }
 }

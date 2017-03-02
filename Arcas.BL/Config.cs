@@ -15,7 +15,7 @@ namespace Arcas
         /// <summary>
         /// Последние успешно использованные настройки при работе с Mq
         /// </summary>
-        public MqUserSetting MqSets { get; set; }
+        public MqSettingGeneric MqSets { get; set; }
         /// <summary>
         /// Коллекция настроек связок TFS-DB
         /// </summary>
