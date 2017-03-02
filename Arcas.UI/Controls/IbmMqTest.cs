@@ -138,14 +138,6 @@ namespace Arcas.Controls
             if (xl.Root.Name.LocalName == "StatusMessage")
             {
                 addpoplist.Add(new KeyValuePair<string, string>("Method", "SetFilesAndStatus"));
-
-                XName enoNode = xl.Root.Name.Namespace + "ServiceTypeCode";
-
-                var sn = xl.Descendants(enoNode).FirstOrDefault();
-                if (sn == null)
-                    throw new Exception("Не найден элемент ServiceTypeCode");
-
-                addpoplist.Add(new KeyValuePair<string, string>("ServiceTypeCode", sn.Value));
             }
 
 
