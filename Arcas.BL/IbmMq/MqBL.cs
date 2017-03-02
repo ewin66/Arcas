@@ -63,12 +63,12 @@ namespace Arcas.BL.IbmMq
                     throw new Exception("В очереди нет сообщений");
                 }
 
-                return msg;
-
                 if (rolbackGet)
                     clnt.RollbackGet();
                 else
                     clnt.CommitGet();
+
+                return msg;
             }
             catch
             {
