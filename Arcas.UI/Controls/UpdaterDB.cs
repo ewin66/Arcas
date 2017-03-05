@@ -12,12 +12,7 @@ namespace Arcas.Controls
         public UpdaterDB()
         {
             InitializeComponent();
-            this.Text = "Накатка БД";
-            try
-            {
-                cbxTfsDbLinc.Text = ArcasSetting.Instance.SelestedTFSDB;
-            }
-            catch { }
+            this.Text = "Накатка БД";           
         }
 
         Boolean textChanged = true;

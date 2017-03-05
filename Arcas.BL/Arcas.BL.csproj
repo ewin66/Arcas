@@ -50,6 +50,10 @@
       <HintPath>..\packages\Cav.Core.2.5.0\lib\net45\Cav.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Cav.Tfs, Version=0.0.1.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cav.Tfs.0.0.1\lib\net45\Cav.Tfs.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web.Extensions" />
@@ -69,7 +73,6 @@
     <Compile Include="SettingClass.cs" />
     <Compile Include="TfsDBSaveBL.cs" />
     <Compile Include="TFS\TFSRoutine.cs" />
-    <Compile Include="TFS\WrapTfsClient.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Arcas.DBA\Arcas.DBA.csproj">
@@ -79,7 +82,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cav.snk" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="IbmMq\amqmdnet.dll" />
