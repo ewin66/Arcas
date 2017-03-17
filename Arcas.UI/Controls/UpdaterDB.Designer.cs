@@ -37,6 +37,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.cbxTfsDbLinc = new System.Windows.Forms.ComboBox();
             this.btClear = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // chbTransaction
@@ -75,13 +77,13 @@
             this.tbComment.Multiline = true;
             this.tbComment.Name = "tbComment";
             this.tbComment.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbComment.Size = new System.Drawing.Size(491, 50);
+            this.tbComment.Size = new System.Drawing.Size(925, 50);
             this.tbComment.TabIndex = 12;
             // 
             // btSaveScript
             // 
             this.btSaveScript.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btSaveScript.Location = new System.Drawing.Point(385, 204);
+            this.btSaveScript.Location = new System.Drawing.Point(819, 566);
             this.btSaveScript.Name = "btSaveScript";
             this.btSaveScript.Size = new System.Drawing.Size(109, 23);
             this.btSaveScript.TabIndex = 11;
@@ -98,7 +100,7 @@
             this.tbScriptBody.Multiline = true;
             this.tbScriptBody.Name = "tbScriptBody";
             this.tbScriptBody.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbScriptBody.Size = new System.Drawing.Size(491, 65);
+            this.tbScriptBody.Size = new System.Drawing.Size(925, 427);
             this.tbScriptBody.TabIndex = 10;
             // 
             // label1
@@ -123,7 +125,7 @@
             // btClear
             // 
             this.btClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btClear.Location = new System.Drawing.Point(365, 107);
+            this.btClear.Location = new System.Drawing.Point(788, 104);
             this.btClear.Name = "btClear";
             this.btClear.Size = new System.Drawing.Size(129, 23);
             this.btClear.TabIndex = 16;
@@ -131,23 +133,33 @@
             this.btClear.UseVisualStyleBackColor = true;
             this.btClear.Click += new System.EventHandler(this.btClear_Click);
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.btClear);
+            this.panel1.Controls.Add(this.chbTransaction);
+            this.panel1.Controls.Add(this.label3);
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.tbComment);
+            this.panel1.Controls.Add(this.btSaveScript);
+            this.panel1.Controls.Add(this.tbScriptBody);
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Controls.Add(this.cbxTfsDbLinc);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(931, 597);
+            this.panel1.TabIndex = 17;
+            // 
             // UpdaterDB
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.btClear);
-            this.Controls.Add(this.chbTransaction);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.tbComment);
-            this.Controls.Add(this.btSaveScript);
-            this.Controls.Add(this.tbScriptBody);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.cbxTfsDbLinc);
+            this.Controls.Add(this.panel1);
             this.Name = "UpdaterDB";
-            this.Size = new System.Drawing.Size(497, 232);
+            this.Size = new System.Drawing.Size(931, 597);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -162,5 +174,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cbxTfsDbLinc;
         private System.Windows.Forms.Button btClear;
+        private System.Windows.Forms.Panel panel1;
     }
 }
