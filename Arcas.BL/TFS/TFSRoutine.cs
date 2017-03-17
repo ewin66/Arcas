@@ -23,7 +23,7 @@ namespace Arcas.BL.TFS
 
         private WrapTfs wrapTfs = new WrapTfs();
 
-        private VersionControlServer? vcs = null;
+        private IVersionControlServer vcs = null;
         /// <summary>
         /// Получение сервиса управления хранилищем
         /// </summary>
@@ -42,21 +42,21 @@ namespace Arcas.BL.TFS
 
         private String tempdir = Path.Combine(DomainContext.TempPath, Guid.NewGuid().ToString());
 
-        private Workspace? tempWorkspace = null;
+        private IWorkspace tempWorkspace = null;
         private String serverPath = null;
 
         // Создаем временную рабочую область
-        private Workspace getTempWorkspace()
+        private IWorkspace getTempWorkspace()
         {
             if (vcs == null)
                 throw new ArgumentException("Не установленна связь с TFS");
 
             if (tempWorkspace != null)
-                return tempWorkspace.Value;
+                return tempWorkspace;
 
-            tempWorkspace = wrapTfs.WorkspaceCreate(vcs.Value, Guid.NewGuid().ToString(), "Arcas Workspace", true);
+            tempWorkspace = wrapTfs.WorkspaceCreate(vcs, Guid.NewGuid().ToString(), "Arcas Workspace", true);
 
-            return tempWorkspace.Value;
+            return tempWorkspace;
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Arcas.BL.TFS
             {
                 if (tempWorkspace != null)
                 {
-                    var mfdr = wrapTfs.WorkspaceFoldersGet(tempWorkspace.Value).FirstOrDefault();
+                    var mfdr = wrapTfs.WorkspaceFoldersGet(tempWorkspace).FirstOrDefault();
 
                     // Если в процесе ремапят, то надо удалить предыдущюю раб.обл.
                     if (mfdr != null &&
@@ -77,8 +77,8 @@ namespace Arcas.BL.TFS
                     mfdr.ServerItem != ServerPath)
 
                     {
-                        wrapTfs.WorkspaceUndo(tempWorkspace.Value);
-                        wrapTfs.WorkspaceDelete(tempWorkspace.Value);
+                        wrapTfs.WorkspaceUndo(tempWorkspace);
+                        wrapTfs.WorkspaceDelete(tempWorkspace);
                         tempWorkspace = null;
                     }
 
@@ -91,8 +91,8 @@ namespace Arcas.BL.TFS
             {
                 if (tempWorkspace != null)
                 {
-                    wrapTfs.WorkspaceUndo(tempWorkspace.Value);
-                    wrapTfs.WorkspaceDelete(tempWorkspace.Value);
+                    wrapTfs.WorkspaceUndo(tempWorkspace);
+                    wrapTfs.WorkspaceDelete(tempWorkspace);
                     tempWorkspace = null;
                 }
                 throw;
@@ -155,8 +155,8 @@ namespace Arcas.BL.TFS
             {
                 if (tempWorkspace != null)
                 {
-                    wrapTfs.WorkspaceUndo(tempWorkspace.Value);
-                    wrapTfs.WorkspaceDelete(tempWorkspace.Value);
+                    wrapTfs.WorkspaceUndo(tempWorkspace);
+                    wrapTfs.WorkspaceDelete(tempWorkspace);
                     tempWorkspace = null;
                 }
 

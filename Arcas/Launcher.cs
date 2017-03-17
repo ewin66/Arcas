@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Arcas;
 
-namespace DevTools
+namespace Arcas
 {
     static class Program
     {
@@ -16,7 +18,7 @@ namespace DevTools
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new DevToolsMainMindow());
+            Application.Run(new ArcasMain());
         }
     }
 }

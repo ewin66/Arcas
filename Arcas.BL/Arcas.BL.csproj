@@ -50,8 +50,8 @@
       <HintPath>..\packages\Cav.Core.2.5.0\lib\net45\Cav.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Cav.Tfs, Version=0.0.1.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cav.Tfs.0.0.1\lib\net45\Cav.Tfs.dll</HintPath>
+    <Reference Include="Cav.Tfs, Version=0.0.3.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cav.Tfs.0.0.3\lib\net45\Cav.Tfs.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -64,7 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
-    <Compile Include="IbmMqBL.cs" />
     <Compile Include="IbmMq\IbmMqClient.cs" />
     <Compile Include="IbmMq\MqBL.cs" />
     <Compile Include="IbmMq\MqMessageGeneric.cs" />

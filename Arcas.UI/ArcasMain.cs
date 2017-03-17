@@ -8,9 +8,9 @@ using Cav.Container;
 
 namespace Arcas
 {
-    public partial class ArcasMainMindow : Form
+    public partial class ArcasMain : Form
     {
-        public ArcasMainMindow()
+        public ArcasMain()
         {
             InitializeComponent();
 

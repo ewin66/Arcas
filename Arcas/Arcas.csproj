@@ -101,7 +101,7 @@
     <Content Include="gear_wheel.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Launcer.cs" />
+    <Compile Include="Launcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

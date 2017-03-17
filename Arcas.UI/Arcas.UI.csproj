@@ -42,8 +42,8 @@
       <HintPath>..\packages\Cav.Core.2.5.0\lib\net45\Cav.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Cav.Tfs, Version=0.0.1.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cav.Tfs.0.0.1\lib\net45\Cav.Tfs.dll</HintPath>
+    <Reference Include="Cav.Tfs, Version=0.0.3.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cav.Tfs.0.0.3\lib\net45\Cav.Tfs.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Cav.WinForms, Version=1.0.2.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
@@ -80,11 +80,11 @@
     <Compile Include="Controls\XsltTransform.Designer.cs">
       <DependentUpon>XsltTransform.cs</DependentUpon>
     </Compile>
-    <Compile Include="DevToolsMainMindow.cs">
+    <Compile Include="ArcasMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DevToolsMainMindow.Designer.cs">
-      <DependentUpon>DevToolsMainMindow.cs</DependentUpon>
+    <Compile Include="ArcasMain.Designer.cs">
+      <DependentUpon>ArcasMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\ConnectionForm.cs">
@@ -123,8 +123,8 @@
     <EmbeddedResource Include="Controls\XsltTransform.resx">
       <DependentUpon>XsltTransform.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DevToolsMainMindow.resx">
-      <DependentUpon>DevToolsMainMindow.cs</DependentUpon>
+    <EmbeddedResource Include="ArcasMain.resx">
+      <DependentUpon>ArcasMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Settings\ConnectionForm.resx">
       <DependentUpon>ConnectionForm.cs</DependentUpon>
