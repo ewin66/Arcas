@@ -65,8 +65,7 @@ namespace Arcas
         }
 
         private void ArcasMainMindow_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            ArcasSetting.Instance.Save();
+        {          
             Config.Instance.Save();
         }
     }

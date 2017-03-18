@@ -22,9 +22,9 @@ namespace Arcas.Controls
             APKeyCol.DataPropertyName = nameof(KeyValuePair<string, string>.Key);
             APValueCol.DataPropertyName = nameof(KeyValuePair<string, string>.Value);
 
-            if ((ArcasSetting.Instance.MqSets ?? Config.Instance.MqSets) != null)
+            if ((Config.Instance.MqSets) != null)
             {
-                var st = ArcasSetting.Instance.MqSets ?? Config.Instance.MqSets;
+                var st = Config.Instance.MqSets;
 
                 tbHost.Text = st.Host;
                 tbManagerName.Text = st.ManagerName;
@@ -55,11 +55,7 @@ namespace Arcas.Controls
                     addpoplist.ToDictionary(x => x.Key, x => x.Value)
                     );
 
-
-                Config.Instance.MqSets =
-             ArcasSetting.Instance.MqSets = sets;
-
-                ArcasSetting.Instance.Save();
+                Config.Instance.MqSets = sets;
                 Config.Instance.Save();
             }
             catch (Exception ex)
@@ -105,10 +101,7 @@ namespace Arcas.Controls
                 tbPutDate.Text = msg.PutDateTime.ToString("dd.MM.yyyy HH:mm:ss");
                 tbBodyMessage.Text = msg.Body;
 
-                Config.Instance.MqSets =
-                    ArcasSetting.Instance.MqSets = sets;
-
-                ArcasSetting.Instance.Save();
+                Config.Instance.MqSets = sets;
                 Config.Instance.Save();
             }
             catch (Exception ex)
@@ -168,10 +161,7 @@ namespace Arcas.Controls
                         addpoplist.ToDictionary(x => x.Key, x => x.Value)
                         );
 
-                    Config.Instance.MqSets =
-                ArcasSetting.Instance.MqSets = sets;
-
-                    ArcasSetting.Instance.Save();
+                    Config.Instance.MqSets = sets;
                     Config.Instance.Save();
 
                 }

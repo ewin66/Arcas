@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using Arcas;
-using Cav;
-using Cav.BaseClases;
 using Arcas.BL.TFS;
-using Arcas.DBA;
+using Arcas.Settings;
+using Cav;
+using Cav.DataAcces;
 
 namespace Arcas.BL
 {
     public delegate void ProgressStateDelegat(String Message);
-       
+
     public class TfsDBSaveBL
     {
         public event ProgressStateDelegat StatusMessages;
@@ -20,6 +19,8 @@ namespace Arcas.BL
             if (StatusMessages != null)
                 StatusMessages(mess);
         }
+
+        Adapter adapter = new Adapter();
 
         private String beginTranText = Environment.NewLine + @"BEGIN TRY
 BEGIN TRAN" + Environment.NewLine;
@@ -51,7 +52,6 @@ END CATCH";
 
 EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.NewLine;
 
-        private ArcasDBAdapter adapter = new ArcasDBAdapter();
 
 
         /// <summary>
@@ -61,7 +61,12 @@ EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.N
         /// <param name="SqlScript">Тело скрипта</param>
         /// <param name="Comment">Комментарий к заливке</param>
         /// <returns></returns>
-        public String SaveScript(TfsDbLink TBlink, String SqlScript, String Comment, Boolean InTaransaction)
+        public String SaveScript(
+            TfsDbLink TBlink,
+            String SqlScript,
+            String Comment,
+            Boolean InTaransaction,
+            List<int> linkedTask)
         {
 
             if (Comment.IsNullOrWhiteSpace())
@@ -111,7 +116,7 @@ EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.N
                         // сохраняем новую чистую версию ДБ
                         (new VerDB()).XMLSerialize(PathVerFile);
                         tfsbl.AddFile(PathVerFile);
-                        tfsbl.CheckIn("Добавлен файл версионности");
+                        tfsbl.CheckIn("Добавлен файл версионности", linkedTask);
                     }
                 }
 
@@ -187,7 +192,7 @@ EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.N
                 SendStat("Чекин в TFS");
 
                 tfsbl.AddFile(FileNameNewVer);
-                tfsbl.CheckIn(Comment);
+                tfsbl.CheckIn(Comment, linkedTask);
 
                 SendStat("Готово");
 
@@ -236,6 +241,16 @@ EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.N
             res.RemoveAll(new Predicate<string>((a) => { return a == String.Empty; }));
 
             return res;
+        }
+
+        private class Adapter : DataAccesBase
+        {
+            public void ExecScript(String SqlText)
+            {
+                var cmd = this.CreateCommandObject();
+                cmd.CommandText = SqlText;
+                ExecuteNonQuery(cmd);
+            }
         }
     }
 }

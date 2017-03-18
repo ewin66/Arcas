@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arcas", "Arcas\Arcas.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arcas.BL", "Arcas.BL\Arcas.BL.csproj", "{B4E45987-D126-40AB-A6EC-2B1DFB0B5F73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arcas.DBA", "Arcas.DBA\Arcas.DBA.csproj", "{A5F19607-8279-4599-8051-E0571D668619}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{FAFBCB6E-4A16-4823-A0AC-D5DA4687AD1D}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
@@ -32,10 +30,6 @@ Global
 		{B4E45987-D126-40AB-A6EC-2B1DFB0B5F73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4E45987-D126-40AB-A6EC-2B1DFB0B5F73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4E45987-D126-40AB-A6EC-2B1DFB0B5F73}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A5F19607-8279-4599-8051-E0571D668619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A5F19607-8279-4599-8051-E0571D668619}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A5F19607-8279-4599-8051-E0571D668619}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A5F19607-8279-4599-8051-E0571D668619}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DC1B475C-B6D8-49A5-8BBA-3B9730E4A6D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DC1B475C-B6D8-49A5-8BBA-3B9730E4A6D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC1B475C-B6D8-49A5-8BBA-3B9730E4A6D2}.Release|Any CPU.ActiveCfg = Release|Any CPU

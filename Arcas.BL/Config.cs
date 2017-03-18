@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Arcas.BL.IbmMq;
+using Arcas.Settings;
 using Cav.Configuration;
 
 namespace Arcas

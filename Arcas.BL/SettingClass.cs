@@ -2,89 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.SqlClient;
-using System.IO;
-using Arcas.BL.IbmMq;
 using Cav;
-using Cav.ProgramSettins;
 
-namespace Arcas
+namespace Arcas.Settings
 {
-    [Obsolete()]
-    public class ArcasSetting : ProgramSettingsBase
-    {
-        private static ArcasSetting instance = null;
-
-        public static ArcasSetting Instance
-        {
-            get
-            {
-                if (instance == null)
-                    instance = ProgramSettingsBase.Create<ArcasSetting>();
-
-                return instance;
-            }
-        }
-        public String SelestedTFSDB
-        {
-            get { return this.GetValue<String>("SelestedTFSDB"); }
-            set { this.SetValue(Area.User, "SelestedTFSDB", value); }
-        }
-        public MqSettingGeneric MqSets
-        {
-            get { return this.GetValue<MqSettingGeneric>("MqSets"); }
-            set { this.SetValue(Area.User, "MqSets", value); }
-        }
-
-    }
-
-
-    /// <summary>
-    /// Настройки приложения
-    /// </summary>
-    [Obsolete()]
-    public static class ArcasSettings
-    {
-        private static SettingsType settings = null;
-        public static SettingsType Settings
-        {
-            get
-            {
-                if (settings == null)
-                    Load();
-                return settings;
-            }
-            private set
-            {
-                settings = value;
-            }
-        }
-
-        private static String setFile = Path.Combine(DomainContext.AppDataUserStorage, "DevTools.config");
-
-        private static void Load()
-        {
-            settings = setFile.XMLDeserializeFromFile<SettingsType>();
-
-            if (settings == null)
-                settings = new SettingsType();
-        }
-
-        public static void Save()
-        {
-            settings.XMLSerialize(setFile);
-        }
-
-    }
-
-    public class SettingsType
-    {
-        public SettingsType()
-        {
-            TfsDbLinks = new List<TfsDbLink>();
-        }
-        public List<TfsDbLink> TfsDbLinks { get; set; }
-    }
-
     #region Связка TFS-DB
 
     public class TFSDBList : BindingList<TfsDbLink>
