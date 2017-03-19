@@ -13,6 +13,7 @@ namespace Arcas
         public ArcasMain()
         {
             InitializeComponent();
+            tsVersion.Text = DomainContext.CurrentVersion.ToString();
 
             foreach (var tb in Locator.GetInstances<TabControlBase>())
             {
@@ -60,12 +61,12 @@ namespace Arcas
 
         void savbl_StatusMessages(string Message)
         {
-            tsStatusLabel.Text = Message;
+            tsProgressMessage.Text = Message;
             this.Refresh();
         }
 
         private void ArcasMainMindow_FormClosing(object sender, FormClosingEventArgs e)
-        {          
+        {
             Config.Instance.Save();
         }
     }

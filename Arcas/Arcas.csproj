@@ -31,8 +31,8 @@
     <PublisherName>ChernenkoAV</PublisherName>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <TrustUrlParameters>true</TrustUrlParameters>
-    <ApplicationRevision>6</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -153,19 +153,36 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <!--<Target Name="AfterPublish" Condition=" '$(Configuration)' == 'Release'">
-    <Exec Command="PowerShell -NoProfile -ExecutionPolicy Bypass -Command &quot;&amp; '$(SolutionDir)zippiblish.ps1'&quot; -TargetDir '$(TargetDir)' -PublishUrl '$(PublishUrl)' -OutDir '$(OutDir)'-PostBuildEvent '$(PostBuildEvent)'" />
-  </Target>-->
-  <!--<Target Name="AfterPublish">
-    <Warning Text=" AfterPublishpublish warning 1" />
+
+  <UsingTask TaskName="GenAppVer" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <ParameterGroup>
+      <Major ParameterType="System.Int32" Output="true" />
+      <Minor ParameterType="System.Int32" Output="true" />
+      <Build ParameterType="System.Int32" Output="true" />
+      <Revision ParameterType="System.Int32" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+            Major = DateTime.Now.Year;
+            Minor = int.Parse(DateTime.Today.ToString("MMdd"));
+            Build = DateTime.Now.Hour;
+            Revision = DateTime.Now.Minute;
+            //AppVer = new Version(DateTime.Now.Year, int.Parse(DateTime.Today.ToString("MMdd")), DateTime.Now.Hour, DateTime.Now.Minute);
+            //AppVer = DateTime.Today.ToString("yyyy") + "."+ DateTime.Today.ToString("MMdd") + "." + DateTime.Now.Hour.ToString() + "." + DateTime.Now.Minute.ToString();
+            ]]></Code>
+    </Task>
+  </UsingTask>
+  <Target Name="BeforeCompile">
+    <GenAppVer>
+      <Output TaskParameter="Major" PropertyName="Major" />
+      <Output TaskParameter="Minor" PropertyName="Minor" />
+      <Output TaskParameter="Build" PropertyName="Build" />
+      <Output TaskParameter="Revision" PropertyName="Revision" />
+    </GenAppVer>
+    <PropertyGroup>
+      <ApplicationVersion>$(Major).$(Minor).$(Build).$(Revision)</ApplicationVersion>
+    </PropertyGroup>
+    <Message Text="------- Application version $(ApplicationVersion)" Importance="High" />
   </Target>
-  <Target Name="CustomTarget" AfterTargets="AfterPublish">
-    <Warning Text="CustomTarget AfterTarget publish warning 2" />
-  </Target>
-  <Target Name="BeforePublish">
-    <Warning Text=" BeforePublish publish warning 1" />
-  </Target>
-  <Target Name="CustomTarget2" BeforeTargets="BeforePublish">
-    <Warning Text="CustomTarget2 BeforeTarget2 publish warning 2" />
-  </Target>-->
 </Project>
