@@ -32,13 +32,11 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.файлToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.выходToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.настройкиToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.TFSDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tcTabs = new System.Windows.Forms.TabControl();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tsProgressMessage = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tsVersion = new System.Windows.Forms.ToolStripStatusLabel();
             this.tsSplit = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tsVersion = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -46,8 +44,7 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.файлToolStripMenuItem,
-            this.настройкиToolStripMenuItem});
+            this.файлToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(940, 24);
@@ -68,21 +65,6 @@
             this.выходToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
             this.выходToolStripMenuItem.Text = "Выход";
             this.выходToolStripMenuItem.Click += new System.EventHandler(this.выходToolStripMenuItem_Click);
-            // 
-            // настройкиToolStripMenuItem
-            // 
-            this.настройкиToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.TFSDBToolStripMenuItem});
-            this.настройкиToolStripMenuItem.Name = "настройкиToolStripMenuItem";
-            this.настройкиToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
-            this.настройкиToolStripMenuItem.Text = "Настройки";
-            // 
-            // TFSDBToolStripMenuItem
-            // 
-            this.TFSDBToolStripMenuItem.Name = "TFSDBToolStripMenuItem";
-            this.TFSDBToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.TFSDBToolStripMenuItem.Text = "Связка TFS-DB";
-            this.TFSDBToolStripMenuItem.Click += new System.EventHandler(this.TFSDBToolStripMenuItem_Click);
             // 
             // tcTabs
             // 
@@ -109,19 +91,19 @@
             this.tsProgressMessage.Name = "tsProgressMessage";
             this.tsProgressMessage.Size = new System.Drawing.Size(0, 17);
             // 
+            // tsSplit
+            // 
+            this.tsSplit.Name = "tsSplit";
+            this.tsSplit.Size = new System.Drawing.Size(921, 17);
+            this.tsSplit.Spring = true;
+            // 
             // tsVersion
             // 
             this.tsVersion.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
             this.tsVersion.BorderStyle = System.Windows.Forms.Border3DStyle.Etched;
             this.tsVersion.Name = "tsVersion";
-            this.tsVersion.Size = new System.Drawing.Size(447, 17);
+            this.tsVersion.Size = new System.Drawing.Size(4, 17);
             this.tsVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // tsSplit
-            // 
-            this.tsSplit.Name = "tsSplit";
-            this.tsSplit.Size = new System.Drawing.Size(447, 17);
-            this.tsSplit.Spring = true;
             // 
             // ArcasMain
             // 
@@ -138,6 +120,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Аркас";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ArcasMainMindow_FormClosing);
+            this.Load += new System.EventHandler(this.ArcasMain_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
@@ -152,8 +135,6 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem файлToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem выходToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem настройкиToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem TFSDBToolStripMenuItem;
         private System.Windows.Forms.TabControl tcTabs;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel tsProgressMessage;

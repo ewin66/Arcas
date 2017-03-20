@@ -21,7 +21,6 @@ namespace Arcas.Controls
 
         private void btSaveScript_Click(object sender, EventArgs e)
         {
-
             if (!textChanged)
                 if (Dialogs.QuestionOKCancelF(this, "Текст скрипта не изменился с предыдущего запуска. Повторить?"))
                     return;
@@ -68,7 +67,26 @@ namespace Arcas.Controls
             if (cbxTfsDbLinc.SelectedItem == null && cbxTfsDbLinc.Items.Count > 0)
                 cbxTfsDbLinc.SelectedIndex = 0;
 
-            bttvQueryRefresh.Enabled = cbxTfsDbLinc.Items.Count != 0;
+            this.Enabled = cbxTfsDbLinc.Items.Count != 0;
+            if (!this.Enabled)
+                return;
+
+            //try
+            //{
+            //    // Проверяем доступность TFS
+            //    TfsDbLink curset = cbxTfsDbLinc.SelectedItem as TfsDbLink;
+            //    var tfs = new WrapTfs();
+            //    tfs.VersionControlServerGet(new Uri(curset.TFS.Server));
+            //}
+            //catch (Exception ex)
+            //{
+            //    String exMsg = ex.Expand();
+            //    if (ex.GetType().Name == "TargetInvocationException" && ex.InnerException != null)
+            //        exMsg = ex.InnerException.Message;
+            //    Dialogs.ErrorF(this, exMsg);
+            //    this.Enabled = false;
+            //    return;
+            //}
 
             bttvQueryRefresh_Click(null, null);
             #endregion
@@ -129,7 +147,10 @@ namespace Arcas.Controls
             }
             catch (Exception ex)
             {
-                Dialogs.ErrorF(this, ex.Expand());
+                String exMsg = ex.Expand();
+                if (ex.GetType().Name == "TargetInvocationException" && ex.InnerException != null)
+                    exMsg = ex.InnerException.Message;
+                Dialogs.ErrorF(this, exMsg);
             }
         }
 
@@ -161,7 +182,10 @@ namespace Arcas.Controls
             }
             catch (Exception ex)
             {
-                Dialogs.ErrorF(this, ex.Expand());
+                String exMsg = ex.Expand();
+                if (ex.GetType().Name == "TargetInvocationException" && ex.InnerException != null)
+                    exMsg = ex.InnerException.Message;
+                Dialogs.ErrorF(this, exMsg);
             }
 
         }
@@ -225,7 +249,10 @@ namespace Arcas.Controls
             }
             catch (Exception ex)
             {
-                Dialogs.ErrorF(this, ex.Expand());
+                String exMsg = ex.Expand();
+                if (ex.GetType().Name == "TargetInvocationException" && ex.InnerException != null)
+                    exMsg = ex.InnerException.Message;
+                Dialogs.ErrorF(this, exMsg);
             }
         }
 
@@ -250,6 +277,12 @@ namespace Arcas.Controls
             if (lbLinkedWirkItem.SelectedItems.Count == 0)
                 return;
             contextMenuStrip1.Show(Cursor.Position);
+        }
+
+        private void btTfsDbLinkSettings_Click(object sender, EventArgs e)
+        {
+            (new TFSDBLinkForm()).ShowDialog(this);
+            this.RefreshTab();
         }
     }
 }

@@ -55,6 +55,7 @@
             this.lbLinkedWirkItem = new System.Windows.Forms.ListBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btTfsDbLinkSettings = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -64,7 +65,7 @@
             // chbTransaction
             // 
             this.chbTransaction.AutoSize = true;
-            this.chbTransaction.Location = new System.Drawing.Point(260, 7);
+            this.chbTransaction.Location = new System.Drawing.Point(158, 32);
             this.chbTransaction.Name = "chbTransaction";
             this.chbTransaction.Size = new System.Drawing.Size(159, 17);
             this.chbTransaction.TabIndex = 15;
@@ -155,6 +156,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btTfsDbLinkSettings);
             this.panel1.Controls.Add(this.btClear);
             this.panel1.Controls.Add(this.chbTransaction);
             this.panel1.Controls.Add(this.label3);
@@ -328,6 +330,16 @@
             this.deleteToolStripMenuItem.Text = "Удалить";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
+            // btTfsDbLinkSettings
+            // 
+            this.btTfsDbLinkSettings.Location = new System.Drawing.Point(246, 3);
+            this.btTfsDbLinkSettings.Name = "btTfsDbLinkSettings";
+            this.btTfsDbLinkSettings.Size = new System.Drawing.Size(75, 23);
+            this.btTfsDbLinkSettings.TabIndex = 17;
+            this.btTfsDbLinkSettings.Text = "Настройки";
+            this.btTfsDbLinkSettings.UseVisualStyleBackColor = true;
+            this.btTfsDbLinkSettings.Click += new System.EventHandler(this.btTfsDbLinkSettings_Click);
+            // 
             // UpdaterDB
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -372,5 +384,6 @@
         private System.Windows.Forms.TextBox tbIdTask;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.Button btTfsDbLinkSettings;
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using Arcas.Controls;
-using Arcas.Settings;
 using Cav;
 using Cav.Container;
 
@@ -28,8 +27,6 @@ namespace Arcas
                 tb.Dock = DockStyle.Fill;
                 tcTabs.TabPages.Add(ts);
             }
-
-            tabPageDBVer_Enter(null, null);
         }
 
         private List<Action> refreshTabAction = new List<Action>();
@@ -37,12 +34,6 @@ namespace Arcas
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-        private void TFSDBToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            (new TFSDBLinkForm()).ShowDialog(this);
-            tabPageDBVer_Enter(null, null);
         }
 
         private void tabPageDBVer_Enter(object sender, EventArgs e)
@@ -68,6 +59,11 @@ namespace Arcas
         private void ArcasMainMindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             Config.Instance.Save();
+        }
+
+        private void ArcasMain_Load(object sender, EventArgs e)
+        {
+            tabPageDBVer_Enter(null, null);
         }
     }
 }
