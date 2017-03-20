@@ -20,6 +20,6 @@ namespace Arcas
         /// <summary>
         /// Коллекция настроек связок TFS-DB
         /// </summary>
-        public List<TfsDbLink> TfsDbLinks { get; set; }
+        public List<TfsDbLink> TfsDbSets { get; set; }
     }
 }

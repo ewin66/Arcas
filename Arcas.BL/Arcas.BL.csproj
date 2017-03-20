@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
+    <Compile Include="DeEncryp.cs" />
     <Compile Include="IbmMq\IbmMqClient.cs" />
     <Compile Include="IbmMq\MqBL.cs" />
     <Compile Include="IbmMq\MqMessageGeneric.cs" />

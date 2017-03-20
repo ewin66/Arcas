@@ -40,6 +40,7 @@
             this.cbxTfsDbLinc = new System.Windows.Forms.ComboBox();
             this.btClear = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btTfsDbLinkSettings = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.tbIdTask = new System.Windows.Forms.TextBox();
@@ -55,7 +56,6 @@
             this.lbLinkedWirkItem = new System.Windows.Forms.ListBox();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.btTfsDbLinkSettings = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -140,7 +140,7 @@
             this.cbxTfsDbLinc.FormattingEnabled = true;
             this.cbxTfsDbLinc.Location = new System.Drawing.Point(94, 3);
             this.cbxTfsDbLinc.Name = "cbxTfsDbLinc";
-            this.cbxTfsDbLinc.Size = new System.Drawing.Size(146, 21);
+            this.cbxTfsDbLinc.Size = new System.Drawing.Size(210, 21);
             this.cbxTfsDbLinc.TabIndex = 8;
             // 
             // btClear
@@ -172,6 +172,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(675, 591);
             this.panel1.TabIndex = 17;
+            // 
+            // btTfsDbLinkSettings
+            // 
+            this.btTfsDbLinkSettings.Location = new System.Drawing.Point(310, 2);
+            this.btTfsDbLinkSettings.Name = "btTfsDbLinkSettings";
+            this.btTfsDbLinkSettings.Size = new System.Drawing.Size(75, 23);
+            this.btTfsDbLinkSettings.TabIndex = 17;
+            this.btTfsDbLinkSettings.Text = "Настройки";
+            this.btTfsDbLinkSettings.UseVisualStyleBackColor = true;
+            this.btTfsDbLinkSettings.Click += new System.EventHandler(this.btTfsDbLinkSettings_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -329,16 +339,6 @@
             this.deleteToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
             this.deleteToolStripMenuItem.Text = "Удалить";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
-            // 
-            // btTfsDbLinkSettings
-            // 
-            this.btTfsDbLinkSettings.Location = new System.Drawing.Point(246, 3);
-            this.btTfsDbLinkSettings.Name = "btTfsDbLinkSettings";
-            this.btTfsDbLinkSettings.Size = new System.Drawing.Size(75, 23);
-            this.btTfsDbLinkSettings.TabIndex = 17;
-            this.btTfsDbLinkSettings.Text = "Настройки";
-            this.btTfsDbLinkSettings.UseVisualStyleBackColor = true;
-            this.btTfsDbLinkSettings.Click += new System.EventHandler(this.btTfsDbLinkSettings_Click);
             // 
             // UpdaterDB
             // 

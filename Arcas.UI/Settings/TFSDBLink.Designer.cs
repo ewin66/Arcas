@@ -36,6 +36,7 @@
             this.LinkName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TFS = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DB = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btCreate = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTFSDB)).BeginInit();
             this.SuspendLayout();
             // 
@@ -134,11 +135,23 @@
             this.DB.Name = "DB";
             this.DB.ReadOnly = true;
             // 
+            // btCreate
+            // 
+            this.btCreate.Enabled = false;
+            this.btCreate.Location = new System.Drawing.Point(477, 12);
+            this.btCreate.Name = "btCreate";
+            this.btCreate.Size = new System.Drawing.Size(75, 23);
+            this.btCreate.TabIndex = 6;
+            this.btCreate.Text = "Создать";
+            this.btCreate.UseVisualStyleBackColor = true;
+            this.btCreate.Click += new System.EventHandler(this.btCreate_Click);
+            // 
             // TFSDBLinkForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(564, 284);
+            this.Controls.Add(this.btCreate);
             this.Controls.Add(this.dgvTFSDB);
             this.Controls.Add(this.btAdd);
             this.Controls.Add(this.btDelete);
@@ -166,5 +179,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn LinkName;
         private System.Windows.Forms.DataGridViewTextBoxColumn TFS;
         private System.Windows.Forms.DataGridViewTextBoxColumn DB;
+        private System.Windows.Forms.Button btCreate;
     }
 }

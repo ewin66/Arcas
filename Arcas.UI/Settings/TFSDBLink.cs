@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Arcas.BL;
 using Cav;
+using Cav.Tfs;
 
 namespace Arcas.Settings
 {
@@ -13,7 +16,7 @@ namespace Arcas.Settings
             dgvTFSDB.DataSource = link;
         }
 
-        private TFSDBList link = Config.Instance.TfsDbLinks;
+        private TFSDBList link = Config.Instance.TfsDbSets;
 
         private void btAdd_Click(object sender, EventArgs e)
         {
@@ -34,13 +37,35 @@ namespace Arcas.Settings
 
             } while (link.Any(x => x.Name == nl.Name));
 
-            var tb = new TFSBrowser();
-            if (tb.ShowDialog(this) == DialogResult.OK)
-                nl.TFS = tb.TFS;
+            WrapTfs wrapTfs = new WrapTfs();
+            nl.ServerUri = wrapTfs.ShowTeamProjectPicker(this);
+            if (nl.ServerUri == null)
+            {
+                Dialogs.ErrorF(this, "Не выбран сервер(проект).");
+                return;
+            }
 
-            var cf = new ConnectionForm();
-            if (cf.ShowDialog(this) == DialogResult.OK)
-                nl.DB.ConnectionString = cf.ConnectionString;
+            var vc = wrapTfs.VersionControlServerGet(nl.ServerUri);
+
+            var selItem = wrapTfs.ShowDialogChooseItem(this, vc);
+
+            if (selItem.ItemType != ItemType.File)
+            {
+                Dialogs.ErrorF(this, "Необходимо выбрать файл настроек");
+            }
+
+            var tempFile = Path.Combine(DomainContext.TempPath, Guid.NewGuid().ToString());
+
+            wrapTfs.VersionControlServerDownloadFile(vc, selItem.Path, tempFile);
+
+            var encr = new DeEncryp();
+            var sets = encr.Decript(tempFile, selItem.Path);
+
+            if (sets == null)
+            {
+                Dialogs.InformationF(this, "Файл настроек не расшифрован. Либо выбран не файл настроек, либо ");
+                return;
+            }
 
             link.Add(nl);
 
@@ -102,6 +127,16 @@ namespace Arcas.Settings
         {
             Config.Instance.TfsDbLinks = link;
             Config.Instance.Save();
+        }
+
+        private void btCreate_Click(object sender, EventArgs e)
+        {
+            String setName = Dialogs.InputBox(this,
+
+
+
+
+
         }
     }
 }
