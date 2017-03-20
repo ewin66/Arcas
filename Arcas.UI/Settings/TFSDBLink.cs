@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using Cav;
@@ -13,7 +14,7 @@ namespace Arcas.Settings
             dgvTFSDB.DataSource = link;
         }
 
-        private TFSDBList link = Config.Instance.TfsDbLinks;
+        private TFSDBList link = Config.Instance.TfsDbLinks ?? new List<TfsDbLink>();
 
         private void btAdd_Click(object sender, EventArgs e)
         {
