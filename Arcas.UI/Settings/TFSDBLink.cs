@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Arcas.BL;
@@ -16,7 +17,7 @@ namespace Arcas.Settings
             dgvTFSDB.DataSource = link;
         }
 
-        private TFSDBList link = Config.Instance.TfsDbLinks ?? new List<TfsDbLink>();
+        private TFSDBList link = Config.Instance.TfsDbSets ?? new List<TfsDbLink>();
 
         private void btAdd_Click(object sender, EventArgs e)
         {
@@ -39,37 +40,42 @@ namespace Arcas.Settings
 
             WrapTfs wrapTfs = new WrapTfs();
             nl.ServerUri = wrapTfs.ShowTeamProjectPicker(this);
-            if (nl.ServerUri == null)
-            {
-                Dialogs.ErrorF(this, "Не выбран сервер(проект).");
-                return;
-            }
 
-            var vc = wrapTfs.VersionControlServerGet(nl.ServerUri);
-
-            var selItem = wrapTfs.ShowDialogChooseItem(this, vc);
-
-            if (selItem.ItemType != ItemType.File)
-            {
-                Dialogs.ErrorF(this, "Необходимо выбрать файл настроек");
-            }
-
-            var tempFile = Path.Combine(DomainContext.TempPath, Guid.NewGuid().ToString());
-
-            wrapTfs.VersionControlServerDownloadFile(vc, selItem.Path, tempFile);
-
-            var encr = new DeEncryp();
-            var sets = encr.Decript(tempFile, selItem.Path);
-
-            if (sets == null)
-            {
-                Dialogs.InformationF(this, "Файл настроек не расшифрован. Либо выбран не файл настроек, либо ");
-                return;
-            }
+            SelFileOnServer(nl);
 
             link.Add(nl);
 
             dgvTFSDB.Update();
+        }
+
+        private void SelFileOnServer(TfsDbLink link)
+        {
+            if (link.ServerUri != null)
+            {
+                WrapTfs wrapTfs = new WrapTfs();
+                var vc = wrapTfs.VersionControlServerGet(link.ServerUri);
+
+                var selItem = wrapTfs.ShowDialogChooseItem(this, vc);
+
+                if (selItem.ItemType != ItemType.File)
+                {
+                    Dialogs.ErrorF(this, "Необходимо выбрать файл настроек");
+                }
+
+                var tempFile = Path.Combine(DomainContext.TempPath, Guid.NewGuid().ToString());
+
+                wrapTfs.VersionControlServerDownloadFile(vc, selItem.Path, tempFile);
+
+                var encr = new DeEncryp();
+                var sets = encr.Decript(tempFile, selItem.Path);
+
+                if (sets == null)
+                {
+                    Dialogs.InformationF(this, "Файл настроек не расшифрован. Либо выбран не файл настроек, либо еще чо.");
+                }
+                else
+                    link.ServerPathToSettings = selItem.Path;
+            }
         }
 
         private void btDelete_Click(object sender, EventArgs e)
@@ -108,30 +114,81 @@ namespace Arcas.Settings
 
             if (e.ColumnIndex == 1)
             {
-                var tb = new TFSBrowser();
-                tb.TFS = tdbli.TFS;
-                if (tb.ShowDialog(this) == DialogResult.OK)
-                    tdbli.TFS = tb.TFS;
+                var wraptfs = new WrapTfs();
+                var server = wraptfs.ShowTeamProjectPicker(this);
+                if (server == null)
+                    return;
+                tdbli.ServerUri = server;
+                tdbli.ServerPathToSettings = null;
             }
 
             if (e.ColumnIndex == 2)
             {
-                var cf = new ConnectionForm();
-                cf.ConnectionString = tdbli.DB.ConnectionString;
-                if (cf.ShowDialog(this) == DialogResult.OK)
-                    tdbli.DB.ConnectionString = cf.ConnectionString;
+                if (tdbli.ServerUri == null)
+                {
+                    Dialogs.ErrorF(this, "Необходимо выбрать проект");
+                    return;
+                }
+
+                SelFileOnServer(tdbli);
             }
         }
 
         private void btSave_Click(object sender, EventArgs e)
         {
-            Config.Instance.TfsDbLinks = link;
+            Config.Instance.TfsDbSets = link;
             Config.Instance.Save();
         }
 
         private void btCreate_Click(object sender, EventArgs e)
         {
-            String setName = Dialogs.InputBox(this,
+            var newSets = new TfsDbLink();
+
+            do
+            {
+                newSets.Name = Dialogs.InputBox(this, "Наименование связки TFS-DB.", "Наименование связки", "Новая связка");
+
+                if (newSets.Name.IsNullOrWhiteSpace())
+                {
+                    MessageBox.Show(this, "Не указано наименование связки");
+                    return;
+                }
+
+                if (link.Any(x => x.Name == newSets.Name))
+                    MessageBox.Show(this, "Наименование должно быть уникальным");
+
+            } while (link.Any(x => x.Name == newSets.Name));
+
+            WrapTfs wrapTfs = new WrapTfs();
+
+            while (newSets.ServerUri == null)
+            {
+                newSets.ServerUri = wrapTfs.ShowTeamProjectPicker(this);
+
+                if (newSets.ServerUri == null && !Dialogs.QuestionOKCancelF(this, "Не выбран сервер. Повторить?"))
+                    return;
+            }
+
+            String settingFileName = null;
+            while (settingFileName.IsNullOrWhiteSpace())
+            {
+                settingFileName = Dialogs.InputBox(this, "Имя файла", "Укажите имя файла, с которым настройки будут сохранениы в TFS");
+
+                if (settingFileName.IsNullOrWhiteSpace() && !Dialogs.QuestionOKCancelF(this, "Не указано имя файла. Повторить?"))
+                    return;
+            }
+
+            var vc = wrapTfs.VersionControlServerGet(newSets.ServerUri);
+
+            String serverPath = null;
+            while (serverPath.IsNullOrWhiteSpace())
+            {
+                serverPath = wrapTfs.ShowDialogChooseServerFolder(this, vc, "$\\");
+
+                if (serverPath.IsNullOrWhiteSpace() && !Dialogs.QuestionOKCancelF(this, "Не указан путь расмоложения файла в TFS. Повторить?"))
+                    return;
+            }
+
 
 
 

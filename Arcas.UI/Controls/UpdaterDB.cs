@@ -62,7 +62,7 @@ namespace Arcas.Controls
             #region заполняем cbxTfsBbLinc
 
             var SelName = Config.Instance.SelestedTFSDB;
-            cbxTfsDbLinc.DataSource = Config.Instance.TfsDbLinks;
+            cbxTfsDbLinc.DataSource = Config.Instance.TfsDbSets;
             if (cbxTfsDbLinc.DataSource != null)
                 cbxTfsDbLinc.SelectedItem = ((List<TfsDbLink>)cbxTfsDbLinc.DataSource).FirstOrDefault(x => x.Name == SelName);
             if (cbxTfsDbLinc.SelectedItem == null && cbxTfsDbLinc.Items.Count > 0)
@@ -108,14 +108,14 @@ namespace Arcas.Controls
 
                 TfsDbLink curset = cbxTfsDbLinc.SelectedItem as TfsDbLink;
 
-                if (curset == null || curset.TFS.Server.IsNullOrWhiteSpace() || curset.TFS.Path.IsNullOrWhiteSpace())
+                if (curset == null || curset.ServerUri == null || curset.ServerPathToSettings.IsNullOrWhiteSpace())
                 {
                     bttvQueryRefresh.Enabled = false;
                     return;
                 }
 
                 var tfs = new WrapTfs();
-                var qs = tfs.QueryItemsGet(new Uri(curset.TFS.Server), curset.TFS.Path);
+                var qs = tfs.QueryItemsGet(curset.ServerUri, curset.ServerPathToSettings);
 
                 Action<QueryItemNode, TreeNode> recNod = null;
                 recNod = new Action<QueryItemNode, TreeNode>((qn, tn) =>
@@ -164,7 +164,7 @@ namespace Arcas.Controls
                 if (curset == null)
                     return;
 
-                if (curset.TFS.Server.IsNullOrWhiteSpace())
+                if (curset.ServerUri == null)
                 {
                     Dialogs.InformationF(this, "В настройках связки не указан сервер TFS");
                     return;
@@ -176,7 +176,7 @@ namespace Arcas.Controls
                     return;
 
                 var tfs = new WrapTfs();
-                var wims = tfs.WorkItemsFromQueryGet(new Uri(curset.TFS.Server), qin);
+                var wims = tfs.WorkItemsFromQueryGet(curset.ServerUri, qin);
                 foreach (var wi in wims)
                     lbWorkItems.Items.Add(new Lwi(wi));
             }
@@ -235,14 +235,14 @@ namespace Arcas.Controls
                 if (curset == null)
                     return;
 
-                if (curset.TFS.Server.IsNullOrWhiteSpace())
+                if (curset.ServerUri == null)
                 {
                     Dialogs.InformationF(this, "В настройках связки не указан сервер TFS");
                     return;
                 }
 
                 var tfs = new WrapTfs();
-                var wi = tfs.WorkItemByIdGet(new Uri(curset.TFS.Server), idTask);
+                var wi = tfs.WorkItemByIdGet(curset.ServerUri, idTask);
                 if (lbLinkedWirkItem.Items.Cast<Lwi>().Any(x => x.ID == wi.ID))
                     return;
                 lbLinkedWirkItem.Items.Add(new Lwi(wi));

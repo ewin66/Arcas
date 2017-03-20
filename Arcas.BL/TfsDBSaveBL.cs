@@ -61,6 +61,7 @@ EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.N
         /// <param name="SqlScript">Тело скрипта</param>
         /// <param name="Comment">Комментарий к заливке</param>
         /// <returns></returns>
+        [Obsolete]
         public String SaveScript(
             TfsDbLink TBlink,
             String SqlScript,
@@ -88,12 +89,12 @@ EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.N
                 {
                     SendStat("Подключаемся к БД");
                     // Инициализируем соединение с БД
-                    DomainContext.InitConnection(TBlink.DB.ConnectionString);
+                    //DomainContext.InitConnection(TBlink.DB.ConnectionString);
 
                     // Проверяем настройки TFS
                     SendStat("Подключаемся к TFS");
-                    tfsbl.VersionControl(TBlink.TFS.Server);
-                    tfsbl.MapTempWorkspace(TBlink.TFS.Path);
+                    //tfsbl.VersionControl(TBlink.TFS.Server);
+                    //tfsbl.MapTempWorkspace(TBlink.TFS.Path);
                 }
                 catch (Exception ex)
                 {

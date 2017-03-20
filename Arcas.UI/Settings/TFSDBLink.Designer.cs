@@ -121,23 +121,22 @@
             // TFS
             // 
             this.TFS.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.DisplayedCells;
-            this.TFS.DataPropertyName = "TFS";
-            this.TFS.HeaderText = "TFS папка";
+            this.TFS.DataPropertyName = "ServerUri";
+            this.TFS.HeaderText = "TFS проект";
             this.TFS.Name = "TFS";
             this.TFS.ReadOnly = true;
-            this.TFS.Width = 85;
+            this.TFS.Width = 90;
             // 
             // DB
             // 
             this.DB.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.DB.DataPropertyName = "DB";
-            this.DB.HeaderText = "Эталонная БД";
+            this.DB.DataPropertyName = "ServerPathToSettings";
+            this.DB.HeaderText = "Файл настроек";
             this.DB.Name = "DB";
             this.DB.ReadOnly = true;
             // 
             // btCreate
             // 
-            this.btCreate.Enabled = false;
             this.btCreate.Location = new System.Drawing.Point(477, 12);
             this.btCreate.Name = "btCreate";
             this.btCreate.Size = new System.Drawing.Size(75, 23);
@@ -176,9 +175,9 @@
         private System.Windows.Forms.Button btDelete;
         private System.Windows.Forms.Button btAdd;
         private System.Windows.Forms.DataGridView dgvTFSDB;
+        private System.Windows.Forms.Button btCreate;
         private System.Windows.Forms.DataGridViewTextBoxColumn LinkName;
         private System.Windows.Forms.DataGridViewTextBoxColumn TFS;
         private System.Windows.Forms.DataGridViewTextBoxColumn DB;
-        private System.Windows.Forms.Button btCreate;
     }
 }
