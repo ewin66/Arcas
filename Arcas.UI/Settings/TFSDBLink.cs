@@ -57,9 +57,13 @@ namespace Arcas.Settings
 
                 var selItem = wrapTfs.ShowDialogChooseItem(this, vc);
 
+                if (selItem == null)
+                    return;
+
                 if (selItem.ItemType != ItemType.File)
                 {
                     Dialogs.ErrorF(this, "Необходимо выбрать файл настроек");
+                    return;
                 }
 
                 var tempFile = Path.Combine(DomainContext.TempPath, Guid.NewGuid().ToString());
@@ -176,6 +180,8 @@ namespace Arcas.Settings
 
                 if (settingFileName.IsNullOrWhiteSpace() && !Dialogs.QuestionOKCancelF(this, "Не указано имя файла. Повторить?"))
                     return;
+
+                settingFileName = settingFileName.ReplaceInvalidPathChars();
             }
 
             var vc = wrapTfs.VersionControlServerGet(newSets.ServerUri);
@@ -183,16 +189,31 @@ namespace Arcas.Settings
             String serverPath = null;
             while (serverPath.IsNullOrWhiteSpace())
             {
-                serverPath = wrapTfs.ShowDialogChooseServerFolder(this, vc, "$\\");
+                serverPath = wrapTfs.ShowDialogChooseServerFolder(this, vc, null);
 
-                if (serverPath.IsNullOrWhiteSpace() && !Dialogs.QuestionOKCancelF(this, "Не указан путь расмоложения файла в TFS. Повторить?"))
+                if (serverPath.IsNullOrWhiteSpace() && !Dialogs.QuestionOKCancelF(this, "Не указан путь расположения файла в TFS. Повторить?"))
                     return;
             }
 
+            newSets.ServerPathToSettings = serverPath + "/" + settingFileName;
+
+
+            var newSetFile = new UpdateDbSetting();
+
+
+
+            //newSetFile.ServerPathScripts
+            //newSetFile.TypeConnectionFullName
+            //newSetFile.AssemplyWithImplementDbConnection
+            //newSetFile.ConnectionStringModelDb
+            //newSetFile.ScriptPartBeforeBody
+            //newSetFile.ScriptPartAfterBody
 
 
 
 
+
+            link.Add(newSets);
 
         }
     }
