@@ -16,12 +16,12 @@ namespace Arcas.Settings
 
         public static implicit operator TFSDBList(List<TfsDbLink> lfd)
         {
-            return new TFSDBList(lfd ?? new List<TfsDbLink>());
+            return new TFSDBList(lfd);
         }
 
         public static implicit operator List<TfsDbLink>(TFSDBList tdbl)
         {
-            return new List<TfsDbLink>(tdbl ?? new TFSDBList(new List<TfsDbLink>()));
+            return new List<TfsDbLink>(tdbl);
         }
     }
 
