@@ -63,13 +63,13 @@ namespace Arcas.Controls
 
             var SelName = Config.Instance.SelestedTFSDB;
             cbxTfsDbLinc.DataSource = Config.Instance.TfsDbLinks;
-            cbxTfsDbLinc.SelectedItem = ((List<TfsDbLink>)cbxTfsDbLinc.DataSource).FirstOrDefault(x => x.Name == SelName);
+            if (cbxTfsDbLinc.DataSource != null)
+                cbxTfsDbLinc.SelectedItem = ((List<TfsDbLink>)cbxTfsDbLinc.DataSource).FirstOrDefault(x => x.Name == SelName);
             if (cbxTfsDbLinc.SelectedItem == null && cbxTfsDbLinc.Items.Count > 0)
                 cbxTfsDbLinc.SelectedIndex = 0;
 
-            this.Enabled = cbxTfsDbLinc.Items.Count != 0;
-            if (!this.Enabled)
-                return;
+            this.btSaveScript.Enabled = cbxTfsDbLinc.Items.Count != 0;
+            
 
             //try
             //{
@@ -246,6 +246,8 @@ namespace Arcas.Controls
                 if (lbLinkedWirkItem.Items.Cast<Lwi>().Any(x => x.ID == wi.ID))
                     return;
                 lbLinkedWirkItem.Items.Add(new Lwi(wi));
+
+                tbIdTask.Text = null;
             }
             catch (Exception ex)
             {
