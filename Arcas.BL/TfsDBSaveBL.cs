@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Arcas.BL.TFS;
 using Arcas.Settings;
@@ -22,46 +25,13 @@ namespace Arcas.BL
 
         Adapter adapter = new Adapter();
 
-        private String beginTranText = Environment.NewLine + @"BEGIN TRY
-BEGIN TRAN" + Environment.NewLine;
-        private String closeTranText = Environment.NewLine + @"COMMIT TRAN
-END TRY
-BEGIN CATCH
-    DECLARE @ErrorMessage NVARCHAR(4000);
-    DECLARE @ErrorSeverity INT;
-    DECLARE @ErrorState INT;
-
-    SELECT 
-        @ErrorMessage = ERROR_MESSAGE(),
-        @ErrorSeverity = ERROR_SEVERITY(),
-        @ErrorState = ERROR_STATE();
-            
-    RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState );
-
-ROLLBACK TRAN
-END CATCH";
-
-        private String verOnDB = @"IF EXISTS(
-    SELECT
-        *
-    FROM 
-        sys.extended_properties
-    WHERE extended_properties.class_desc = 'DATABASE' AND extended_properties.NAME = 'Version'
-    )
-    EXEC sys.sp_dropextendedproperty @name=N'Version'
-
-EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.NewLine;
-
-
-
         /// <summary>
         /// Накатить скрипт
         /// </summary>
         /// <param name="TBlink">Настройка связки TFS-DB</param>
         /// <param name="SqlScript">Тело скрипта</param>
         /// <param name="Comment">Комментарий к заливке</param>
-        /// <returns></returns>
-        [Obsolete]
+        /// <returns></returns>        
         public String SaveScript(
             TfsDbLink TBlink,
             String SqlScript,
@@ -80,21 +50,76 @@ EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.N
             if (checkSqlScriptOnUSE(SqlScript))
                 return "В скрипте используется USE БД.";
 
-            SqlScript = SqlScript.Trim();
+
+            Func<String, String> trimLines = (a) =>
+            {
+                a = a.Trim();
+
+                var colStr = a.Replace(Environment.NewLine, new String('\r', 1)).Split(new char[] { '\r' });
+
+                for (int i = 0; i < colStr.Length; i++)
+                    colStr[i] = colStr[i].TrimEnd();
+
+                return colStr.JoinValuesToString(Environment.NewLine, false);
+            };
+
+            // причесываем текстовки
+            SqlScript = trimLines(SqlScript);
+
+            Comment = trimLines(Comment);
+            Comment = "--" + Comment.Replace(Environment.NewLine, Environment.NewLine + "-- ") + Environment.NewLine;
+
+            UpdateDbSetting upsets = null;
+            bool useSqlConnection = false;
 
             using (TFSRoutineBL tfsbl = new TFSRoutineBL())
             {
+
                 // Проверяем переданные соединения с TFS и БД
                 try
                 {
-                    SendStat("Подключаемся к БД");
-                    // Инициализируем соединение с БД
-                    //DomainContext.InitConnection(TBlink.DB.ConnectionString);
 
                     // Проверяем настройки TFS
                     SendStat("Подключаемся к TFS");
-                    //tfsbl.VersionControl(TBlink.TFS.Server);
-                    //tfsbl.MapTempWorkspace(TBlink.TFS.Path);
+                    tfsbl.VersionControl(TBlink.ServerUri);
+
+                    SendStat("Получение настроек поднятия версии.");
+                    var tempfile = Path.Combine(DomainContext.TempPath, Guid.NewGuid().ToString());
+                    tfsbl.DownloadFile(TBlink.ServerPathToSettings, tempfile);
+
+                    var enc = new DeEncryp();
+                    upsets = enc.Decript(File.ReadAllBytes(tempfile), TBlink.ServerPathToSettings);
+
+                    if (upsets == null || upsets.ServerPathScripts.IsNullOrWhiteSpace())
+                    {
+                        return "Получение файла настроек неуспешно";
+                    }
+
+                    SendStat("Получение типа соединения");
+
+                    Type conn = typeof(SqlConnection);
+                    useSqlConnection = true;
+
+                    if (upsets.TypeConnectionFullName != conn.ToString())
+                    {
+                        if (upsets.AssemplyWithImplementDbConnection == null)
+                            return $"В настроках указан тип DbConnection '{upsets.TypeConnectionFullName}', но отсутствует бинарное представление сборки реализации";
+
+                        AppDomain.CurrentDomain.Load(upsets.AssemplyWithImplementDbConnection);
+
+                        conn = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.ExportedTypes).FirstOrDefault(x => x.FullName == upsets.TypeConnectionFullName);
+
+                        if (conn == null)
+                            return $"Не удалось найти тип DbConnection '{upsets.TypeConnectionFullName}'";
+                        useSqlConnection = false;
+                    }
+
+                    SendStat("Подключаемся к БД");
+                    DomainContext.InitConnection(conn, upsets.ConnectionStringModelDb);
+
+
+                    tfsbl.MapTempWorkspace(upsets.ServerPathScripts);
+
                 }
                 catch (Exception ex)
                 {
@@ -106,7 +131,7 @@ EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.N
 
                 SendStat("Обработка файла версионности");
 
-                String VerFileName = "LastVer.xml";
+                String VerFileName = ".lastVer.xml";
                 String PathVerFile = Path.Combine(tfsbl.Tempdir, VerFileName);
 
                 if (tfsbl.GetLastFile(VerFileName) == 0)
@@ -125,14 +150,19 @@ EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.N
                     return "Производится накатка. Повторите позже";
 
                 if (!tfsbl.CheckOut(PathVerFile))
-                    return "Накатка неуспешна. Повторите позже";
+                    return "Извлечение файла текущей версии неуспешно. Повторите позже";
 
                 var CurVerDB = PathVerFile.XMLDeserializeFromFile<VerDB>() ?? new VerDB();
 
                 CurVerDB.VersionBD += 1;
                 CurVerDB.DateVersion = new DateTimeOffset(DateTime.Now).DateTime;
 
-                var Scts = SplitSqlTExtOnGO(SqlScript);
+                List<String> scts = new List<string>();
+
+                if (useSqlConnection)
+                    scts.AddRange(SplitSqlTExtOnGO(SqlScript));
+                else
+                    scts.Add(SqlScript);
 
                 SendStat("Накатка скрипта на БД");
 
@@ -143,10 +173,10 @@ EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.N
                     if (InTaransaction)
                         tran = new DbTransactionScope();
 
-                    foreach (var sct in Scts)
+                    foreach (var sct in scts)
                         adapter.ExecScript(sct);
 
-                    adapter.ExecScript(String.Format(verOnDB, CurVerDB));
+                    adapter.ExecScript(String.Format(upsets.ScriptUpdateVer, CurVerDB));
 
                     if (tran != null)
                         tran.Complete();
@@ -160,34 +190,31 @@ EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.N
 
 
                 SendStat("Генерация файла скрипта");
-                // Накатываем скрипт. В транзанкции. Надо уточнить, может 2 раза накатывать, что б
 
-                // типа все норм. Сохраняем
+                var sb = new StringBuilder();
 
-                // комментарий к скрипту
-                String commentOnScript = String.Format(@"--{0} Комп:{1} Пользователь:{2}\{3}{4}",
-                    CurVerDB,
-                    Environment.MachineName,
-                    Environment.UserDomainName,
-                    Environment.UserName,
-                    Environment.NewLine + "--" + Comment.Replace(Environment.NewLine, Environment.NewLine + "-- ") + Environment.NewLine
-                    );
-
-                String FileNameNewVer = Path.Combine(tfsbl.Tempdir, CurVerDB.ToString() + ".sql");
-
-                File.AppendAllText(FileNameNewVer, commentOnScript);
+                sb.AppendLine(Comment);
 
                 if (InTaransaction)
-                    File.AppendAllText(FileNameNewVer, beginTranText);
+                    sb.AppendLine(upsets.ScriptPartBeforeBodyWithTran);
 
-                foreach (var sct in Scts)
-                    File.AppendAllText(FileNameNewVer, "EXEC('" + sct.Replace("'", "''") + "')" + Environment.NewLine);
+                foreach (var item in scts)
+                {
+                    var script = item;
+                    if (useSqlConnection)
+                        script = "EXEC('" + script.Replace("'", "''") + "')";
 
-                File.AppendAllText(FileNameNewVer, "EXEC('" + String.Format(verOnDB, CurVerDB).Replace("'", "''") + "')" + Environment.NewLine);
+                    sb.AppendLine(script);
+                }
+
+                sb.AppendLine(String.Format(upsets.ScriptUpdateVer, CurVerDB));
 
                 if (InTaransaction)
-                    File.AppendAllText(FileNameNewVer, closeTranText);
+                    sb.Append(upsets.ScriptPartBeforeBodyWithTran);
 
+                String FileNameNewVer = Path.Combine(tfsbl.Tempdir, CurVerDB + ".sql");
+
+                File.WriteAllText(FileNameNewVer, sb.ToString());
                 CurVerDB.XMLSerialize(PathVerFile);
 
                 SendStat("Чекин в TFS");
@@ -196,9 +223,9 @@ EXEC sys.sp_addextendedproperty @name=N'Version', @value=N'{0}'" + Environment.N
                 tfsbl.CheckIn(Comment, linkedTask);
 
                 SendStat("Готово");
-
-                return null;
             }
+
+            return null;
         }
 
         /// <summary>

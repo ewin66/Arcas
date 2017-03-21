@@ -46,12 +46,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>IbmMq\amqmdnet.dll</HintPath>
     </Reference>
-    <Reference Include="Cav.Core, Version=2.5.0.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cav.Core.2.5.0\lib\net45\Cav.Core.dll</HintPath>
+    <Reference Include="Cav.Core, Version=2.6.1.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cav.Core.2.6.1\lib\net45\Cav.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Cav.Tfs, Version=1.0.1.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cav.Tfs.1.0.1\lib\net45\Cav.Tfs.dll</HintPath>
+    <Reference Include="Cav.Tfs, Version=1.0.2.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cav.Tfs.1.0.2\lib\net45\Cav.Tfs.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -75,6 +75,7 @@
     <Compile Include="TFS\TFSRoutine.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="cav.snk" />
     <None Include="packages.config" />
   </ItemGroup>

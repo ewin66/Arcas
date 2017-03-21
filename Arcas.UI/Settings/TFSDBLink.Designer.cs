@@ -28,8 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btSave = new System.Windows.Forms.Button();
-            this.btCancel = new System.Windows.Forms.Button();
             this.btDelete = new System.Windows.Forms.Button();
             this.btAdd = new System.Windows.Forms.Button();
             this.dgvTFSDB = new System.Windows.Forms.DataGridView();
@@ -39,29 +37,6 @@
             this.btCreate = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTFSDB)).BeginInit();
             this.SuspendLayout();
-            // 
-            // btSave
-            // 
-            this.btSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btSave.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btSave.Location = new System.Drawing.Point(385, 249);
-            this.btSave.Name = "btSave";
-            this.btSave.Size = new System.Drawing.Size(75, 23);
-            this.btSave.TabIndex = 0;
-            this.btSave.Text = "Сохранить";
-            this.btSave.UseVisualStyleBackColor = true;
-            this.btSave.Click += new System.EventHandler(this.btSave_Click);
-            // 
-            // btCancel
-            // 
-            this.btCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btCancel.Location = new System.Drawing.Point(477, 249);
-            this.btCancel.Name = "btCancel";
-            this.btCancel.Size = new System.Drawing.Size(75, 23);
-            this.btCancel.TabIndex = 1;
-            this.btCancel.Text = "Отмена";
-            this.btCancel.UseVisualStyleBackColor = true;
             // 
             // btDelete
             // 
@@ -105,7 +80,7 @@
             this.dgvTFSDB.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvTFSDB.ShowEditingIcon = false;
             this.dgvTFSDB.ShowRowErrors = false;
-            this.dgvTFSDB.Size = new System.Drawing.Size(540, 196);
+            this.dgvTFSDB.Size = new System.Drawing.Size(540, 201);
             this.dgvTFSDB.TabIndex = 5;
             this.dgvTFSDB.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTFSDB_CellMouseDoubleClick);
             // 
@@ -149,29 +124,27 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(564, 284);
+            this.ClientSize = new System.Drawing.Size(564, 297);
             this.Controls.Add(this.btCreate);
             this.Controls.Add(this.dgvTFSDB);
             this.Controls.Add(this.btAdd);
             this.Controls.Add(this.btDelete);
-            this.Controls.Add(this.btCancel);
-            this.Controls.Add(this.btSave);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MinimumSize = new System.Drawing.Size(300, 150);
             this.Name = "TFSDBLinkForm";
             this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Связка TFS-DB";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TFSDBLinkForm_FormClosed);
+            this.Controls.SetChildIndex(this.btDelete, 0);
+            this.Controls.SetChildIndex(this.btAdd, 0);
+            this.Controls.SetChildIndex(this.dgvTFSDB, 0);
+            this.Controls.SetChildIndex(this.btCreate, 0);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTFSDB)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button btSave;
-        private System.Windows.Forms.Button btCancel;
         private System.Windows.Forms.Button btDelete;
         private System.Windows.Forms.Button btAdd;
         private System.Windows.Forms.DataGridView dgvTFSDB;

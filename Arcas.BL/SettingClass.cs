@@ -30,7 +30,15 @@ namespace Arcas.Settings
         public DateTime DateVersion { get; set; }
         public override string ToString()
         {
-            return String.Format("{1:yyyy.MM.dd}.{0}", VersionBD.ToString().PadLeft(2, '0'), DateVersion);
+            return String.Format("{0} {1:yyyy.MM.dd}", VersionBD.ToString().PadLeft(2, '0'), DateVersion);
+        }
+
+        public static implicit operator String(VerDB ver)
+        {
+            if (ver == null)
+                return null;
+
+            return ver.ToString();
         }
     }
 
@@ -61,12 +69,22 @@ namespace Arcas.Settings
         /// </summary>
         public String ConnectionStringModelDb { get; set; }
         /// <summary>
-        /// Часть скрипта, идущая перед телом версии
+        /// Часть скрипта, идущая перед телом версии при наличии транзакции
         /// </summary>
-        public String ScriptPartBeforeBody { get; set; }
+        public String ScriptPartBeforeBodyWithTran { get; set; }
         /// <summary>
-        /// Часть скрипта, идущая после тела версии
+        /// Часть скрипта, идущая после тела версии при наличии транзакции
         /// </summary>
-        public String ScriptPartAfterBody { get; set; }
+        public String ScriptPartAfterBodyWithTran { get; set; }
+        /// <summary>
+        /// Скрипт измемения значения версии БД
+        /// </summary>
+        public string ScriptUpdateVer { get; set; }
+
+        //        Текстовки оборачиваются в String.Format(...
+        //Параметры:
+        //0 - сгенернная версия (int)
+        //1 - дата генерации(DateTime)
+        //2 - коментарий пользователя к скрипту(replace '/r/n' на '/r/n--'  то есть. строки начинаются с  "--")
     }
 }

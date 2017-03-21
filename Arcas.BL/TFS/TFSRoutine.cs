@@ -29,9 +29,9 @@ namespace Arcas.BL.TFS
         /// </summary>
         /// <param name="TfsServer">Url сервера TFS</param>
         /// <returns>Контроллер хранилища</returns>
-        public void VersionControl(String TfsServer)
+        public void VersionControl(Uri serverTfs)
         {
-            vcs = wrapTfs.VersionControlServerGet(new Uri(TfsServer));
+            vcs = wrapTfs.VersionControlServerGet(serverTfs);
         }
 
 
@@ -97,6 +97,11 @@ namespace Arcas.BL.TFS
                 }
                 throw;
             }
+        }
+
+        public void DownloadFile(string serverPathToSettings, string tempfile)
+        {
+            wrapTfs.VersionControlServerDownloadFile(vcs, serverPathToSettings, tempfile);
         }
 
         /// <summary>

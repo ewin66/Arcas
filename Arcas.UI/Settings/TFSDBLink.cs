@@ -6,10 +6,11 @@ using System.Windows.Forms;
 using Arcas.BL;
 using Cav;
 using Cav.Tfs;
+using Cav.WinForms.BaseClases;
 
 namespace Arcas.Settings
 {
-    public partial class TFSDBLinkForm : Form
+    public partial class TFSDBLinkForm : DialogFormBase
     {
         public TFSDBLinkForm()
         {
@@ -71,7 +72,7 @@ namespace Arcas.Settings
                 wrapTfs.VersionControlServerDownloadFile(vc, selItem.Path, tempFile);
 
                 var encr = new DeEncryp();
-                var sets = encr.Decript(tempFile, selItem.Path);
+                var sets = encr.Decript(File.ReadAllBytes(tempFile), selItem.Path);
 
                 if (sets == null)
                 {
@@ -138,83 +139,21 @@ namespace Arcas.Settings
             }
         }
 
-        private void btSave_Click(object sender, EventArgs e)
-        {
-            Config.Instance.TfsDbSets = link;
-            Config.Instance.Save();
-        }
-
         private void btCreate_Click(object sender, EventArgs e)
         {
-            var newSets = new TfsDbLink();
 
-            do
-            {
-                newSets.Name = Dialogs.InputBox(this, "Наименование связки TFS-DB.", "Наименование связки", "Новая связка");
+            var crSet = new CreateSettingUpdater();
+            crSet.ItemsInSets = link;
+            crSet.ShowDialog(this);
+        }
 
-                if (newSets.Name.IsNullOrWhiteSpace())
-                {
-                    MessageBox.Show(this, "Не указано наименование связки");
-                    return;
-                }
+        private void TFSDBLinkForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (this.DialogResult != DialogResult.OK)
+                return;
 
-                if (link.Any(x => x.Name == newSets.Name))
-                    MessageBox.Show(this, "Наименование должно быть уникальным");
-
-            } while (link.Any(x => x.Name == newSets.Name));
-
-            WrapTfs wrapTfs = new WrapTfs();
-
-            while (newSets.ServerUri == null)
-            {
-                newSets.ServerUri = wrapTfs.ShowTeamProjectPicker(this);
-
-                if (newSets.ServerUri == null && !Dialogs.QuestionOKCancelF(this, "Не выбран сервер. Повторить?"))
-                    return;
-            }
-
-            String settingFileName = null;
-            while (settingFileName.IsNullOrWhiteSpace())
-            {
-                settingFileName = Dialogs.InputBox(this, "Имя файла", "Укажите имя файла, с которым настройки будут сохранениы в TFS");
-
-                if (settingFileName.IsNullOrWhiteSpace() && !Dialogs.QuestionOKCancelF(this, "Не указано имя файла. Повторить?"))
-                    return;
-
-                settingFileName = settingFileName.ReplaceInvalidPathChars();
-            }
-
-            var vc = wrapTfs.VersionControlServerGet(newSets.ServerUri);
-
-            String serverPath = null;
-            while (serverPath.IsNullOrWhiteSpace())
-            {
-                serverPath = wrapTfs.ShowDialogChooseServerFolder(this, vc, null);
-
-                if (serverPath.IsNullOrWhiteSpace() && !Dialogs.QuestionOKCancelF(this, "Не указан путь расположения файла в TFS. Повторить?"))
-                    return;
-            }
-
-            newSets.ServerPathToSettings = serverPath + "/" + settingFileName;
-
-
-            var newSetFile = new UpdateDbSetting();
-
-
-
-            //newSetFile.ServerPathScripts
-            //newSetFile.TypeConnectionFullName
-            //newSetFile.AssemplyWithImplementDbConnection
-            //newSetFile.ConnectionStringModelDb
-            //newSetFile.ScriptPartBeforeBody
-            //newSetFile.ScriptPartAfterBody
-
-
-
-
-
-            link.Add(newSets);
-
+            Config.Instance.TfsDbSets = link;
+            Config.Instance.Save();
         }
     }
 }

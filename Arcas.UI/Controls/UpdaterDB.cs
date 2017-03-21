@@ -22,7 +22,7 @@ namespace Arcas.Controls
         private void btSaveScript_Click(object sender, EventArgs e)
         {
             if (!textChanged)
-                if (Dialogs.QuestionOKCancelF(this, "Текст скрипта не изменился с предыдущего запуска. Повторить?"))
+                if (!Dialogs.QuestionOKCancelF(this, "Текст скрипта не изменился с предыдущего запуска. Повторить?"))
                     return;
 
             btSaveScript.Enabled = false;
@@ -37,8 +37,9 @@ namespace Arcas.Controls
                 chbTransaction.Checked,
                 lbLinkedWirkItem.Items.Cast<Lwi>().Select(x => x.ID).ToList());
             if (msg.IsNullOrWhiteSpace())
-                msg = "Успешно";
-            MessageBox.Show(this, msg);
+                Dialogs.InformationF(this, "Успешно");
+            else
+                Dialogs.ErrorF(this, msg);
 
             textChanged = false;
             btSaveScript.Enabled = true;
@@ -68,8 +69,8 @@ namespace Arcas.Controls
             if (cbxTfsDbLinc.SelectedItem == null && cbxTfsDbLinc.Items.Count > 0)
                 cbxTfsDbLinc.SelectedIndex = 0;
 
-            this.btSaveScript.Enabled = cbxTfsDbLinc.Items.Count != 0;
-            
+            //this.btSaveScript.Enabled = cbxTfsDbLinc.Items.Count != 0;
+
 
             //try
             //{
