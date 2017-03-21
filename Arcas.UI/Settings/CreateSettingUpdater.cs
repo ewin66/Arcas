@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
-using Arcas.BL;
 using Arcas.BL.TFS;
 using Cav;
 using Cav.Tfs;
@@ -49,8 +48,6 @@ namespace Arcas.Settings
         {
             public Type ConType { get; set; }
             public byte[] AssembyFile { get; set; }
-            public String FileName { get; set; }
-
             public override string ToString()
             {
                 if (ConType == null)
@@ -152,13 +149,7 @@ namespace Arcas.Settings
 
             if (selItem.ConType != null)
             {
-                if (selItem.ConType == typeof(SqlConnection))
-                    tbFileNameAddedDbConnection.Text = null;
-                else
-                    tbFileNameAddedDbConnection.Text = selItem.FileName;
-
                 tbConnectionString_Validating(null, null);
-
                 return;
             }
 
@@ -166,6 +157,7 @@ namespace Arcas.Settings
                     Owner: this,
                     Title: "Выбор сборки с реализацией DbConnection",
                     DefaultExt: ".ddl",
+                    Filter: "Assemblys dll|*.dll",
                     AddExtension: false).FirstOrDefault();
 
             if (filePathAssembly.IsNullOrWhiteSpace())
@@ -194,7 +186,6 @@ namespace Arcas.Settings
                 var item = new DbTypeItem();
                 item.ConType = asType;
                 item.AssembyFile = fileAssemblyRaw;
-                item.FileName = Path.GetFileName(filePathAssembly);
                 cmbDbConectionType.Items.Insert(cmbDbConectionType.Items.Count - 1, item);
                 cmbDbConectionType.SelectedItem = item;
             }
@@ -285,13 +276,14 @@ namespace Arcas.Settings
             var newSet = new UpdateDbSetting();
             newSet.ServerPathScripts = tbFolderForScripts.Text;
             newSet.TypeConnectionFullName = dbItem.ConType.ToString();
-            newSet.AssemplyWithImplementDbConnection = dbItem.AssembyFile;
+            if (dbItem.AssembyFile != null)
+                newSet.AssemplyWithImplementDbConnection = dbItem.AssembyFile.GZipCompress();
             newSet.ConnectionStringModelDb = tbConnectionString.Text;
             newSet.ScriptPartBeforeBodyWithTran = tbPartBeforescript.Text.GetNullIfIsNullOrWhiteSpace();
             newSet.ScriptPartAfterBodyWithTran = tbPartAfterScript.Text.GetNullIfIsNullOrWhiteSpace();
             newSet.ScriptUpdateVer = tbScriptUpdateVer.Text.GetNullIfIsNullOrWhiteSpace();
 
-            var encodedSetting = (new DeEncryp()).Encript(newSet, newLink.ServerPathToSettings);
+            var encodedSetting = newSet.SerializeAesEncrypt(newLink.ServerPathToSettings);
 
             string fileNameSet = tbSetFileName.Text;
 
@@ -338,6 +330,11 @@ namespace Arcas.Settings
                 Dialogs.ErrorF(this, "Сохранение неуспешно" + Environment.NewLine + ex.Expand());
                 e.Cancel = true;
             }
+        }
+
+        private void tbConnectionString_TextChanged(object sender, EventArgs e)
+        {
+            tbConnectionString_Validating(null, null);
         }
     }
 }

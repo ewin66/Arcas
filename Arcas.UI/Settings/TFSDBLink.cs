@@ -71,12 +71,20 @@ namespace Arcas.Settings
 
                 wrapTfs.VersionControlServerDownloadFile(vc, selItem.Path, tempFile);
 
-                var encr = new DeEncryp();
-                var sets = encr.Decript(File.ReadAllBytes(tempFile), selItem.Path);
-
-                if (sets == null)
+                UpdateDbSetting sets = null;
+                String msg = "Файл настроек не расшифрован. Либо выбран не файл настроек, либо еще чо. Exception: {0}";
+                try
                 {
-                    Dialogs.InformationF(this, "Файл настроек не расшифрован. Либо выбран не файл настроек, либо еще чо.");
+                    sets = File.ReadAllBytes(tempFile).DeserializeAesDecrypt<UpdateDbSetting>(selItem.Path);
+                }
+                catch (Exception ex)
+                {
+                    msg = String.Format(msg, ex.Expand());
+                }
+
+                if (sets == null || sets.ServerPathScripts.IsNullOrWhiteSpace())
+                {
+                    Dialogs.InformationF(this, msg);
                 }
                 else
                     link.ServerPathToSettings = selItem.Path;

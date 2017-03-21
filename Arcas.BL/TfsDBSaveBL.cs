@@ -87,13 +87,23 @@ namespace Arcas.BL
                     var tempfile = Path.Combine(DomainContext.TempPath, Guid.NewGuid().ToString());
                     tfsbl.DownloadFile(TBlink.ServerPathToSettings, tempfile);
 
-                    var enc = new DeEncryp();
-                    upsets = enc.Decript(File.ReadAllBytes(tempfile), TBlink.ServerPathToSettings);
+                    try
+                    {
+                        upsets = File.ReadAllBytes(tempfile).DeserializeAesDecrypt<UpdateDbSetting>(TBlink.ServerPathToSettings);
+                    }
+                    catch (Exception ex)
+                    {
+                        return "Получение файла настроек неуспешно. Exception: " + ex.Expand();
+                    }
 
                     if (upsets == null || upsets.ServerPathScripts.IsNullOrWhiteSpace())
                     {
                         return "Получение файла настроек неуспешно";
                     }
+
+                    if (upsets.AssemplyWithImplementDbConnection != null)
+                        upsets.AssemplyWithImplementDbConnection = upsets.AssemplyWithImplementDbConnection.GZipDecompress();
+
 
                     SendStat("Получение типа соединения");
 

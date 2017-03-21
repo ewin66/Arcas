@@ -38,8 +38,8 @@
     <AssemblyOriginatorKeyFile>cav.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Cav.Core, Version=2.6.1.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cav.Core.2.6.1\lib\net45\Cav.Core.dll</HintPath>
+    <Reference Include="Cav.Core, Version=2.7.2.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cav.Core.2.7.2\lib\net45\Cav.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Cav.Tfs, Version=1.0.2.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
@@ -101,9 +101,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="cav.snk" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\UpdaterDB.resx">

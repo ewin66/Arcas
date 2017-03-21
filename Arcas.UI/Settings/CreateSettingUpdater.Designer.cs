@@ -50,8 +50,6 @@
             this.tbPartBeforescript = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.btChekConnection = new System.Windows.Forms.Button();
-            this.tbFileNameAddedDbConnection = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
             this.cmbDbConectionType = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -204,8 +202,6 @@
             this.panel2.Controls.Add(this.tbPartBeforescript);
             this.panel2.Controls.Add(this.label9);
             this.panel2.Controls.Add(this.btChekConnection);
-            this.panel2.Controls.Add(this.tbFileNameAddedDbConnection);
-            this.panel2.Controls.Add(this.label8);
             this.panel2.Controls.Add(this.cmbDbConectionType);
             this.panel2.Controls.Add(this.label7);
             this.panel2.Controls.Add(this.label6);
@@ -220,7 +216,7 @@
             // 
             // tbScriptUpdateVer
             // 
-            this.tbScriptUpdateVer.Location = new System.Drawing.Point(6, 370);
+            this.tbScriptUpdateVer.Location = new System.Drawing.Point(6, 326);
             this.tbScriptUpdateVer.Multiline = true;
             this.tbScriptUpdateVer.Name = "tbScriptUpdateVer";
             this.tbScriptUpdateVer.ScrollBars = System.Windows.Forms.ScrollBars.Both;
@@ -229,7 +225,7 @@
             // 
             // label12
             // 
-            this.label12.Location = new System.Drawing.Point(3, 327);
+            this.label12.Location = new System.Drawing.Point(3, 283);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(451, 46);
             this.label12.TabIndex = 10025;
@@ -250,7 +246,7 @@
             // 
             // tbPartAfterScript
             // 
-            this.tbPartAfterScript.Location = new System.Drawing.Point(6, 480);
+            this.tbPartAfterScript.Location = new System.Drawing.Point(6, 436);
             this.tbPartAfterScript.Multiline = true;
             this.tbPartAfterScript.Name = "tbPartAfterScript";
             this.tbPartAfterScript.ScrollBars = System.Windows.Forms.ScrollBars.Both;
@@ -259,7 +255,7 @@
             // 
             // label10
             // 
-            this.label10.Location = new System.Drawing.Point(3, 448);
+            this.label10.Location = new System.Drawing.Point(3, 404);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(447, 28);
             this.label10.TabIndex = 10022;
@@ -268,7 +264,7 @@
             // 
             // tbPartBeforescript
             // 
-            this.tbPartBeforescript.Location = new System.Drawing.Point(6, 207);
+            this.tbPartBeforescript.Location = new System.Drawing.Point(6, 163);
             this.tbPartBeforescript.Multiline = true;
             this.tbPartBeforescript.Name = "tbPartBeforescript";
             this.tbPartBeforescript.ScrollBars = System.Windows.Forms.ScrollBars.Both;
@@ -277,7 +273,7 @@
             // 
             // label9
             // 
-            this.label9.Location = new System.Drawing.Point(3, 177);
+            this.label9.Location = new System.Drawing.Point(3, 133);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(443, 30);
             this.label9.TabIndex = 10020;
@@ -286,29 +282,13 @@
             // btChekConnection
             // 
             this.btChekConnection.Enabled = false;
-            this.btChekConnection.Location = new System.Drawing.Point(116, 148);
+            this.btChekConnection.Location = new System.Drawing.Point(116, 104);
             this.btChekConnection.Name = "btChekConnection";
             this.btChekConnection.Size = new System.Drawing.Size(176, 23);
             this.btChekConnection.TabIndex = 10019;
             this.btChekConnection.Text = "Проверить подключение";
             this.btChekConnection.UseVisualStyleBackColor = true;
             this.btChekConnection.Click += new System.EventHandler(this.btChekConnection_Click);
-            // 
-            // tbFileNameAddedDbConnection
-            // 
-            this.tbFileNameAddedDbConnection.Location = new System.Drawing.Point(116, 80);
-            this.tbFileNameAddedDbConnection.Name = "tbFileNameAddedDbConnection";
-            this.tbFileNameAddedDbConnection.ReadOnly = true;
-            this.tbFileNameAddedDbConnection.Size = new System.Drawing.Size(306, 20);
-            this.tbFileNameAddedDbConnection.TabIndex = 10018;
-            // 
-            // label8
-            // 
-            this.label8.Location = new System.Drawing.Point(3, 74);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(115, 39);
-            this.label8.TabIndex = 10017;
-            this.label8.Text = "Наименование файла добавленной сборки";
             // 
             // cmbDbConectionType
             // 
@@ -330,7 +310,7 @@
             // 
             // label6
             // 
-            this.label6.Location = new System.Drawing.Point(3, 119);
+            this.label6.Location = new System.Drawing.Point(3, 75);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(107, 28);
             this.label6.TabIndex = 10013;
@@ -338,10 +318,11 @@
             // 
             // tbConnectionString
             // 
-            this.tbConnectionString.Location = new System.Drawing.Point(116, 122);
+            this.tbConnectionString.Location = new System.Drawing.Point(116, 78);
             this.tbConnectionString.Name = "tbConnectionString";
             this.tbConnectionString.Size = new System.Drawing.Size(306, 20);
             this.tbConnectionString.TabIndex = 10014;
+            this.tbConnectionString.TextChanged += new System.EventHandler(this.tbConnectionString_TextChanged);
             this.tbConnectionString.Validating += new System.ComponentModel.CancelEventHandler(this.tbConnectionString_Validating);
             // 
             // tbFolderForScripts
@@ -437,8 +418,6 @@
         private System.Windows.Forms.TextBox tbPartBeforescript;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button btChekConnection;
-        private System.Windows.Forms.TextBox tbFileNameAddedDbConnection;
-        private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox tbNumberTask;
         private System.Windows.Forms.ErrorProvider errorProvider;
