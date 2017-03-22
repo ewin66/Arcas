@@ -60,8 +60,6 @@ namespace Arcas.Controls
 
         public override void RefreshTab()
         {
-            #region заполняем cbxTfsBbLinc
-
             var SelName = Config.Instance.SelestedTFSDB;
             cbxTfsDbLinc.DataSource = Config.Instance.TfsDbSets;
             if (cbxTfsDbLinc.DataSource != null)
@@ -69,30 +67,33 @@ namespace Arcas.Controls
             if (cbxTfsDbLinc.SelectedItem == null && cbxTfsDbLinc.Items.Count > 0)
                 cbxTfsDbLinc.SelectedIndex = 0;
 
-            //this.btSaveScript.Enabled = cbxTfsDbLinc.Items.Count != 0;
+            TfsDbLink curset = cbxTfsDbLinc.SelectedItem as TfsDbLink;
 
+            this.btSaveScript.Enabled = false;
 
-            //try
-            //{
-            //    // Проверяем доступность TFS
-            //    TfsDbLink curset = cbxTfsDbLinc.SelectedItem as TfsDbLink;
-            //    var tfs = new WrapTfs();
-            //    tfs.VersionControlServerGet(new Uri(curset.TFS.Server));
-            //}
-            //catch (Exception ex)
-            //{
-            //    String exMsg = ex.Expand();
-            //    if (ex.GetType().Name == "TargetInvocationException" && ex.InnerException != null)
-            //        exMsg = ex.InnerException.Message;
-            //    Dialogs.ErrorF(this, exMsg);
-            //    this.Enabled = false;
-            //    return;
-            //}
+            if (curset != null)
+            {
+                if (!curset.ServerPathToSettings.IsNullOrWhiteSpace() & curset.ServerUri != null)
+                {
+                    try
+                    {
+                        // Проверяем доступность TFS                     
+                        var tfs = new WrapTfs();
+                        tfs.VersionControlServerGet(curset.ServerUri);
+
+                        this.btSaveScript.Enabled = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        String exMsg = ex.Expand();
+                        if (ex.GetType().Name == "TargetInvocationException" && ex.InnerException != null)
+                            exMsg = ex.InnerException.Message;
+                        Dialogs.ErrorF(this, exMsg);
+                    }
+                }
+            }
 
             bttvQueryRefresh_Click(null, null);
-            #endregion
-
-            base.RefreshTab();
         }
 
         private void btClear_Click(object sender, EventArgs e)

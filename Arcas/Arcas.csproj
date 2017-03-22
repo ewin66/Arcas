@@ -91,6 +91,7 @@
     <ManifestKeyFile>ChernenkoAV.p12</ManifestKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="cav.snk" />
     <None Include="ChernenkoAV.p12" />
     <None Include="Properties\app.manifest" />

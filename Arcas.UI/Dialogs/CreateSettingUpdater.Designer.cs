@@ -216,7 +216,7 @@
             // 
             // tbScriptUpdateVer
             // 
-            this.tbScriptUpdateVer.Location = new System.Drawing.Point(6, 326);
+            this.tbScriptUpdateVer.Location = new System.Drawing.Point(6, 281);
             this.tbScriptUpdateVer.Multiline = true;
             this.tbScriptUpdateVer.Name = "tbScriptUpdateVer";
             this.tbScriptUpdateVer.ScrollBars = System.Windows.Forms.ScrollBars.Both;
@@ -225,7 +225,7 @@
             // 
             // label12
             // 
-            this.label12.Location = new System.Drawing.Point(3, 283);
+            this.label12.Location = new System.Drawing.Point(3, 238);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(451, 46);
             this.label12.TabIndex = 10025;
@@ -246,7 +246,7 @@
             // 
             // tbPartAfterScript
             // 
-            this.tbPartAfterScript.Location = new System.Drawing.Point(6, 436);
+            this.tbPartAfterScript.Location = new System.Drawing.Point(6, 391);
             this.tbPartAfterScript.Multiline = true;
             this.tbPartAfterScript.Name = "tbPartAfterScript";
             this.tbPartAfterScript.ScrollBars = System.Windows.Forms.ScrollBars.Both;
@@ -255,7 +255,7 @@
             // 
             // label10
             // 
-            this.label10.Location = new System.Drawing.Point(3, 404);
+            this.label10.Location = new System.Drawing.Point(3, 359);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(447, 28);
             this.label10.TabIndex = 10022;
@@ -264,11 +264,11 @@
             // 
             // tbPartBeforescript
             // 
-            this.tbPartBeforescript.Location = new System.Drawing.Point(6, 163);
+            this.tbPartBeforescript.Location = new System.Drawing.Point(6, 166);
             this.tbPartBeforescript.Multiline = true;
             this.tbPartBeforescript.Name = "tbPartBeforescript";
             this.tbPartBeforescript.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbPartBeforescript.Size = new System.Drawing.Size(440, 109);
+            this.tbPartBeforescript.Size = new System.Drawing.Size(440, 61);
             this.tbPartBeforescript.TabIndex = 10021;
             // 
             // label9

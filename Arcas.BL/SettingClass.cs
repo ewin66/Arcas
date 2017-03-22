@@ -30,7 +30,7 @@ namespace Arcas.Settings
         public DateTime DateVersion { get; set; }
         public override string ToString()
         {
-            return String.Format("{0} {1:yyyy.MM.dd}", VersionBD.ToString().PadLeft(2, '0'), DateVersion);
+            return String.Format("{0} {1:yyyy-MM-dd}", VersionBD.ToString().PadLeft(6, '0'), DateVersion);
         }
 
         public static implicit operator String(VerDB ver)

@@ -28,26 +28,26 @@ namespace Arcas.BL
         /// <summary>
         /// Накатить скрипт
         /// </summary>
-        /// <param name="TBlink">Настройка связки TFS-DB</param>
-        /// <param name="SqlScript">Тело скрипта</param>
-        /// <param name="Comment">Комментарий к заливке</param>
+        /// <param name="tdlink">Настройка связки TFS-DB</param>
+        /// <param name="sqlScript">Тело скрипта</param>
+        /// <param name="comment">Комментарий к заливке</param>
         /// <returns></returns>        
         public String SaveScript(
-            TfsDbLink TBlink,
-            String SqlScript,
-            String Comment,
-            Boolean InTaransaction,
+            TfsDbLink tdlink,
+            String sqlScript,
+            String comment,
+            Boolean inTaransaction,
             List<int> linkedTask)
         {
 
-            if (Comment.IsNullOrWhiteSpace())
+            if (comment.IsNullOrWhiteSpace())
                 return "Необходимо заполнить комментрарий";
 
-            if (SqlScript.IsNullOrWhiteSpace())
+            if (sqlScript.IsNullOrWhiteSpace())
                 return "Тело скрипта пустое";
 
 
-            if (checkSqlScriptOnUSE(SqlScript))
+            if (checkSqlScriptOnUSE(sqlScript))
                 return "В скрипте используется USE БД.";
 
 
@@ -55,7 +55,7 @@ namespace Arcas.BL
             {
                 a = a.Trim();
 
-                var colStr = a.Replace(Environment.NewLine, new String('\r', 1)).Split(new char[] { '\r' });
+                var colStr = a.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 
                 for (int i = 0; i < colStr.Length; i++)
                     colStr[i] = colStr[i].TrimEnd();
@@ -64,10 +64,10 @@ namespace Arcas.BL
             };
 
             // причесываем текстовки
-            SqlScript = trimLines(SqlScript);
+            sqlScript = trimLines(sqlScript);
 
-            Comment = trimLines(Comment);
-            Comment = "--" + Comment.Replace(Environment.NewLine, Environment.NewLine + "-- ") + Environment.NewLine;
+            comment = trimLines(comment);
+            var commentforSQL = "--" + comment.Replace(Environment.NewLine, Environment.NewLine + "--") + Environment.NewLine;
 
             UpdateDbSetting upsets = null;
             bool useSqlConnection = false;
@@ -81,19 +81,22 @@ namespace Arcas.BL
 
                     // Проверяем настройки TFS
                     SendStat("Подключаемся к TFS");
-                    tfsbl.VersionControl(TBlink.ServerUri);
+                    tfsbl.VersionControl(tdlink.ServerUri);
 
                     SendStat("Получение настроек поднятия версии.");
                     var tempfile = Path.Combine(DomainContext.TempPath, Guid.NewGuid().ToString());
-                    tfsbl.DownloadFile(TBlink.ServerPathToSettings, tempfile);
+                    tfsbl.DownloadFile(tdlink.ServerPathToSettings, tempfile);
 
                     try
                     {
-                        upsets = File.ReadAllBytes(tempfile).DeserializeAesDecrypt<UpdateDbSetting>(TBlink.ServerPathToSettings);
+                        upsets = File.ReadAllBytes(tempfile).DeserializeAesDecrypt<UpdateDbSetting>(tdlink.ServerPathToSettings);
                     }
                     catch (Exception ex)
                     {
-                        return "Получение файла настроек неуспешно. Exception: " + ex.Expand();
+                        String msg = ex.Expand();
+                        if (ex.GetType().Name == "TargetInvocationException" && ex.InnerException != null)
+                            msg = ex.InnerException.Message;
+                        return "Получение файла настроек неуспешно. Exception: " + msg;
                     }
 
                     if (upsets == null || upsets.ServerPathScripts.IsNullOrWhiteSpace())
@@ -133,7 +136,10 @@ namespace Arcas.BL
                 }
                 catch (Exception ex)
                 {
-                    return ex.Expand();
+                    String msg = ex.Expand();
+                    if (ex.GetType().Name == "TargetInvocationException" && ex.InnerException != null)
+                        msg = ex.InnerException.Message;
+                    return msg;
                 }
 
                 // TODO  Проверить скрип на корректность 
@@ -170,9 +176,9 @@ namespace Arcas.BL
                 List<String> scts = new List<string>();
 
                 if (useSqlConnection)
-                    scts.AddRange(SplitSqlTExtOnGO(SqlScript));
+                    scts.AddRange(SplitSqlTExtOnGO(sqlScript));
                 else
-                    scts.Add(SqlScript);
+                    scts.Add(sqlScript);
 
                 SendStat("Накатка скрипта на БД");
 
@@ -180,7 +186,7 @@ namespace Arcas.BL
 
                 try
                 {
-                    if (InTaransaction)
+                    if (inTaransaction)
                         tran = new DbTransactionScope();
 
                     foreach (var sct in scts)
@@ -195,17 +201,21 @@ namespace Arcas.BL
                 {
                     if (tran != null)
                         ((IDisposable)tran).Dispose();
+
                     return ex.Expand();
                 }
+
+                if (tran != null)
+                    ((IDisposable)tran).Dispose();
 
 
                 SendStat("Генерация файла скрипта");
 
                 var sb = new StringBuilder();
 
-                sb.AppendLine(Comment);
+                sb.AppendLine(commentforSQL);
 
-                if (InTaransaction)
+                if (inTaransaction)
                     sb.AppendLine(upsets.ScriptPartBeforeBodyWithTran);
 
                 foreach (var item in scts)
@@ -219,8 +229,8 @@ namespace Arcas.BL
 
                 sb.AppendLine(String.Format(upsets.ScriptUpdateVer, CurVerDB));
 
-                if (InTaransaction)
-                    sb.Append(upsets.ScriptPartBeforeBodyWithTran);
+                if (inTaransaction)
+                    sb.Append(upsets.ScriptPartAfterBodyWithTran);
 
                 String FileNameNewVer = Path.Combine(tfsbl.Tempdir, CurVerDB + ".sql");
 
@@ -230,7 +240,7 @@ namespace Arcas.BL
                 SendStat("Чекин в TFS");
 
                 tfsbl.AddFile(FileNameNewVer);
-                tfsbl.CheckIn(Comment, linkedTask);
+                tfsbl.CheckIn(comment, linkedTask);
 
                 SendStat("Готово");
             }

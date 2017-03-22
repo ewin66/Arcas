@@ -45,7 +45,11 @@ namespace Arcas
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, ex.Expand(), "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    String msg = ex.Expand();
+                    if (ex.GetType().Name == "TargetInvocationException" && ex.InnerException != null)
+                        msg = ex.InnerException.Message;
+
+                    Dialogs.ErrorF(this, msg);
                 }
 
         }

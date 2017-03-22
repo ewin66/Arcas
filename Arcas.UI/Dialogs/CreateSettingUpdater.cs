@@ -327,7 +327,10 @@ namespace Arcas.Settings
             }
             catch (Exception ex)
             {
-                Dialogs.ErrorF(this, "Сохранение неуспешно" + Environment.NewLine + ex.Expand());
+                String msg = ex.Expand();
+                if (ex.GetType().Name == "TargetInvocationException" && ex.InnerException != null)
+                    msg = ex.InnerException.Message;
+                Dialogs.ErrorF(this, "Сохранение неуспешно" + Environment.NewLine + msg);
                 e.Cancel = true;
             }
         }
