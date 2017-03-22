@@ -13,4 +13,4 @@
 *.manifest binary
 *.application binary
 *.deploy binary
-*.dll filter=lfs diff=lfs merge=lfs -text
+# *.dll filter=lfs diff=lfs merge=lfs -text
