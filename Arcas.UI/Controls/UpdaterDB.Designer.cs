@@ -65,6 +65,8 @@
             // chbTransaction
             // 
             this.chbTransaction.AutoSize = true;
+            this.chbTransaction.Checked = true;
+            this.chbTransaction.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chbTransaction.Location = new System.Drawing.Point(158, 32);
             this.chbTransaction.Name = "chbTransaction";
             this.chbTransaction.Size = new System.Drawing.Size(159, 17);
