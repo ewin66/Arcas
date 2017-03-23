@@ -300,7 +300,7 @@ namespace Arcas.Settings
 
                     var fileExist = File.Exists(localFileSetPath);
 
-                    if (fileExist && !tfsbl.CheckOut(fileNameSet))
+                    if (fileExist && !tfsbl.CheckOut(localFileSetPath))
                         throw new Exception("Извлечение настроек неуспешно. Повторите позже");
 
                     // блокируем от изменений

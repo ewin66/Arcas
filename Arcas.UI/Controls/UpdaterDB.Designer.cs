@@ -125,6 +125,7 @@
             this.tbScriptBody.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.tbScriptBody.Size = new System.Drawing.Size(669, 421);
             this.tbScriptBody.TabIndex = 10;
+            this.tbScriptBody.TextChanged += new System.EventHandler(this.tbScriptBody_TextChanged);
             // 
             // label1
             // 
@@ -144,6 +145,7 @@
             this.cbxTfsDbLinc.Name = "cbxTfsDbLinc";
             this.cbxTfsDbLinc.Size = new System.Drawing.Size(210, 21);
             this.cbxTfsDbLinc.TabIndex = 8;
+            this.cbxTfsDbLinc.SelectionChangeCommitted += new System.EventHandler(this.cbxTfsDbLinc_SelectionChangeCommitted);
             // 
             // btClear
             // 

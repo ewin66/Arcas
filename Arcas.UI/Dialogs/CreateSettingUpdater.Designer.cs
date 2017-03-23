@@ -216,16 +216,16 @@
             // 
             // tbScriptUpdateVer
             // 
-            this.tbScriptUpdateVer.Location = new System.Drawing.Point(6, 281);
+            this.tbScriptUpdateVer.Location = new System.Drawing.Point(6, 269);
             this.tbScriptUpdateVer.Multiline = true;
             this.tbScriptUpdateVer.Name = "tbScriptUpdateVer";
             this.tbScriptUpdateVer.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbScriptUpdateVer.Size = new System.Drawing.Size(440, 67);
+            this.tbScriptUpdateVer.Size = new System.Drawing.Size(440, 43);
             this.tbScriptUpdateVer.TabIndex = 10026;
             // 
             // label12
             // 
-            this.label12.Location = new System.Drawing.Point(3, 238);
+            this.label12.Location = new System.Drawing.Point(3, 221);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(451, 46);
             this.label12.TabIndex = 10025;
@@ -246,16 +246,16 @@
             // 
             // tbPartAfterScript
             // 
-            this.tbPartAfterScript.Location = new System.Drawing.Point(6, 391);
+            this.tbPartAfterScript.Location = new System.Drawing.Point(6, 356);
             this.tbPartAfterScript.Multiline = true;
             this.tbPartAfterScript.Name = "tbPartAfterScript";
             this.tbPartAfterScript.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbPartAfterScript.Size = new System.Drawing.Size(440, 182);
+            this.tbPartAfterScript.Size = new System.Drawing.Size(440, 115);
             this.tbPartAfterScript.TabIndex = 10023;
             // 
             // label10
             // 
-            this.label10.Location = new System.Drawing.Point(3, 359);
+            this.label10.Location = new System.Drawing.Point(3, 324);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(447, 28);
             this.label10.TabIndex = 10022;
@@ -264,11 +264,11 @@
             // 
             // tbPartBeforescript
             // 
-            this.tbPartBeforescript.Location = new System.Drawing.Point(6, 166);
+            this.tbPartBeforescript.Location = new System.Drawing.Point(6, 165);
             this.tbPartBeforescript.Multiline = true;
             this.tbPartBeforescript.Name = "tbPartBeforescript";
             this.tbPartBeforescript.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbPartBeforescript.Size = new System.Drawing.Size(440, 61);
+            this.tbPartBeforescript.Size = new System.Drawing.Size(440, 49);
             this.tbPartBeforescript.TabIndex = 10021;
             // 
             // label9

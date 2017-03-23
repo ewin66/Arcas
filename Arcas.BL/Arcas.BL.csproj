@@ -46,8 +46,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>IbmMq\amqmdnet.dll</HintPath>
     </Reference>
-    <Reference Include="Cav.Core, Version=2.7.3.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cav.Core.2.7.3\lib\net45\Cav.Core.dll</HintPath>
+    <Reference Include="Cav.Core, Version=2.7.4.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cav.Core.2.7.4\lib\net45\Cav.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Cav.Tfs, Version=1.0.2.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">

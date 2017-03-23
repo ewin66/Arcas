@@ -53,11 +53,6 @@ namespace Arcas.Controls
             this.SetSateProgress(Message);
         }
 
-        private void tbxes_TextChanged(object sender, EventArgs e)
-        {
-            textChanged = true;
-        }
-
         public override void RefreshTab()
         {
             var SelName = Config.Instance.SelestedTFSDB;
@@ -67,33 +62,7 @@ namespace Arcas.Controls
             if (cbxTfsDbLinc.SelectedItem == null && cbxTfsDbLinc.Items.Count > 0)
                 cbxTfsDbLinc.SelectedIndex = 0;
 
-            TfsDbLink curset = cbxTfsDbLinc.SelectedItem as TfsDbLink;
-
-            this.btSaveScript.Enabled = false;
-
-            if (curset != null)
-            {
-                if (!curset.ServerPathToSettings.IsNullOrWhiteSpace() & curset.ServerUri != null)
-                {
-                    try
-                    {
-                        // Проверяем доступность TFS                     
-                        var tfs = new WrapTfs();
-                        tfs.VersionControlServerGet(curset.ServerUri);
-
-                        this.btSaveScript.Enabled = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        String exMsg = ex.Expand();
-                        if (ex.GetType().Name == "TargetInvocationException" && ex.InnerException != null)
-                            exMsg = ex.InnerException.Message;
-                        Dialogs.ErrorF(this, exMsg);
-                    }
-                }
-            }
-
-            bttvQueryRefresh_Click(null, null);
+            cbxTfsDbLinc_SelectionChangeCommitted(null, null);
         }
 
         private void btClear_Click(object sender, EventArgs e)
@@ -287,6 +256,44 @@ namespace Arcas.Controls
         {
             (new TFSDBLinkForm()).ShowDialog(this);
             this.RefreshTab();
+        }
+
+        private void tbScriptBody_TextChanged(object sender, EventArgs e)
+        {
+            textChanged = true;
+        }
+
+        private void cbxTfsDbLinc_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            TfsDbLink curset = cbxTfsDbLinc.SelectedItem as TfsDbLink;
+
+            this.btSaveScript.Enabled = false;
+
+            if (curset != null)
+            {
+                if (!curset.ServerPathToSettings.IsNullOrWhiteSpace() & curset.ServerUri != null)
+                {
+                    try
+                    {
+                        // Проверяем доступность TFS                     
+                        var tfs = new WrapTfs();
+                        tfs.VersionControlServerGet(curset.ServerUri);
+
+                        this.btSaveScript.Enabled = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        String exMsg = ex.Expand();
+                        if (ex.GetType().Name == "TargetInvocationException" && ex.InnerException != null)
+                            exMsg = ex.InnerException.Message;
+                        Dialogs.ErrorF(this, exMsg);
+                    }
+                }
+            }
+
+            bttvQueryRefresh_Click(null, null);
+
+            Config.Instance.SelestedTFSDB = curset.Name;
         }
     }
 }

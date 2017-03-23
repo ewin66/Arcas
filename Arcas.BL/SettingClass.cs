@@ -26,6 +26,10 @@ namespace Arcas.Settings
     #endregion
     public class VerDB
     {
+        public VerDB()
+        {
+            DateVersion = DateTime.Now;
+        }
         public long VersionBD { get; set; }
         public DateTime DateVersion { get; set; }
         public override string ToString()

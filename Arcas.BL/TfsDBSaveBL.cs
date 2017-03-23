@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using Arcas.BL.TFS;
@@ -39,45 +40,45 @@ namespace Arcas.BL
             Boolean inTaransaction,
             List<int> linkedTask)
         {
-
-            if (comment.IsNullOrWhiteSpace())
-                return "Необходимо заполнить комментрарий";
-
-            if (sqlScript.IsNullOrWhiteSpace())
-                return "Тело скрипта пустое";
-
-
-            if (checkSqlScriptOnUSE(sqlScript))
-                return "В скрипте используется USE БД.";
-
-
-            Func<String, String> trimLines = (a) =>
-            {
-                a = a.Trim();
-
-                var colStr = a.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-
-                for (int i = 0; i < colStr.Length; i++)
-                    colStr[i] = colStr[i].TrimEnd();
-
-                return colStr.JoinValuesToString(Environment.NewLine, false);
-            };
-
-            // причесываем текстовки
-            sqlScript = trimLines(sqlScript);
-
-            comment = trimLines(comment);
-            var commentforSQL = "--" + comment.Replace(Environment.NewLine, Environment.NewLine + "--") + Environment.NewLine;
-
-            UpdateDbSetting upsets = null;
-            bool useSqlConnection = false;
-
-            using (TFSRoutineBL tfsbl = new TFSRoutineBL())
+            try
             {
 
-                // Проверяем переданные соединения с TFS и БД
-                try
+                if (comment.IsNullOrWhiteSpace())
+                    return "Необходимо заполнить комментрарий";
+
+                if (sqlScript.IsNullOrWhiteSpace())
+                    return "Тело скрипта пустое";
+
+
+                if (checkSqlScriptOnUSE(sqlScript))
+                    return "В скрипте используется USE БД.";
+
+
+                Func<String, String> trimLines = (a) =>
                 {
+                    a = a.Trim();
+
+                    var colStr = a.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+
+                    for (int i = 0; i < colStr.Length; i++)
+                        colStr[i] = colStr[i].TrimEnd();
+
+                    return colStr.JoinValuesToString(Environment.NewLine, false);
+                };
+
+                // причесываем текстовки
+                sqlScript = trimLines(sqlScript);
+
+                comment = trimLines(comment);
+                var commentforSQL = "--" + comment.Replace(Environment.NewLine, Environment.NewLine + "--") + Environment.NewLine;
+
+                UpdateDbSetting upsets = null;
+                bool useSqlConnection = false;
+
+                using (TFSRoutineBL tfsbl = new TFSRoutineBL())
+                {
+
+                    // Проверяем переданные соединения с TFS и БД                    
 
                     // Проверяем настройки TFS
                     SendStat("Подключаемся к TFS");
@@ -118,9 +119,24 @@ namespace Arcas.BL
                         if (upsets.AssemplyWithImplementDbConnection == null)
                             return $"В настроках указан тип DbConnection '{upsets.TypeConnectionFullName}', но отсутствует бинарное представление сборки реализации";
 
-                        AppDomain.CurrentDomain.Load(upsets.AssemplyWithImplementDbConnection);
+                        conn = null;
+                        Assembly conAss = null;
 
-                        conn = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.ExportedTypes).FirstOrDefault(x => x.FullName == upsets.TypeConnectionFullName);
+                        foreach (var asmly in AppDomain.CurrentDomain.GetAssemblies())
+                        {
+                            conn = asmly.GetType(upsets.TypeConnectionFullName, false);
+
+                            if (conn != null)
+                            {
+                                conAss = asmly;
+                                break;
+                            }
+                        }
+
+                        if (conn == null)
+                            conAss = AppDomain.CurrentDomain.Load(upsets.AssemplyWithImplementDbConnection);
+
+                        conn = conAss.ExportedTypes.FirstOrDefault(x => x.FullName == upsets.TypeConnectionFullName);
 
                         if (conn == null)
                             return $"Не удалось найти тип DbConnection '{upsets.TypeConnectionFullName}'";
@@ -133,119 +149,118 @@ namespace Arcas.BL
 
                     tfsbl.MapTempWorkspace(upsets.ServerPathScripts);
 
-                }
-                catch (Exception ex)
-                {
-                    String msg = ex.Expand();
-                    if (ex.GetType().Name == "TargetInvocationException" && ex.InnerException != null)
-                        msg = ex.InnerException.Message;
-                    return msg;
-                }
+                    // TODO  Проверить скрип на корректность 
+                    // В частности, отсутствие USE. Ещеб как нить замутить просто проверку, а не выполнение
 
-                // TODO  Проверить скрип на корректность 
-                // В частности, отсутствие USE. Ещеб как нить замутить просто проверку, а не выполнение
+                    SendStat("Обработка файла версионности");
 
-                SendStat("Обработка файла версионности");
+                    String VerFileName = ".lastVer.xml";
+                    String PathVerFile = Path.Combine(tfsbl.Tempdir, VerFileName);
 
-                String VerFileName = ".lastVer.xml";
-                String PathVerFile = Path.Combine(tfsbl.Tempdir, VerFileName);
-
-                if (tfsbl.GetLastFile(VerFileName) == 0)
-                {
-                    //файла нет
-                    if (!File.Exists(PathVerFile))
+                    if (tfsbl.GetLastFile(VerFileName) == 0)
                     {
-                        // сохраняем новую чистую версию ДБ
-                        (new VerDB()).XMLSerialize(PathVerFile);
-                        tfsbl.AddFile(PathVerFile);
-                        tfsbl.CheckIn("Добавлен файл версионности", linkedTask);
+                        //файла нет
+                        if (!File.Exists(PathVerFile))
+                        {
+                            // сохраняем новую чистую версию ДБ
+                            (new VerDB()).XMLSerialize(PathVerFile);
+                            tfsbl.AddFile(PathVerFile);
+                            tfsbl.CheckIn("Добавлен файл версионности", linkedTask);
+                        }
                     }
-                }
 
-                if (!tfsbl.LockFile(VerFileName))
-                    return "Производится накатка. Повторите позже";
+                    if (!tfsbl.LockFile(VerFileName))
+                        return "Производится накатка. Повторите позже";
 
-                if (!tfsbl.CheckOut(PathVerFile))
-                    return "Извлечение файла текущей версии неуспешно. Повторите позже";
+                    if (!tfsbl.CheckOut(PathVerFile))
+                        return "Извлечение файла текущей версии неуспешно. Повторите позже";
 
-                var CurVerDB = PathVerFile.XMLDeserializeFromFile<VerDB>() ?? new VerDB();
+                    var CurVerDB = PathVerFile.XMLDeserializeFromFile<VerDB>() ?? new VerDB();
 
-                CurVerDB.VersionBD += 1;
-                CurVerDB.DateVersion = new DateTimeOffset(DateTime.Now).DateTime;
+                    CurVerDB.VersionBD += 1;
+                    CurVerDB.DateVersion = new DateTimeOffset(DateTime.Now).DateTime;
 
-                List<String> scts = new List<string>();
+                    List<String> scts = new List<string>();
 
-                if (useSqlConnection)
-                    scts.AddRange(SplitSqlTExtOnGO(sqlScript));
-                else
-                    scts.Add(sqlScript);
+                    if (useSqlConnection)
+                        scts.AddRange(SplitSqlTExtOnGO(sqlScript));
+                    else
+                        scts.Add(sqlScript);
 
-                SendStat("Накатка скрипта на БД");
+                    SendStat("Накатка скрипта на БД");
 
-                DbTransactionScope tran = null;
+                    DbTransactionScope tran = null;
 
-                try
-                {
-                    if (inTaransaction)
-                        tran = new DbTransactionScope();
+                    try
+                    {
+                        if (inTaransaction)
+                            tran = new DbTransactionScope();
 
-                    foreach (var sct in scts)
-                        adapter.ExecScript(sct);
+                        foreach (var sct in scts)
+                            adapter.ExecScript(sct);
 
-                    adapter.ExecScript(String.Format(upsets.ScriptUpdateVer, CurVerDB));
+                        adapter.ExecScript(String.Format(upsets.ScriptUpdateVer, CurVerDB));
 
-                    if (tran != null)
-                        tran.Complete();
-                }
-                catch (Exception ex)
-                {
+                        if (tran != null)
+                            tran.Complete();
+                    }
+                    catch
+                    {
+                        if (tran != null)
+                            ((IDisposable)tran).Dispose();
+
+                        throw;
+                    }
+
                     if (tran != null)
                         ((IDisposable)tran).Dispose();
 
-                    return ex.Expand();
+
+                    SendStat("Генерация файла скрипта");
+
+                    var sb = new StringBuilder();
+
+                    sb.AppendLine(commentforSQL);
+
+                    if (inTaransaction)
+                        sb.AppendLine(upsets.ScriptPartBeforeBodyWithTran);
+
+                    foreach (var item in scts)
+                    {
+                        var script = item;
+                        if (useSqlConnection)
+                            script = "EXEC('" + script.Replace("'", "''") + "')";
+
+                        sb.AppendLine(script);
+                    }
+
+                    sb.AppendLine(String.Format(upsets.ScriptUpdateVer, CurVerDB));
+
+                    if (inTaransaction)
+                        sb.Append(upsets.ScriptPartAfterBodyWithTran);
+
+                    String FileNameNewVer = Path.Combine(tfsbl.Tempdir, CurVerDB + ".sql");
+
+                    File.WriteAllText(FileNameNewVer, sb.ToString());
+                    CurVerDB.XMLSerialize(PathVerFile);
+
+                    SendStat("Чекин в TFS");
+
+                    tfsbl.AddFile(FileNameNewVer);
+                    tfsbl.CheckIn(comment, linkedTask);
+
+                    SendStat("Готово");
                 }
 
-                if (tran != null)
-                    ((IDisposable)tran).Dispose();
-
-
-                SendStat("Генерация файла скрипта");
-
-                var sb = new StringBuilder();
-
-                sb.AppendLine(commentforSQL);
-
-                if (inTaransaction)
-                    sb.AppendLine(upsets.ScriptPartBeforeBodyWithTran);
-
-                foreach (var item in scts)
-                {
-                    var script = item;
-                    if (useSqlConnection)
-                        script = "EXEC('" + script.Replace("'", "''") + "')";
-
-                    sb.AppendLine(script);
-                }
-
-                sb.AppendLine(String.Format(upsets.ScriptUpdateVer, CurVerDB));
-
-                if (inTaransaction)
-                    sb.Append(upsets.ScriptPartAfterBodyWithTran);
-
-                String FileNameNewVer = Path.Combine(tfsbl.Tempdir, CurVerDB + ".sql");
-
-                File.WriteAllText(FileNameNewVer, sb.ToString());
-                CurVerDB.XMLSerialize(PathVerFile);
-
-                SendStat("Чекин в TFS");
-
-                tfsbl.AddFile(FileNameNewVer);
-                tfsbl.CheckIn(comment, linkedTask);
-
-                SendStat("Готово");
+                return null;
             }
-
-            return null;
+            catch (Exception ex)
+            {
+                String msg = ex.Expand();
+                if (ex.GetType().Name == "TargetInvocationException" && ex.InnerException != null)
+                    msg = ex.InnerException.Message;
+                return msg;
+            }
         }
 
         /// <summary>
