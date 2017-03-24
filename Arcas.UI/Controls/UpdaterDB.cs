@@ -289,11 +289,11 @@ namespace Arcas.Controls
                         Dialogs.ErrorF(this, exMsg);
                     }
                 }
+
+                Config.Instance.SelestedTFSDB = curset.Name;
             }
 
             bttvQueryRefresh_Click(null, null);
-
-            Config.Instance.SelestedTFSDB = curset.Name;
         }
     }
 }
