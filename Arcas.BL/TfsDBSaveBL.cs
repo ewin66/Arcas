@@ -196,60 +196,66 @@ namespace Arcas.BL
                         if (inTaransaction)
                             tran = new DbTransactionScope();
 
+                        #region накатываем скрипты
+
                         foreach (var sct in scts)
                             adapter.ExecScript(sct);
 
                         adapter.ExecScript(String.Format(upsets.ScriptUpdateVer, CurVerDB));
+
+                        #endregion
+
+                        #region формируем файл и чекиним 
+
+                        SendStat("Генерация файла скрипта");
+
+                        var sb = new StringBuilder();
+
+                        sb.AppendLine(commentforSQL);
+
+                        if (inTaransaction)
+                            sb.AppendLine(upsets.ScriptPartBeforeBodyWithTran);
+
+                        foreach (var item in scts)
+                        {
+                            var script = item;
+                            if (useSqlConnection)
+                                script = "EXEC('" + script.Replace("'", "''") + "')";
+
+                            sb.AppendLine(script);
+                        }
+
+                        sb.AppendLine(String.Format(upsets.ScriptUpdateVer, CurVerDB));
+
+                        if (inTaransaction)
+                            sb.Append(upsets.ScriptPartAfterBodyWithTran);
+
+                        String FileNameNewVer = Path.Combine(tfsbl.Tempdir, CurVerDB + ".sql");
+
+                        File.WriteAllText(FileNameNewVer, sb.ToString());
+                        CurVerDB.XMLSerialize(PathVerFile);
+
+                        SendStat("Чекин в TFS");
+
+                        tfsbl.AddFile(FileNameNewVer);
+                        tfsbl.CheckIn(comment, linkedTask);
+
+                        SendStat("Готово");
+
+                        #endregion
 
                         if (tran != null)
                             tran.Complete();
                     }
                     catch
                     {
-                        if (tran != null)
-                            ((IDisposable)tran).Dispose();
-
                         throw;
                     }
-
-                    if (tran != null)
-                        ((IDisposable)tran).Dispose();
-
-
-                    SendStat("Генерация файла скрипта");
-
-                    var sb = new StringBuilder();
-
-                    sb.AppendLine(commentforSQL);
-
-                    if (inTaransaction)
-                        sb.AppendLine(upsets.ScriptPartBeforeBodyWithTran);
-
-                    foreach (var item in scts)
+                    finally
                     {
-                        var script = item;
-                        if (useSqlConnection)
-                            script = "EXEC('" + script.Replace("'", "''") + "')";
-
-                        sb.AppendLine(script);
+                        if (tran != null)
+                            ((IDisposable)tran).Dispose();
                     }
-
-                    sb.AppendLine(String.Format(upsets.ScriptUpdateVer, CurVerDB));
-
-                    if (inTaransaction)
-                        sb.Append(upsets.ScriptPartAfterBodyWithTran);
-
-                    String FileNameNewVer = Path.Combine(tfsbl.Tempdir, CurVerDB + ".sql");
-
-                    File.WriteAllText(FileNameNewVer, sb.ToString());
-                    CurVerDB.XMLSerialize(PathVerFile);
-
-                    SendStat("Чекин в TFS");
-
-                    tfsbl.AddFile(FileNameNewVer);
-                    tfsbl.CheckIn(comment, linkedTask);
-
-                    SendStat("Готово");
                 }
 
                 return null;
