@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Arcas;
 
 namespace Arcas
 {
@@ -19,6 +14,12 @@ namespace Arcas
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new ArcasMain());
+
+            //System.Windows.Application app = new System.Windows.Application();
+            //App app = new App();
+            //app.MainWindow = new Window1();
+            //app.MainWindow.Show();
+            //app.Run();
         }
     }
 }
