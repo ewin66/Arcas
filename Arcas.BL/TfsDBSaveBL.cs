@@ -53,6 +53,9 @@ namespace Arcas.BL
                 if (checkSqlScriptOnUSE(sqlScript))
                     return "В скрипте используется USE БД.";
 
+                if (!linkedTask.Any())
+                    return "Для накатки необходимо привязать задачу.";
+
 
                 Func<String, String> trimLines = (a) =>
                 {
