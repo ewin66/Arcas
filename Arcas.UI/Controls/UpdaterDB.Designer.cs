@@ -120,6 +120,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbScriptBody.Location = new System.Drawing.Point(3, 133);
+            this.tbScriptBody.MaxLength = 0;
             this.tbScriptBody.Multiline = true;
             this.tbScriptBody.Name = "tbScriptBody";
             this.tbScriptBody.ScrollBars = System.Windows.Forms.ScrollBars.Both;
