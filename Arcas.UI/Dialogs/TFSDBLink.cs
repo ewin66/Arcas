@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Arcas.BL;
 using Cav;
 using Cav.Tfs;
 using Cav.WinForms.BaseClases;
@@ -147,14 +146,6 @@ namespace Arcas.Settings
             }
         }
 
-        private void btCreate_Click(object sender, EventArgs e)
-        {
-
-            var crSet = new CreateSettingUpdater();
-            crSet.ItemsInSets = link;
-            crSet.ShowDialog(this);
-        }
-
         private void TFSDBLinkForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             if (this.DialogResult != DialogResult.OK)
@@ -162,6 +153,16 @@ namespace Arcas.Settings
 
             Config.Instance.TfsDbSets = link;
             Config.Instance.Save();
+        }
+
+        private void TFSDBLinkForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (!(e.Alt && e.Control && e.KeyCode == Keys.C))
+                return;
+
+            var crSet = new CreateSettingUpdater();
+            crSet.ItemsInSets = link;
+            crSet.ShowDialog(this);
         }
     }
 }

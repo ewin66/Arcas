@@ -34,7 +34,6 @@
             this.LinkName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TFS = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DB = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btCreate = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTFSDB)).BeginInit();
             this.SuspendLayout();
             // 
@@ -110,22 +109,11 @@
             this.DB.Name = "DB";
             this.DB.ReadOnly = true;
             // 
-            // btCreate
-            // 
-            this.btCreate.Location = new System.Drawing.Point(477, 12);
-            this.btCreate.Name = "btCreate";
-            this.btCreate.Size = new System.Drawing.Size(75, 23);
-            this.btCreate.TabIndex = 6;
-            this.btCreate.Text = "Создать";
-            this.btCreate.UseVisualStyleBackColor = true;
-            this.btCreate.Click += new System.EventHandler(this.btCreate_Click);
-            // 
             // TFSDBLinkForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(564, 297);
-            this.Controls.Add(this.btCreate);
             this.Controls.Add(this.dgvTFSDB);
             this.Controls.Add(this.btAdd);
             this.Controls.Add(this.btDelete);
@@ -135,10 +123,10 @@
             this.ShowIcon = false;
             this.Text = "Связка TFS-DB";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TFSDBLinkForm_FormClosed);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TFSDBLinkForm_KeyDown);
             this.Controls.SetChildIndex(this.btDelete, 0);
             this.Controls.SetChildIndex(this.btAdd, 0);
             this.Controls.SetChildIndex(this.dgvTFSDB, 0);
-            this.Controls.SetChildIndex(this.btCreate, 0);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTFSDB)).EndInit();
             this.ResumeLayout(false);
 
@@ -148,7 +136,6 @@
         private System.Windows.Forms.Button btDelete;
         private System.Windows.Forms.Button btAdd;
         private System.Windows.Forms.DataGridView dgvTFSDB;
-        private System.Windows.Forms.Button btCreate;
         private System.Windows.Forms.DataGridViewTextBoxColumn LinkName;
         private System.Windows.Forms.DataGridViewTextBoxColumn TFS;
         private System.Windows.Forms.DataGridViewTextBoxColumn DB;
