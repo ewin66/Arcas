@@ -24,8 +24,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://arcas.codeplex.com/releases/clickonce/</InstallUrl>
-    <UpdateUrl>https://arcas.codeplex.com/releases/clickonce/</UpdateUrl>
+    <InstallUrl>https://clickonceget.azurewebsites.net/app/Arcas/</InstallUrl>
+    <UpdateUrl>https://clickonceget.azurewebsites.net/app/Arcas/</UpdateUrl>
     <TargetCulture>ru-RU</TargetCulture>
     <ProductName>Аркас</ProductName>
     <PublisherName>ChernenkoAV</PublisherName>
