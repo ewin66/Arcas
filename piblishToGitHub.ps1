@@ -1,9 +1,6 @@
-param ([string]$TargetDir, [string]$PublishUrl, [string]$OutDir, [string]$PostBuildEvent)
+param ([string]$TargetDir)
 
 Write-Host $TargetDir
-Write-Host $PublishUrl
-Write-Host $OutDir
-Write-Host $PostBuildEvent
 
 exit
 
