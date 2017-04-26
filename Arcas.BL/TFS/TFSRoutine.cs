@@ -10,6 +10,7 @@ namespace Arcas.BL.TFS
     /// <summary>
     /// Взаимодействие с ТФС
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly")]
     public class TFSRoutineBL : IDisposable
     {
         public TFSRoutineBL()
@@ -154,7 +155,8 @@ namespace Arcas.BL.TFS
             return wrapTfs.WorkspaceCheckOut(getTempWorkspace(), PathFileName);
         }
 
-        void IDisposable.Dispose()
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly")]
+        public void Dispose()
         {
             try
             {

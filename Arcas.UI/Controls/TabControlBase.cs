@@ -13,6 +13,7 @@ namespace Arcas.Controls
 
         public virtual void RefreshTab() { }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
         public event ProgressStateDelegat StateProgress;
 
         protected void SetSateProgress(String Message)

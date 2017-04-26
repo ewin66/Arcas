@@ -17,6 +17,7 @@ namespace Arcas.BL
 
     public class TfsDBSaveBL
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1009:DeclareEventHandlersCorrectly")]
         public event ProgressStateDelegat StatusMessages;
         private void SendStat(String mess)
         {
@@ -317,6 +318,7 @@ namespace Arcas.BL
 
         private class Adapter : DataAccesBase
         {
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2100:Проверка запросов SQL на уязвимости безопасности")]
             public void ExecScript(String SqlText)
             {
                 var cmd = this.CreateCommandObject();

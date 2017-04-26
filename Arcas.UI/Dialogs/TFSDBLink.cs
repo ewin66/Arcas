@@ -14,6 +14,7 @@ namespace Arcas.Settings
         public TFSDBLinkForm()
         {
             InitializeComponent();
+            dgvTFSDB.AutoGenerateColumns = false;
             dgvTFSDB.DataSource = link;
         }
 
@@ -157,11 +158,30 @@ namespace Arcas.Settings
 
         private void TFSDBLinkForm_KeyDown(object sender, KeyEventArgs e)
         {
-            if (!(e.Alt && e.Control && e.KeyCode == Keys.C))
+            if (!(e.Alt && e.Control))
+                return;
+
+            if (!(e.KeyCode == Keys.C || e.KeyCode == Keys.E))
                 return;
 
             var crSet = new CreateSettingUpdater();
             crSet.ItemsInSets = link;
+
+            if (e.KeyCode == Keys.E)
+            {
+                try
+                {
+                    var selrow = dgvTFSDB.SelectedRows.Cast<DataGridViewRow>().FirstOrDefault();
+                    if (selrow != null)
+                        crSet.EditedSet(selrow.DataBoundItem as TfsDbLink);
+                }
+                catch (Exception ex)
+                {
+                    Dialogs.ErrorF(this, "Открыть для редактирования невозможно: " + ex.Expand());
+                    return;
+                }
+            }
+
             crSet.ShowDialog(this);
         }
     }

@@ -5,6 +5,7 @@ using IBM.WMQ;
 
 namespace Arcas.BL.IbmMq
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly")]
     public class IBMMqClient : IDisposable
     {
         private IBMMqClient() { }
@@ -83,9 +84,9 @@ namespace Arcas.BL.IbmMq
                 message = null;
                 throw new InvalidOperationException(String.Format("MQ {0}", mqex.Message));
             }
-            catch (Exception ex)
+            catch
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -147,10 +148,10 @@ namespace Arcas.BL.IbmMq
                     return null;
                 throw new InvalidOperationException(String.Format("MQ {0}", mqex.Message));
             }
-            catch (Exception ex)
+            catch
             {
                 RollbackGet();
-                throw ex;
+                throw;
             }
 
             return res;
@@ -170,6 +171,7 @@ namespace Arcas.BL.IbmMq
 
         #region Члены IDisposable
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly")]
         public void Dispose()
         {
             if (mqManager != null && mqManager.IsConnected)

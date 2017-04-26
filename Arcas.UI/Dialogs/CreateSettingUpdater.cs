@@ -47,7 +47,8 @@ namespace Arcas.Settings
         private class DbTypeItem
         {
             public Type ConType { get; set; }
-            public byte[] AssembyFile { get; set; }
+            public byte[] AssembyRawBytes { get; set; }
+            public AssemblyName AssembyNameFile { get; set; }
             public override string ToString()
             {
                 if (ConType == null)
@@ -74,10 +75,133 @@ namespace Arcas.Settings
             errorTracker.SetError(tbConnectionString, "Не указана строка соединения с модельной БД");
         }
 
+        public TFSDBList ItemsInSets { get; set; }
+
 
         private ErrorTracker errorTracker = null;
         private WrapTfs wrapTfs = new WrapTfs();
-        public TFSDBList ItemsInSets { get; set; }
+        private TfsDbLink editLink = null;
+
+        public void EditedSet(TfsDbLink tfsDbLinckSet)
+        {
+            editLink = tfsDbLinckSet;
+            if (
+                editLink == null ||
+                editLink.Name.IsNullOrWhiteSpace() ||
+                editLink.ServerUri == null ||
+                editLink.ServerUri.AbsolutePath.IsNullOrWhiteSpace() ||
+                editLink.ServerPathToSettings.IsNullOrWhiteSpace()
+                )
+                return;
+
+            String tempfile = null;
+            try
+            {
+                UpdateDbSetting upsets = null;
+                using (TFSRoutineBL tfsbl = new TFSRoutineBL())
+                {
+                    tfsbl.VersionControl(editLink.ServerUri);
+
+                    tempfile = Path.Combine(DomainContext.TempPath, Guid.NewGuid().ToString());
+                    tfsbl.DownloadFile(editLink.ServerPathToSettings, tempfile);
+                }
+
+                try
+                {
+                    upsets = File.ReadAllBytes(tempfile).DeserializeAesDecrypt<UpdateDbSetting>(editLink.ServerPathToSettings);
+                }
+                catch (Exception ex)
+                {
+                    String msg = ex.Expand();
+                    if (ex.GetType().Name == "TargetInvocationException" && ex.InnerException != null)
+                        msg = ex.InnerException.Message;
+                    throw new Exception("Получение файла настроек неуспешно. Exception: " + msg);
+                }
+
+                if (upsets == null || upsets.ServerPathScripts.IsNullOrWhiteSpace())
+                {
+                    throw new Exception("Получение файла настроек неуспешно");
+                }
+
+                if (upsets.AssemplyWithImplementDbConnection != null)
+                    upsets.AssemplyWithImplementDbConnection = upsets.AssemplyWithImplementDbConnection.GZipDecompress();
+
+                Type conn = typeof(SqlConnection);
+                Boolean useSqlConnection = true;
+
+                if (upsets.TypeConnectionFullName != conn.ToString())
+                {
+                    if (upsets.AssemplyWithImplementDbConnection == null)
+                        throw new Exception($"В настроках указан тип DbConnection '{upsets.TypeConnectionFullName}', но отсутствует бинарное представление сборки реализации");
+
+                    conn = null;
+                    Assembly conAss = null;
+
+                    foreach (var asmly in AppDomain.CurrentDomain.GetAssemblies())
+                    {
+                        conn = asmly.GetType(upsets.TypeConnectionFullName, false);
+
+                        if (conn != null)
+                        {
+                            conAss = asmly;
+                            break;
+                        }
+                    }
+
+                    if (conn == null)
+                        conAss = AppDomain.CurrentDomain.Load(upsets.AssemplyWithImplementDbConnection);
+
+                    conn = conAss.ExportedTypes.FirstOrDefault(x => x.FullName == upsets.TypeConnectionFullName);
+
+                    if (conn == null)
+                        throw new Exception($"Не удалось найти тип DbConnection '{upsets.TypeConnectionFullName}'");
+                    useSqlConnection = false;
+                }
+
+                tbFolderForScripts.Text = upsets.ServerPathScripts;
+                tbConnectionString.Text = upsets.ConnectionStringModelDb;
+                tbPartBeforescript.Text = upsets.ScriptPartBeforeBodyWithTran;
+                tbPartAfterScript.Text = upsets.ScriptPartAfterBodyWithTran;
+                tbScriptUpdateVer.Text = upsets.ScriptUpdateVer;
+                tbTfsProject.Text = editLink.ServerUri.OriginalString;
+                var revStr = new String(editLink.ServerPathToSettings.Reverse().ToArray());
+                var revFileName = revStr.SubString(0, revStr.IndexOf("/"));
+                var revServPath = revStr.SubString(revStr.IndexOf("/") + 1);
+                tbSetFileServerFolder.Text = new String(revServPath.Reverse().ToArray());
+                tbSetFileName.Text = new String(revFileName.Reverse().ToArray());
+
+                if (!useSqlConnection)
+                {
+                    var item = new DbTypeItem();
+                    item.AssembyRawBytes = upsets.AssemplyWithImplementDbConnection;
+                    item.ConType = conn;
+                    item.AssembyNameFile = conn.Assembly.GetName();
+
+                    cmbDbConectionType.Items.Insert(cmbDbConectionType.Items.Count - 1, item);
+                    cmbDbConectionType.SelectedItem = item;
+                }
+
+                //upsets.FormatBinary
+
+                tbSettingName.Text = editLink.Name;
+
+                tbSettingName_Validating(null, null);
+                tbTfsProject_Validating(null, null);
+                tbSetFileName_Validating(null, null);
+                tbSetFileServerFolder_Validating(null, null);
+                tbFolderForScripts_Validating(null, null);
+                tbConnectionString_Validating(null, null);
+            }
+            catch
+            {
+                if (!tempfile.IsNullOrWhiteSpace() || File.Exists(tempfile))
+                    File.Delete(tempfile);
+
+                throw;
+            }
+        }
+
+        #region валидаторы
 
         private void tbSettingName_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -87,7 +211,8 @@ namespace Arcas.Settings
                 return;
             }
 
-            if (ItemsInSets.Any(x => x.Name == tbSettingName.Text))
+            var exstSet = ItemsInSets.FirstOrDefault(x => x.Name == tbSettingName.Text);
+            if (exstSet != editLink)
             {
                 errorTracker.SetError(tbSettingName, "Наименование должно быть уникальным");
                 return;
@@ -95,6 +220,7 @@ namespace Arcas.Settings
 
             errorTracker.SetError(tbSettingName, "");
         }
+
         private void tbTfsProject_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (tbTfsProject.Text.IsNullOrWhiteSpace())
@@ -108,14 +234,7 @@ namespace Arcas.Settings
             btScriptFolder.Enabled = !tbTfsProject.Text.IsNullOrWhiteSpace();
 
         }
-        private void button2_Click(object sender, EventArgs e)
-        {
-            var serverProj = wrapTfs.ShowTeamProjectPicker(this);
-            if (serverProj == null)
-                return;
-            tbTfsProject.Text = serverProj.ToString();
-            tbTfsProject_Validating(null, null);
-        }
+
         private void tbSetFileName_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (tbSetFileName.Text.IsNullOrWhiteSpace())
@@ -126,13 +245,7 @@ namespace Arcas.Settings
 
             tbSetFileName.Text = tbSetFileName.Text.ReplaceInvalidPathChars();
         }
-        private void button1_Click(object sender, EventArgs e)
-        {
-            var vc = wrapTfs.VersionControlServerGet(new Uri(tbTfsProject.Text));
-            var folder = wrapTfs.ShowDialogChooseServerFolder(this, vc, null);
-            tbSetFileServerFolder.Text = folder;
-            tbSetFileServerFolder_Validating(null, null);
-        }
+
         private void tbSetFileServerFolder_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (tbSetFileServerFolder.Text.IsNullOrWhiteSpace())
@@ -140,6 +253,46 @@ namespace Arcas.Settings
             else
                 errorTracker.SetError(tbSetFileServerFolder, null);
         }
+
+        private void tbFolderForScripts_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (tbFolderForScripts.Text.IsNullOrWhiteSpace())
+                errorTracker.SetError(tbFolderForScripts, "Не указан путь сохранения скриптов на сервере");
+            else
+                errorTracker.SetError(tbFolderForScripts, null);
+        }
+
+        private void tbConnectionString_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (tbConnectionString.Text.IsNullOrWhiteSpace())
+                errorTracker.SetError(tbConnectionString, "Не указана строка соединения с модельной БД");
+            else
+                errorTracker.SetError(tbConnectionString, null);
+
+            btChekConnection.Enabled = !tbConnectionString.Text.IsNullOrWhiteSpace();
+            if (btChekConnection.Enabled)
+                errorTracker.SetError(btChekConnection, "Необходимо проверить строку соединения");
+        }
+
+        #endregion
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            var serverProj = wrapTfs.ShowTeamProjectPicker(this);
+            if (serverProj == null)
+                return;
+            tbTfsProject.Text = serverProj.ToString();
+            tbTfsProject_Validating(null, null);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var vc = wrapTfs.VersionControlServerGet(new Uri(tbTfsProject.Text));
+            var folder = wrapTfs.ShowDialogChooseServerFolder(this, vc, null);
+            tbSetFileServerFolder.Text = folder;
+            tbSetFileServerFolder_Validating(null, null);
+        }
+
         private void cmbDbConectionType_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cmbDbConectionType.SelectedIndex < 0)
@@ -171,8 +324,23 @@ namespace Arcas.Settings
 
             try
             {
-                fileAssembly = Assembly.LoadFile(filePathAssembly);
+                var assName = AssemblyName.GetAssemblyName(filePathAssembly);
+
+                fileAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.FullName == assName.FullName);
                 fileAssemblyRaw = File.ReadAllBytes(filePathAssembly);
+
+                if (fileAssembly == null)
+                    fileAssembly = Assembly.LoadFile(filePathAssembly);
+                else
+                {
+                    var setItem = cmbDbConectionType.Items.Cast<DbTypeItem>().FirstOrDefault(x => x.AssembyNameFile != null && x.AssembyNameFile.FullName == assName.FullName);
+                    if (setItem != null)
+                    {
+                        cmbDbConectionType.SelectedItem = setItem;
+                        return;
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -185,7 +353,8 @@ namespace Arcas.Settings
             {
                 var item = new DbTypeItem();
                 item.ConType = asType;
-                item.AssembyFile = fileAssemblyRaw;
+                item.AssembyRawBytes = fileAssemblyRaw;
+                item.AssembyNameFile = fileAssembly.GetName();
                 cmbDbConectionType.Items.Insert(cmbDbConectionType.Items.Count - 1, item);
                 cmbDbConectionType.SelectedItem = item;
             }
@@ -193,6 +362,7 @@ namespace Arcas.Settings
             if (cmbDbConectionType.SelectedItem == selItem)
                 cmbDbConectionType.SelectedIndex = 0;
         }
+
         private void button3_Click(object sender, EventArgs e)
         {
             var vc = wrapTfs.VersionControlServerGet(new Uri(tbTfsProject.Text));
@@ -201,24 +371,7 @@ namespace Arcas.Settings
             tbFolderForScripts_Validating(null, null);
 
         }
-        private void tbFolderForScripts_Validating(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (tbFolderForScripts.Text.IsNullOrWhiteSpace())
-                errorTracker.SetError(tbFolderForScripts, "Не указан путь сохранения скриптов на сервере");
-            else
-                errorTracker.SetError(tbFolderForScripts, null);
-        }
-        private void tbConnectionString_Validating(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (tbConnectionString.Text.IsNullOrWhiteSpace())
-                errorTracker.SetError(tbConnectionString, "Не указана строка соединения с модельной БД");
-            else
-                errorTracker.SetError(tbConnectionString, null);
 
-            btChekConnection.Enabled = !tbConnectionString.Text.IsNullOrWhiteSpace();
-            if (btChekConnection.Enabled)
-                errorTracker.SetError(btChekConnection, "Необходимо проверить строку соединения");
-        }
         private void btChekConnection_Click(object sender, EventArgs e)
         {
             DbTypeItem selitem = (DbTypeItem)cmbDbConectionType.SelectedItem;
@@ -255,6 +408,9 @@ namespace Arcas.Settings
             {
                 Dialogs.ErrorF(this, errorTracker.ToString());
                 e.Cancel = true;
+
+                if (editLink != null)
+                    ItemsInSets.Add(editLink);
                 return;
             }
 
@@ -266,7 +422,7 @@ namespace Arcas.Settings
                 taskId = tid;
 
             // формируем настройку для получения настроек
-            TfsDbLink newLink = new TfsDbLink();
+            TfsDbLink newLink = editLink ?? new TfsDbLink();
             newLink.Name = tbSettingName.Text;
             newLink.ServerUri = new Uri(tbTfsProject.Text);
             newLink.ServerPathToSettings = tbSetFileServerFolder.Text + "/" + tbSetFileName.Text;
@@ -276,8 +432,8 @@ namespace Arcas.Settings
             var newSet = new UpdateDbSetting();
             newSet.ServerPathScripts = tbFolderForScripts.Text;
             newSet.TypeConnectionFullName = dbItem.ConType.ToString();
-            if (dbItem.AssembyFile != null)
-                newSet.AssemplyWithImplementDbConnection = dbItem.AssembyFile.GZipCompress();
+            if (dbItem.AssembyRawBytes != null)
+                newSet.AssemplyWithImplementDbConnection = dbItem.AssembyRawBytes.GZipCompress();
             newSet.ConnectionStringModelDb = tbConnectionString.Text;
             newSet.ScriptPartBeforeBodyWithTran = tbPartBeforescript.Text.GetNullIfIsNullOrWhiteSpace();
             newSet.ScriptPartAfterBodyWithTran = tbPartAfterScript.Text.GetNullIfIsNullOrWhiteSpace();
@@ -323,7 +479,8 @@ namespace Arcas.Settings
                     tfsbl.CheckIn("Добавленение настроек версионности", linkedTask);
                 }
 
-                this.ItemsInSets.Add(newLink);
+                if (editLink == null)
+                    this.ItemsInSets.Add(newLink);
             }
             catch (Exception ex)
             {

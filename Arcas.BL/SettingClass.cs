@@ -52,43 +52,66 @@ namespace Arcas.Settings
         public String Name { get; set; }
         public Uri ServerUri { get; set; }
         public String ServerPathToSettings { get; set; }
+        public UpdateDbSetting.FormatBinaryData? FormatBinary { get; set; }
     }
 
     public class UpdateDbSetting
     {
         /// <summary>
+        /// Форматировние бинарных данных
+        /// </summary>
+        public struct FormatBinaryData
+        {
+            /// <summary>
+            /// Префикс к бинарному представлению
+            /// </summary>
+            public String Prefix { get; set; }
+            /// <summary>
+            /// Форматирование байта
+            /// </summary>
+            public String FormatByte { get; set; }
+
+        }
+
+        /// <summary>
         /// Путь на сервере СКВ, куда складываются скрипты
         /// </summary>
         public String ServerPathScripts { get; set; }
+
         /// <summary>
         /// Полное имя типа (с пространством имен) коннекшена
         /// </summary>        
         public String TypeConnectionFullName { get; set; }
+
         /// <summary>
         /// Бинарный образ сборки, содержащей тип конекшена к БД, который реализует DbConnection. Null для SqlConnection
         /// </summary>
         public byte[] AssemplyWithImplementDbConnection { get; set; }
+
         /// <summary>
         /// Строка соединения с БД для накатки (модельная БД)
         /// </summary>
         public String ConnectionStringModelDb { get; set; }
+
         /// <summary>
         /// Часть скрипта, идущая перед телом версии при наличии транзакции
         /// </summary>
         public String ScriptPartBeforeBodyWithTran { get; set; }
+
         /// <summary>
         /// Часть скрипта, идущая после тела версии при наличии транзакции
         /// </summary>
         public String ScriptPartAfterBodyWithTran { get; set; }
+
         /// <summary>
         /// Скрипт измемения значения версии БД
         /// </summary>
         public string ScriptUpdateVer { get; set; }
 
-        //        Текстовки оборачиваются в String.Format(...
-        //Параметры:
-        //0 - сгенернная версия (int)
-        //1 - дата генерации(DateTime)
-        //2 - коментарий пользователя к скрипту(replace '/r/n' на '/r/n--'  то есть. строки начинаются с  "--")
+        /// <summary>
+        /// Настройки для форматировния бинарных данных для вставки в текст скрипта
+        /// </summary>
+        public FormatBinaryData? FormatBinary { get; set; }
+
     }
 }
