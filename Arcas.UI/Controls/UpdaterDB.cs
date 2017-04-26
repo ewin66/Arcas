@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Arcas.BL;
+using Arcas.BL.TFS;
 using Arcas.Settings;
 using Cav;
 using Cav.Tfs;
@@ -18,6 +20,7 @@ namespace Arcas.Controls
         }
 
         Boolean textChanged = true;
+        UpdateDbSetting.FormatBinaryData? formatbin = null;
 
         private void btSaveScript_Click(object sender, EventArgs e)
         {
@@ -249,7 +252,7 @@ namespace Arcas.Controls
                 return;
             if (lbLinkedWirkItem.SelectedItems.Count == 0)
                 return;
-            contextMenuStrip1.Show(Cursor.Position);
+            cmsLinkedWorkItems.Show(Cursor.Position);
         }
 
         private void btTfsDbLinkSettings_Click(object sender, EventArgs e)
@@ -268,16 +271,25 @@ namespace Arcas.Controls
             TfsDbLink curset = cbxTfsDbLinc.SelectedItem as TfsDbLink;
 
             this.btSaveScript.Enabled = false;
+            formatbin = null;
 
             if (curset != null)
             {
                 if (!curset.ServerPathToSettings.IsNullOrWhiteSpace() & curset.ServerUri != null)
                 {
+                    String tempfile = null;
                     try
                     {
-                        // Проверяем доступность TFS                     
-                        var tfs = new WrapTfs();
-                        tfs.VersionControlServerGet(curset.ServerUri);
+                        // Проверяем доступность TFS
+                        // подгружаем настройку бинарныго формата
+                        using (var tfsbl = new TFSRoutineBL())
+                        {
+                            tfsbl.VersionControl(curset.ServerUri);
+                            tempfile = Path.Combine(DomainContext.TempPath, Guid.NewGuid().ToString());
+                            tfsbl.DownloadFile(curset.ServerPathToSettings, tempfile);
+                            var upsets = File.ReadAllBytes(tempfile).DeserializeAesDecrypt<UpdateDbSetting>(curset.ServerPathToSettings);
+                            formatbin = upsets.FormatBinary;
+                        }
 
                         this.btSaveScript.Enabled = true;
                     }
@@ -288,12 +300,22 @@ namespace Arcas.Controls
                             exMsg = ex.InnerException.Message;
                         Dialogs.ErrorF(this, exMsg);
                     }
+                    finally
+                    {
+                        if (!tempfile.IsNullOrWhiteSpace() && File.Exists(tempfile))
+                            File.Delete(tempfile);
+                    }
                 }
 
                 Config.Instance.SelestedTFSDB = curset.Name;
             }
 
             bttvQueryRefresh_Click(null, null);
+        }
+
+        private void tsmiClearScriptText_Click(object sender, EventArgs e)
+        {
+            tbScriptBody.Text = null;
         }
     }
 }

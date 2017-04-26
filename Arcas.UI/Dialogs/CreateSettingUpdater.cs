@@ -194,10 +194,12 @@ namespace Arcas.Settings
             }
             catch
             {
+                throw;
+            }
+            finally
+            {
                 if (!tempfile.IsNullOrWhiteSpace() || File.Exists(tempfile))
                     File.Delete(tempfile);
-
-                throw;
             }
         }
 

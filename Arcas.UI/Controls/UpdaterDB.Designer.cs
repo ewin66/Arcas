@@ -54,12 +54,15 @@
             this.btAddWorkItem = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.lbLinkedWirkItem = new System.Windows.Forms.ListBox();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cmsLinkedWorkItems = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsScriptArea = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiClearScriptText = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.contextMenuStrip1.SuspendLayout();
+            this.cmsLinkedWorkItems.SuspendLayout();
+            this.cmsScriptArea.SuspendLayout();
             this.SuspendLayout();
             // 
             // chbTransaction
@@ -330,12 +333,12 @@
             this.lbLinkedWirkItem.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lbLinkedWirkItem_KeyUp);
             this.lbLinkedWirkItem.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lbLinkedWirkItem_MouseDown);
             // 
-            // contextMenuStrip1
+            // cmsLinkedWorkItems
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cmsLinkedWorkItems.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.deleteToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(119, 26);
+            this.cmsLinkedWorkItems.Name = "contextMenuStrip1";
+            this.cmsLinkedWorkItems.Size = new System.Drawing.Size(119, 26);
             // 
             // deleteToolStripMenuItem
             // 
@@ -344,6 +347,20 @@
             this.deleteToolStripMenuItem.Size = new System.Drawing.Size(118, 22);
             this.deleteToolStripMenuItem.Text = "Удалить";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
+            // cmsScriptArea
+            // 
+            this.cmsScriptArea.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiClearScriptText});
+            this.cmsScriptArea.Name = "contextMenuStrip1";
+            this.cmsScriptArea.Size = new System.Drawing.Size(202, 48);
+            // 
+            // tsmiClearScriptText
+            // 
+            this.tsmiClearScriptText.Name = "tsmiClearScriptText";
+            this.tsmiClearScriptText.Size = new System.Drawing.Size(201, 22);
+            this.tsmiClearScriptText.Text = "Очистить тело скрипта";
+            this.tsmiClearScriptText.Click += new System.EventHandler(this.tsmiClearScriptText_Click);
             // 
             // UpdaterDB
             // 
@@ -357,7 +374,8 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            this.contextMenuStrip1.ResumeLayout(false);
+            this.cmsLinkedWorkItems.ResumeLayout(false);
+            this.cmsScriptArea.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -387,8 +405,10 @@
         private System.Windows.Forms.ListBox lbLinkedWirkItem;
         private System.Windows.Forms.Button btAddInIDTask;
         private System.Windows.Forms.TextBox tbIdTask;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ContextMenuStrip cmsLinkedWorkItems;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.Button btTfsDbLinkSettings;
+        private System.Windows.Forms.ContextMenuStrip cmsScriptArea;
+        private System.Windows.Forms.ToolStripMenuItem tsmiClearScriptText;
     }
 }
