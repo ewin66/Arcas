@@ -35,7 +35,16 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tbComment = new System.Windows.Forms.TextBox();
             this.btSaveScript = new System.Windows.Forms.Button();
-            this.tbScriptBody = new System.Windows.Forms.TextBox();
+            this.rtbScriptBody = new System.Windows.Forms.RichTextBox();
+            this.cmsScriptArea = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiTextSelectCopy = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiPasteText = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiTextSelectCute = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiTextSelectDelete = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmiClearScriptText = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmiInsertBinfile = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.cbxTfsDbLinc = new System.Windows.Forms.ComboBox();
             this.btClear = new System.Windows.Forms.Button();
@@ -56,13 +65,11 @@
             this.lbLinkedWirkItem = new System.Windows.Forms.ListBox();
             this.cmsLinkedWorkItems = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.cmsScriptArea = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsmiClearScriptText = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsScriptArea.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.cmsLinkedWorkItems.SuspendLayout();
-            this.cmsScriptArea.SuspendLayout();
             this.SuspendLayout();
             // 
             // chbTransaction
@@ -117,19 +124,89 @@
             this.btSaveScript.UseVisualStyleBackColor = true;
             this.btSaveScript.Click += new System.EventHandler(this.btSaveScript_Click);
             // 
-            // tbScriptBody
+            // rtbScriptBody
             // 
-            this.tbScriptBody.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.rtbScriptBody.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbScriptBody.Location = new System.Drawing.Point(3, 133);
-            this.tbScriptBody.MaxLength = 0;
-            this.tbScriptBody.Multiline = true;
-            this.tbScriptBody.Name = "tbScriptBody";
-            this.tbScriptBody.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbScriptBody.Size = new System.Drawing.Size(669, 421);
-            this.tbScriptBody.TabIndex = 10;
-            this.tbScriptBody.TextChanged += new System.EventHandler(this.tbScriptBody_TextChanged);
+            this.rtbScriptBody.AutoWordSelection = true;
+            this.rtbScriptBody.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.rtbScriptBody.ContextMenuStrip = this.cmsScriptArea;
+            this.rtbScriptBody.Location = new System.Drawing.Point(3, 133);
+            this.rtbScriptBody.MaxLength = 0;
+            this.rtbScriptBody.Name = "rtbScriptBody";
+            this.rtbScriptBody.Size = new System.Drawing.Size(669, 421);
+            this.rtbScriptBody.TabIndex = 10;
+            this.rtbScriptBody.Text = "";
+            this.rtbScriptBody.TextChanged += new System.EventHandler(this.tbScriptBody_TextChanged);
+            this.rtbScriptBody.MouseDown += new System.Windows.Forms.MouseEventHandler(this.rtbScriptBody_MouseDown);
+            // 
+            // cmsScriptArea
+            // 
+            this.cmsScriptArea.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiTextSelectCopy,
+            this.tsmiPasteText,
+            this.tsmiTextSelectCute,
+            this.tsmiTextSelectDelete,
+            this.toolStripMenuItem2,
+            this.tsmiClearScriptText,
+            this.toolStripMenuItem1,
+            this.tsmiInsertBinfile});
+            this.cmsScriptArea.Name = "contextMenuStrip1";
+            this.cmsScriptArea.Size = new System.Drawing.Size(303, 148);
+            this.cmsScriptArea.Opening += new System.ComponentModel.CancelEventHandler(this.cmsScriptArea_Opening);
+            // 
+            // tsmiTextSelectCopy
+            // 
+            this.tsmiTextSelectCopy.Name = "tsmiTextSelectCopy";
+            this.tsmiTextSelectCopy.Size = new System.Drawing.Size(302, 22);
+            this.tsmiTextSelectCopy.Text = "Копировать";
+            this.tsmiTextSelectCopy.Click += new System.EventHandler(this.tsmiCopySelect_Click);
+            // 
+            // tsmiPasteText
+            // 
+            this.tsmiPasteText.Name = "tsmiPasteText";
+            this.tsmiPasteText.Size = new System.Drawing.Size(302, 22);
+            this.tsmiPasteText.Text = "Вставить";
+            this.tsmiPasteText.Click += new System.EventHandler(this.tsmiPaste_Click);
+            // 
+            // tsmiTextSelectCute
+            // 
+            this.tsmiTextSelectCute.Name = "tsmiTextSelectCute";
+            this.tsmiTextSelectCute.Size = new System.Drawing.Size(302, 22);
+            this.tsmiTextSelectCute.Text = "Вырезать";
+            this.tsmiTextSelectCute.Click += new System.EventHandler(this.tsmiTextSelectCute_Click);
+            // 
+            // tsmiTextSelectDelete
+            // 
+            this.tsmiTextSelectDelete.Name = "tsmiTextSelectDelete";
+            this.tsmiTextSelectDelete.Size = new System.Drawing.Size(302, 22);
+            this.tsmiTextSelectDelete.Text = "Удалить";
+            this.tsmiTextSelectDelete.Click += new System.EventHandler(this.tsmiDeleteText_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(299, 6);
+            // 
+            // tsmiClearScriptText
+            // 
+            this.tsmiClearScriptText.Name = "tsmiClearScriptText";
+            this.tsmiClearScriptText.Size = new System.Drawing.Size(302, 22);
+            this.tsmiClearScriptText.Text = "Очистить тело скрипта";
+            this.tsmiClearScriptText.Click += new System.EventHandler(this.tsmiClearScriptText_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(299, 6);
+            // 
+            // tsmiInsertBinfile
+            // 
+            this.tsmiInsertBinfile.Name = "tsmiInsertBinfile";
+            this.tsmiInsertBinfile.Size = new System.Drawing.Size(302, 22);
+            this.tsmiInsertBinfile.Text = "Вставить бинарное представление файла";
+            this.tsmiInsertBinfile.Click += new System.EventHandler(this.tsmiInsertBinfile_Click);
             // 
             // label1
             // 
@@ -171,7 +248,7 @@
             this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.tbComment);
             this.panel1.Controls.Add(this.btSaveScript);
-            this.panel1.Controls.Add(this.tbScriptBody);
+            this.panel1.Controls.Add(this.rtbScriptBody);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.cbxTfsDbLinc);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -348,20 +425,6 @@
             this.deleteToolStripMenuItem.Text = "Удалить";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
-            // cmsScriptArea
-            // 
-            this.cmsScriptArea.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiClearScriptText});
-            this.cmsScriptArea.Name = "contextMenuStrip1";
-            this.cmsScriptArea.Size = new System.Drawing.Size(202, 48);
-            // 
-            // tsmiClearScriptText
-            // 
-            this.tsmiClearScriptText.Name = "tsmiClearScriptText";
-            this.tsmiClearScriptText.Size = new System.Drawing.Size(201, 22);
-            this.tsmiClearScriptText.Text = "Очистить тело скрипта";
-            this.tsmiClearScriptText.Click += new System.EventHandler(this.tsmiClearScriptText_Click);
-            // 
             // UpdaterDB
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -369,13 +432,13 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "UpdaterDB";
             this.Size = new System.Drawing.Size(931, 597);
+            this.cmsScriptArea.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.cmsLinkedWorkItems.ResumeLayout(false);
-            this.cmsScriptArea.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -387,7 +450,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox tbComment;
         private System.Windows.Forms.Button btSaveScript;
-        private System.Windows.Forms.TextBox tbScriptBody;
+        private System.Windows.Forms.RichTextBox rtbScriptBody;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox cbxTfsDbLinc;
         private System.Windows.Forms.Button btClear;
@@ -410,5 +473,12 @@
         private System.Windows.Forms.Button btTfsDbLinkSettings;
         private System.Windows.Forms.ContextMenuStrip cmsScriptArea;
         private System.Windows.Forms.ToolStripMenuItem tsmiClearScriptText;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem tsmiInsertBinfile;
+        private System.Windows.Forms.ToolStripMenuItem tsmiTextSelectCopy;
+        private System.Windows.Forms.ToolStripMenuItem tsmiPasteText;
+        private System.Windows.Forms.ToolStripMenuItem tsmiTextSelectCute;
+        private System.Windows.Forms.ToolStripMenuItem tsmiTextSelectDelete;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
     }
 }

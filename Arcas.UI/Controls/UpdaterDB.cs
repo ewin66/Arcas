@@ -35,7 +35,7 @@ namespace Arcas.Controls
             savbl.StatusMessages += savbl_StatusMessages;
             var msg = savbl.SaveScript(
                 (TfsDbLink)cbxTfsDbLinc.SelectedItem,
-                tbScriptBody.Text,
+                rtbScriptBody.Text,
                 tbComment.Text,
                 chbTransaction.Checked,
                 lbLinkedWirkItem.Items.Cast<Lwi>().Select(x => x.ID).ToList());
@@ -71,7 +71,7 @@ namespace Arcas.Controls
         private void btClear_Click(object sender, EventArgs e)
         {
             tbComment.Text = null;
-            tbScriptBody.Text = null;
+            rtbScriptBody.Text = null;
         }
 
         private void bttvQueryRefresh_Click(object sender, EventArgs e)
@@ -315,7 +315,101 @@ namespace Arcas.Controls
 
         private void tsmiClearScriptText_Click(object sender, EventArgs e)
         {
-            tbScriptBody.Text = null;
+            rtbScriptBody.Text = null;
+        }
+
+        int posCurscript = 0;
+
+        private void cmsScriptArea_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            tsmiClearScriptText.Enabled = !rtbScriptBody.Text.IsNullOrWhiteSpace();
+            tsmiTextSelectDelete.Enabled =
+            tsmiTextSelectCopy.Enabled =
+            tsmiTextSelectCute.Enabled =
+            rtbScriptBody.SelectionLength != 0;
+            tsmiPasteText.Enabled = Clipboard.ContainsText();
+            posCurscript = rtbScriptBody.SelectionStart;
+            tsmiInsertBinfile.Enabled = formatbin != null;
+
+        }
+
+        private void tsmiInsertBinfile_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var fmbn = formatbin.GetValueOrDefault();
+                if (fmbn.FormatByte.IsNullOrWhiteSpace() || fmbn.Prefix.IsNullOrWhiteSpace())
+                    return;
+
+                String binstr = null;
+
+                var filePath = Dialogs.FileBrowser(this,
+                    Title: "Выбор файла для бинарного представления"
+                    ).FirstOrDefault();
+
+                if (filePath.IsNullOrWhiteSpace())
+                    return;
+
+                if (!File.Exists(filePath))
+                    return;
+
+                if ((new FileInfo(filePath).Length > (1024 * 1024)))
+                {
+                    Dialogs.ErrorF(this, "Файлы более 1 мегабайта нельзя обрабатывать");
+                    return;
+                }
+
+                var rawBytes = File.ReadAllBytes(filePath);
+
+                binstr = $"'{fmbn.Prefix}{rawBytes.JoinValuesToString("", false, fmbn.FormatByte)}'";
+
+                binstr = rtbScriptBody.Text.SubString(0, rtbScriptBody.SelectionStart) + binstr + rtbScriptBody.Text.SubString(rtbScriptBody.SelectionStart);
+
+                rtbScriptBody.Text = binstr;
+                posCurscript = posCurscript + binstr.Length;
+                SetPosCur();
+            }
+            catch (Exception ex)
+            {
+                Dialogs.ErrorF(this, ex.Expand());
+            }
+        }
+
+        private void tsmiCopySelect_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(rtbScriptBody.SelectedText, TextDataFormat.UnicodeText);
+        }
+
+        private void tsmiPaste_Click(object sender, EventArgs e)
+        {
+            var clipText = Clipboard.GetText();
+            rtbScriptBody.Text = rtbScriptBody.Text.Insert(rtbScriptBody.SelectionStart, clipText);
+            posCurscript = posCurscript + clipText.Length;
+            SetPosCur();
+        }
+
+        private void tsmiDeleteText_Click(object sender, EventArgs e)
+        {
+            rtbScriptBody.Text = rtbScriptBody.Text.Remove(rtbScriptBody.SelectionStart, rtbScriptBody.SelectionLength);
+            SetPosCur();
+        }
+
+        private void tsmiTextSelectCute_Click(object sender, EventArgs e)
+        {
+            tsmiCopySelect_Click(null, null);
+            tsmiDeleteText_Click(null, null);
+        }
+
+        private void SetPosCur()
+        {
+            rtbScriptBody.SelectionLength = 0;
+            rtbScriptBody.SelectionStart = posCurscript;
+            rtbScriptBody.ScrollToCaret();
+        }
+
+        private void rtbScriptBody_MouseDown(object sender, MouseEventArgs e)
+        {
+            rtbScriptBody.Focus();
         }
     }
 }
