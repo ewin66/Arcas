@@ -109,10 +109,6 @@ namespace Arcas.BL
                         return "Получение файла настроек неуспешно";
                     }
 
-                    if (upsets.AssemplyWithImplementDbConnection != null)
-                        upsets.AssemplyWithImplementDbConnection = upsets.AssemplyWithImplementDbConnection.GZipDecompress();
-
-
                     SendStat("Получение типа соединения");
 
                     Type conn = typeof(SqlConnection);

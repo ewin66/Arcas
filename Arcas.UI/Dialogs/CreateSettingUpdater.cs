@@ -67,12 +67,7 @@ namespace Arcas.Settings
             cmbDbConectionType.Items.Add(new DbTypeItem());
             cmbDbConectionType.SelectedIndex = 0;
 
-            errorTracker.SetError(tbSettingName, "Не указано наименование связки");
-            errorTracker.SetError(tbTfsProject, "Не указан проект TFS");
-            errorTracker.SetError(tbSetFileName, "Не указано наименование файла настроек");
-            errorTracker.SetError(tbSetFileServerFolder, "Не указан путь сохранения файла настроек на сервере");
-            errorTracker.SetError(tbFolderForScripts, "Не указан путь сохранения скриптов на сервере");
-            errorTracker.SetError(tbConnectionString, "Не указана строка соединения с модельной БД");
+            ValidateAll();
         }
 
         public TFSDBList ItemsInSets { get; set; }
@@ -123,9 +118,6 @@ namespace Arcas.Settings
                     throw new Exception("Получение файла настроек неуспешно");
                 }
 
-                if (upsets.AssemplyWithImplementDbConnection != null)
-                    upsets.AssemplyWithImplementDbConnection = upsets.AssemplyWithImplementDbConnection.GZipDecompress();
-
                 Type conn = typeof(SqlConnection);
                 Boolean useSqlConnection = true;
 
@@ -168,7 +160,11 @@ namespace Arcas.Settings
                 var revFileName = revStr.SubString(0, revStr.IndexOf("/"));
                 var revServPath = revStr.SubString(revStr.IndexOf("/") + 1);
                 tbSetFileServerFolder.Text = new String(revServPath.Reverse().ToArray());
-                tbSetFileName.Text = new String(revFileName.Reverse().ToArray());
+                tbFileNameSet.Text = new String(revFileName.Reverse().ToArray());
+
+                var formatBin = upsets.FormatBinary.GetValueOrDefault();
+                tbFormatBinPrefix.Text = formatBin.Prefix;
+                tbFormatBinFormat.Text = formatBin.FormatByte;
 
                 if (!useSqlConnection)
                 {
@@ -181,16 +177,14 @@ namespace Arcas.Settings
                     cmbDbConectionType.SelectedItem = item;
                 }
 
-                //upsets.FormatBinary
-
                 tbSettingName.Text = editLink.Name;
 
-                tbSettingName_Validating(null, null);
-                tbTfsProject_Validating(null, null);
-                tbSetFileName_Validating(null, null);
-                tbSetFileServerFolder_Validating(null, null);
-                tbFolderForScripts_Validating(null, null);
-                tbConnectionString_Validating(null, null);
+                ValidateAll();
+                tbFileNameSet.ReadOnly = true;
+                btPathFoldertoFileSet.Enabled = false;
+                btSelectProjectTFS.Enabled = false;
+
+
             }
             catch
             {
@@ -204,6 +198,18 @@ namespace Arcas.Settings
         }
 
         #region валидаторы
+
+        private void ValidateAll()
+        {
+            tbSettingName_Validating(null, null);
+            tbTfsProject_Validating(null, null);
+            tbSetFileName_Validating(null, null);
+            tbSetFileServerFolder_Validating(null, null);
+            tbFolderForScripts_Validating(null, null);
+            tbConnectionString_Validating(null, null);
+            tbFormatBinPrefix_Validating(null, null);
+            tbFormatBinFormat_Validating(null, null);
+        }
 
         private void tbSettingName_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
@@ -232,20 +238,20 @@ namespace Arcas.Settings
             }
 
             errorTracker.SetError(tbTfsProject, "");
-            btSetPathFolderSetFile.Enabled = !tbTfsProject.Text.IsNullOrWhiteSpace();
+            btPathFoldertoFileSet.Enabled = !tbTfsProject.Text.IsNullOrWhiteSpace();
             btScriptFolder.Enabled = !tbTfsProject.Text.IsNullOrWhiteSpace();
 
         }
 
         private void tbSetFileName_Validating(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (tbSetFileName.Text.IsNullOrWhiteSpace())
-                errorTracker.SetError(tbSetFileName, "Не указано наименование файла настроек");
+            if (tbFileNameSet.Text.IsNullOrWhiteSpace())
+                errorTracker.SetError(tbFileNameSet, "Не указано наименование файла настроек");
             else
-                errorTracker.SetError(tbSetFileName, null);
+                errorTracker.SetError(tbFileNameSet, null);
 
 
-            tbSetFileName.Text = tbSetFileName.Text.ReplaceInvalidPathChars();
+            tbFileNameSet.Text = tbFileNameSet.Text.ReplaceInvalidPathChars();
         }
 
         private void tbSetFileServerFolder_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -276,9 +282,26 @@ namespace Arcas.Settings
                 errorTracker.SetError(btChekConnection, "Необходимо проверить строку соединения");
         }
 
+        private void tbFormatBinPrefix_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (tbFormatBinPrefix.Text.IsNullOrWhiteSpace())
+                errorTracker.SetError(tbFormatBinPrefix, "Не указан префикс для построения строки представления бинарных данных");
+            else
+                errorTracker.SetError(tbFormatBinPrefix, null);
+
+        }
+
+        private void tbFormatBinFormat_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (tbFormatBinFormat.Text.IsNullOrWhiteSpace())
+                errorTracker.SetError(tbFormatBinFormat, "Не указан формат для построения строки представления бинарных данных");
+            else
+                errorTracker.SetError(tbFormatBinFormat, null);
+        }
+
         #endregion
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btSelectProjectTFS_Click(object sender, EventArgs e)
         {
             var serverProj = wrapTfs.ShowTeamProjectPicker(this);
             if (serverProj == null)
@@ -427,23 +450,27 @@ namespace Arcas.Settings
             TfsDbLink newLink = editLink ?? new TfsDbLink();
             newLink.Name = tbSettingName.Text;
             newLink.ServerUri = new Uri(tbTfsProject.Text);
-            newLink.ServerPathToSettings = tbSetFileServerFolder.Text + "/" + tbSetFileName.Text;
+            newLink.ServerPathToSettings = tbSetFileServerFolder.Text + "/" + tbFileNameSet.Text;
 
 
             // Собираем и пакуем настройки накатки
             var newSet = new UpdateDbSetting();
             newSet.ServerPathScripts = tbFolderForScripts.Text;
             newSet.TypeConnectionFullName = dbItem.ConType.ToString();
-            if (dbItem.AssembyRawBytes != null)
-                newSet.AssemplyWithImplementDbConnection = dbItem.AssembyRawBytes.GZipCompress();
+            newSet.AssemplyWithImplementDbConnection = dbItem.AssembyRawBytes;
             newSet.ConnectionStringModelDb = tbConnectionString.Text;
             newSet.ScriptPartBeforeBodyWithTran = tbPartBeforescript.Text.GetNullIfIsNullOrWhiteSpace();
             newSet.ScriptPartAfterBodyWithTran = tbPartAfterScript.Text.GetNullIfIsNullOrWhiteSpace();
             newSet.ScriptUpdateVer = tbScriptUpdateVer.Text.GetNullIfIsNullOrWhiteSpace();
+            newSet.FormatBinary = new UpdateDbSetting.FormatBinaryData()
+            {
+                Prefix = tbFormatBinPrefix.Text,
+                FormatByte = tbFormatBinFormat.Text
+            };
 
             var encodedSetting = newSet.SerializeAesEncrypt(newLink.ServerPathToSettings);
 
-            string fileNameSet = tbSetFileName.Text;
+            string fileNameSet = tbFileNameSet.Text;
 
             try
             {
