@@ -52,27 +52,28 @@ namespace Arcas.Settings
         public String Name { get; set; }
         public Uri ServerUri { get; set; }
         public String ServerPathToSettings { get; set; }
-        public UpdateDbSetting.FormatBinaryData? FormatBinary { get; set; }
+        public FormatBinaryData FormatBinary { get; set; }
+    }
+
+
+    /// <summary>
+    /// Форматировние бинарных данных
+    /// </summary>
+    public class FormatBinaryData
+    {
+        /// <summary>
+        /// Префикс к бинарному представлению
+        /// </summary>
+        public String Prefix { get; set; }
+        /// <summary>
+        /// Форматирование байта
+        /// </summary>
+        public String FormatByte { get; set; }
+
     }
 
     public class UpdateDbSetting
     {
-        /// <summary>
-        /// Форматировние бинарных данных
-        /// </summary>
-        public struct FormatBinaryData
-        {
-            /// <summary>
-            /// Префикс к бинарному представлению
-            /// </summary>
-            public String Prefix { get; set; }
-            /// <summary>
-            /// Форматирование байта
-            /// </summary>
-            public String FormatByte { get; set; }
-
-        }
-
         /// <summary>
         /// Путь на сервере СКВ, куда складываются скрипты
         /// </summary>
@@ -111,7 +112,7 @@ namespace Arcas.Settings
         /// <summary>
         /// Настройки для форматировния бинарных данных для вставки в текст скрипта
         /// </summary>
-        public FormatBinaryData? FormatBinary { get; set; }
+        public FormatBinaryData FormatBinary { get; set; }
 
     }
 }

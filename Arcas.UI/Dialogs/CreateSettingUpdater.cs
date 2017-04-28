@@ -162,7 +162,7 @@ namespace Arcas.Settings
                 tbSetFileServerFolder.Text = new String(revServPath.Reverse().ToArray());
                 tbFileNameSet.Text = new String(revFileName.Reverse().ToArray());
 
-                var formatBin = upsets.FormatBinary.GetValueOrDefault();
+                var formatBin = upsets.FormatBinary ?? new FormatBinaryData();
                 tbFormatBinPrefix.Text = formatBin.Prefix;
                 tbFormatBinFormat.Text = formatBin.FormatByte;
 
@@ -462,7 +462,7 @@ namespace Arcas.Settings
             newSet.ScriptPartBeforeBodyWithTran = tbPartBeforescript.Text.GetNullIfIsNullOrWhiteSpace();
             newSet.ScriptPartAfterBodyWithTran = tbPartAfterScript.Text.GetNullIfIsNullOrWhiteSpace();
             newSet.ScriptUpdateVer = tbScriptUpdateVer.Text.GetNullIfIsNullOrWhiteSpace();
-            newSet.FormatBinary = new UpdateDbSetting.FormatBinaryData()
+            newSet.FormatBinary = new FormatBinaryData()
             {
                 Prefix = tbFormatBinPrefix.Text,
                 FormatByte = tbFormatBinFormat.Text

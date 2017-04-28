@@ -20,7 +20,7 @@ namespace Arcas.Controls
         }
 
         Boolean textChanged = true;
-        UpdateDbSetting.FormatBinaryData? formatbin = null;
+        FormatBinaryData formatbin = null;
 
         private void btSaveScript_Click(object sender, EventArgs e)
         {
@@ -337,7 +337,7 @@ namespace Arcas.Controls
         {
             try
             {
-                var fmbn = formatbin.GetValueOrDefault();
+                var fmbn = formatbin ?? new FormatBinaryData();
                 if (fmbn.FormatByte.IsNullOrWhiteSpace() || fmbn.Prefix.IsNullOrWhiteSpace())
                     return;
 
