@@ -63,6 +63,8 @@ namespace Arcas
         private void ArcasMainMindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             Config.Instance.Save();
+
+            try { Utils.DeleteDirectory(DomainContext.TempPath); } catch { }
         }
 
         private void ArcasMain_Load(object sender, EventArgs e)

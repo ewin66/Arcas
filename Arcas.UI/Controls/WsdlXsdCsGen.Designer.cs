@@ -29,31 +29,149 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btSelFileForSave = new System.Windows.Forms.Button();
+            this.tbSaveTo = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.tbRefAssembly = new System.Windows.Forms.TextBox();
+            this.btSelRefAssembly = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.tbTargetNamespace = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.btGenerateCsFromWsdl = new System.Windows.Forms.Button();
+            this.chbCreateAsuncMethod = new System.Windows.Forms.CheckBox();
             this.btFromFile = new System.Windows.Forms.Button();
             this.tbWsdlUri = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.rbGenClient = new System.Windows.Forms.RadioButton();
+            this.rbGenService = new System.Windows.Forms.RadioButton();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.chbCreateAsuncMethod = new System.Windows.Forms.CheckBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.groupBox2);
+            this.groupBox1.Controls.Add(this.btSelFileForSave);
+            this.groupBox1.Controls.Add(this.tbSaveTo);
+            this.groupBox1.Controls.Add(this.label4);
+            this.groupBox1.Controls.Add(this.tbRefAssembly);
+            this.groupBox1.Controls.Add(this.btSelRefAssembly);
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.tbTargetNamespace);
+            this.groupBox1.Controls.Add(this.label2);
+            this.groupBox1.Controls.Add(this.btGenerateCsFromWsdl);
             this.groupBox1.Controls.Add(this.chbCreateAsuncMethod);
             this.groupBox1.Controls.Add(this.btFromFile);
             this.groupBox1.Controls.Add(this.tbWsdlUri);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(0, 0);
+            this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(672, 237);
+            this.groupBox1.Size = new System.Drawing.Size(672, 271);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Генерация из WSDL";
+            // 
+            // btSelFileForSave
+            // 
+            this.btSelFileForSave.Location = new System.Drawing.Point(117, 223);
+            this.btSelFileForSave.Name = "btSelFileForSave";
+            this.btSelFileForSave.Size = new System.Drawing.Size(33, 23);
+            this.btSelFileForSave.TabIndex = 12;
+            this.btSelFileForSave.Text = "...";
+            this.btSelFileForSave.UseVisualStyleBackColor = true;
+            this.btSelFileForSave.Click += new System.EventHandler(this.btSelFileForSave_Click);
+            // 
+            // tbSaveTo
+            // 
+            this.tbSaveTo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbSaveTo.Location = new System.Drawing.Point(156, 225);
+            this.tbSaveTo.MaxLength = 250;
+            this.tbSaveTo.Name = "tbSaveTo";
+            this.tbSaveTo.ReadOnly = true;
+            this.tbSaveTo.Size = new System.Drawing.Size(404, 20);
+            this.tbSaveTo.TabIndex = 11;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(13, 228);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(98, 13);
+            this.label4.TabIndex = 10;
+            this.label4.Text = "Сохранить в файл";
+            // 
+            // tbRefAssembly
+            // 
+            this.tbRefAssembly.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbRefAssembly.Location = new System.Drawing.Point(221, 102);
+            this.tbRefAssembly.MaxLength = 250;
+            this.tbRefAssembly.Name = "tbRefAssembly";
+            this.tbRefAssembly.Size = new System.Drawing.Size(420, 20);
+            this.tbRefAssembly.TabIndex = 9;
+            // 
+            // btSelRefAssembly
+            // 
+            this.btSelRefAssembly.Location = new System.Drawing.Point(182, 100);
+            this.btSelRefAssembly.Name = "btSelRefAssembly";
+            this.btSelRefAssembly.Size = new System.Drawing.Size(33, 23);
+            this.btSelRefAssembly.TabIndex = 8;
+            this.btSelRefAssembly.Text = "...";
+            this.btSelRefAssembly.UseVisualStyleBackColor = true;
+            this.btSelRefAssembly.Click += new System.EventHandler(this.btSelRefAssembly_Click);
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(6, 82);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(170, 41);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Ссылаться на типы в сборке вместо создания контракта данных";
+            // 
+            // tbTargetNamespace
+            // 
+            this.tbTargetNamespace.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbTargetNamespace.Location = new System.Drawing.Point(182, 56);
+            this.tbTargetNamespace.MaxLength = 250;
+            this.tbTargetNamespace.Name = "tbTargetNamespace";
+            this.tbTargetNamespace.Size = new System.Drawing.Size(459, 20);
+            this.tbTargetNamespace.TabIndex = 6;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 59);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(170, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Целевое пространство имен C#";
+            // 
+            // btGenerateCsFromWsdl
+            // 
+            this.btGenerateCsFromWsdl.Location = new System.Drawing.Point(566, 223);
+            this.btGenerateCsFromWsdl.Name = "btGenerateCsFromWsdl";
+            this.btGenerateCsFromWsdl.Size = new System.Drawing.Size(75, 23);
+            this.btGenerateCsFromWsdl.TabIndex = 4;
+            this.btGenerateCsFromWsdl.Text = "Генерация кода";
+            this.btGenerateCsFromWsdl.UseVisualStyleBackColor = true;
+            this.btGenerateCsFromWsdl.Click += new System.EventHandler(this.btGenerateCsFromWsdl_Click);
+            // 
+            // chbCreateAsuncMethod
+            // 
+            this.chbCreateAsuncMethod.AutoSize = true;
+            this.chbCreateAsuncMethod.Location = new System.Drawing.Point(156, 148);
+            this.chbCreateAsuncMethod.Name = "chbCreateAsuncMethod";
+            this.chbCreateAsuncMethod.Size = new System.Drawing.Size(192, 17);
+            this.chbCreateAsuncMethod.TabIndex = 3;
+            this.chbCreateAsuncMethod.Text = "Создавать асинхронные методы";
+            this.chbCreateAsuncMethod.UseVisualStyleBackColor = true;
             // 
             // btFromFile
             // 
@@ -84,48 +202,59 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Путь к WSDL";
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Controls.Add(this.groupBox1);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(685, 521);
+            this.flowLayoutPanel1.TabIndex = 2;
+            // 
+            // rbGenClient
+            // 
+            this.rbGenClient.AutoSize = true;
+            this.rbGenClient.Checked = true;
+            this.rbGenClient.Location = new System.Drawing.Point(6, 19);
+            this.rbGenClient.Name = "rbGenClient";
+            this.rbGenClient.Size = new System.Drawing.Size(61, 17);
+            this.rbGenClient.TabIndex = 13;
+            this.rbGenClient.Text = "Клиент";
+            this.rbGenClient.UseVisualStyleBackColor = true;
+            // 
+            // rbGenService
+            // 
+            this.rbGenService.AutoSize = true;
+            this.rbGenService.Location = new System.Drawing.Point(73, 19);
+            this.rbGenService.Name = "rbGenService";
+            this.rbGenService.Size = new System.Drawing.Size(62, 17);
+            this.rbGenService.TabIndex = 14;
+            this.rbGenService.Text = "Сервис";
+            this.rbGenService.UseVisualStyleBackColor = true;
+            // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Location = new System.Drawing.Point(0, 243);
+            this.groupBox2.Controls.Add(this.rbGenClient);
+            this.groupBox2.Controls.Add(this.rbGenService);
+            this.groupBox2.Location = new System.Drawing.Point(9, 129);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(672, 267);
-            this.groupBox2.TabIndex = 1;
+            this.groupBox2.Size = new System.Drawing.Size(141, 40);
+            this.groupBox2.TabIndex = 15;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Генерация из XSD";
-            // 
-            // chbCreateAsuncMethod
-            // 
-            this.chbCreateAsuncMethod.AutoSize = true;
-            this.chbCreateAsuncMethod.Location = new System.Drawing.Point(9, 62);
-            this.chbCreateAsuncMethod.Name = "chbCreateAsuncMethod";
-            this.chbCreateAsuncMethod.Size = new System.Drawing.Size(192, 17);
-            this.chbCreateAsuncMethod.TabIndex = 3;
-            this.chbCreateAsuncMethod.Text = "Создавать асинхронные методы";
-            this.chbCreateAsuncMethod.UseVisualStyleBackColor = true;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(310, 147);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.groupBox2.Text = "Цель кода";
             // 
             // WsdlXsdCsGen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.flowLayoutPanel1);
             this.Name = "WsdlXsdCsGen";
-            this.Size = new System.Drawing.Size(672, 521);
+            this.Size = new System.Drawing.Size(685, 521);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -133,11 +262,22 @@
         #endregion
 
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btFromFile;
         private System.Windows.Forms.TextBox tbWsdlUri;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btGenerateCsFromWsdl;
         private System.Windows.Forms.CheckBox chbCreateAsuncMethod;
+        private System.Windows.Forms.TextBox tbRefAssembly;
+        private System.Windows.Forms.Button btSelRefAssembly;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox tbTargetNamespace;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btSelFileForSave;
+        private System.Windows.Forms.TextBox tbSaveTo;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.RadioButton rbGenClient;
+        private System.Windows.Forms.RadioButton rbGenService;
     }
 }

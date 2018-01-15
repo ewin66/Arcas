@@ -48,21 +48,23 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>IbmMq\amqmdnet.dll</HintPath>
     </Reference>
-    <Reference Include="Cav.Core, Version=3.0.0.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cav.Core.3.0.0\lib\net461\Cav.Core.dll</HintPath>
+    <Reference Include="Cav.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cav.Core.4.0.0\lib\net461\Cav.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Cav.Tfs, Version=1.0.2.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cav.Tfs.1.0.2\lib\net461\Cav.Tfs.dll</HintPath>
+    <Reference Include="Cav.Tfs, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cav.Tfs.2.0.0\lib\net461\Cav.Tfs.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Cav.WinForms, Version=1.0.3.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cav.WinForms.1.0.3\lib\net461\Cav.WinForms.dll</HintPath>
+    <Reference Include="Cav.WinForms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cav.WinForms.2.0.0\lib\net461\Cav.WinForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Services" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data" />
@@ -70,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
+    <Compile Include="CsGenFromWsdlXsd.cs" />
     <Compile Include="IbmMq\IbmMqClient.cs" />
     <Compile Include="IbmMq\MqBL.cs" />
     <Compile Include="IbmMq\MqMessageGeneric.cs" />
@@ -84,9 +87,7 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="cav.snk" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="IbmMq\amqmdnet.dll" />
