@@ -115,7 +115,7 @@ namespace Arcas.BL
             var generator = new ServiceContractGenerator();
             generator.NamespaceMappings.Add("*", targetNamespace);
 
-            var options = ServiceContractGenerationOptions.None;
+            var options = ServiceContractGenerationOptions.TypedMessages;
 
             if (generateClient)
                 options |= ServiceContractGenerationOptions.ClientClass;
