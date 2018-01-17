@@ -1,17 +1,18 @@
 ﻿using System;
-using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization;
+using System.ServiceModel.Channels;
+using System.ServiceModel.Description;
 using System.Text;
-using System.Web.Services.Description;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using System.Xml.Serialization;
 using Cav;
+using WebDescription = System.Web.Services.Description;
 
 namespace Arcas.BL
 {
@@ -33,7 +34,7 @@ namespace Arcas.BL
             if (!Directory.Exists(tempPath))
                 Directory.CreateDirectory(tempPath);
 
-            var wsdlTempFile = Path.Combine(tempPath, Guid.NewGuid().ToString());
+            var wsdlTempFile = Path.Combine(tempPath, uriWsdl.ComputeMD5ChecksumString().ToString());
 
             if (File.Exists(wsdlTempFile))
                 File.Delete(wsdlTempFile);
@@ -69,6 +70,9 @@ namespace Arcas.BL
                 {
                     return "Нет доступа к месту назначения результурующего файла. Ошибка: " + ex.Message;
                 }
+
+                if (targetNamespace.IsNullOrWhiteSpace())
+                    targetNamespace = Path.GetFileNameWithoutExtension(uriWsdl);
             }
 
             // проверяем доступность места записи
@@ -78,58 +82,73 @@ namespace Arcas.BL
             File.WriteAllText(outputFile, null);
             File.Delete(outputFile);
 
-            var imperts = loadImport(wsdlTempFile, tempPath, sourseUri).ToArray();
+            var imperts = downloadImport(wsdlTempFile, tempPath, sourseUri);
 
-            ServiceDescription wsdlDescription = ServiceDescription.Read(wsdlTempFile);
-            foreach (var item in imperts)
-                wsdlDescription.Imports.Add(item.Value);
 
-            ServiceDescriptionImporter wsdlImporter = new ServiceDescriptionImporter();
+            MetadataSet mdSet = new MetadataSet();
+            mdSet.MetadataSections.Add(MetadataSection.CreateFromServiceDescription(WebDescription.ServiceDescription.Read(wsdlTempFile)));
 
             foreach (var item in imperts)
-                using (var xr = XmlReader.Create(item.Key))
-                    wsdlImporter.Schemas.Add(XmlSchema.Read(xr, null));
+                using (var xr = XmlReader.Create(item))
+                    mdSet.MetadataSections.Add(MetadataSection.CreateFromSchema(XmlSchema.Read(xr, null)));
 
-            //wsdlImporter.ProtocolName = "Soap12";
-            wsdlImporter.AddServiceDescription(wsdlDescription, null, null);
-            wsdlImporter.Style = ServiceDescriptionImportStyle.Server;
+            WsdlImporter importer = new WsdlImporter(mdSet);
 
-            //wsdlImporter.CodeGenerationOptions = CodeGenerationOptions.GenerateProperties;
-            var genOptions = CodeGenerationOptions.None;
+            if (targetNamespace.IsNullOrWhiteSpace())
+                targetNamespace = "CodeFromWsdl_" + DateTime.Now.ToString("yyyy_MM_dd__HH_mm_ss");
+
+            if (Char.IsDigit(targetNamespace[0]))
+                targetNamespace = "_" + targetNamespace;
+
+            importer.State.Remove(typeof(XsdDataContractImporter));
+
+            var xsdDCImporter = new XsdDataContractImporter();
+            xsdDCImporter.Options = new ImportOptions();
+            xsdDCImporter.Options.Namespaces.Add("*", targetNamespace);
+
+            importer.State.Add(typeof(XsdDataContractImporter), xsdDCImporter);
+
+            var xmlOptions = new XmlSerializerImportOptions();
+            xmlOptions.ClrNamespace = targetNamespace;
+            importer.State.Add(typeof(XmlSerializerImportOptions), xmlOptions);
+
+            var generator = new ServiceContractGenerator();
+            generator.NamespaceMappings.Add("*", targetNamespace);
+
+            var options = ServiceContractGenerationOptions.None;
+
+            if (generateClient)
+                options |= ServiceContractGenerationOptions.ClientClass;
+
             if (createAsync)
-                genOptions = genOptions | CodeGenerationOptions.GenerateNewAsync;
+                options |= ServiceContractGenerationOptions.TaskBasedAsynchronousMethod;
 
-            wsdlImporter.CodeGenerationOptions = genOptions;
+            generator.Options = options;
 
-            CodeNamespace codeNamespace = new CodeNamespace();
-            CodeCompileUnit codeUnit = new CodeCompileUnit();
-            codeUnit.Namespaces.Add(codeNamespace);
+            foreach (var contract in importer.ImportAllContracts())
+                generator.GenerateServiceContractType(contract);
 
-            ServiceDescriptionImportWarnings importWarning = wsdlImporter.Import(codeNamespace, codeUnit);
+            if (generator.Errors.Count != 0)
+                return generator.Errors.Select(x => x.Message).JoinValuesToString(separator: Environment.NewLine);
 
-            if (importWarning == 0)
-            {
-                StringBuilder stringBuilder = new StringBuilder();
-                StringWriter stringWriter = new StringWriter(stringBuilder);
+            // ссылочные сборки для ссылок
 
-                CodeDomProvider codeProvider = CodeDomProvider.CreateProvider("CSharp");
-                codeProvider.GenerateCodeFromCompileUnit(codeUnit, stringWriter, new CodeGeneratorOptions());
+            StringBuilder sb = new StringBuilder();
+            using (var sw = new StringWriter(sb))
+                CodeDomProvider.CreateProvider("C#")
+                    .GenerateCodeFromCompileUnit(
+                        generator.TargetCompileUnit,
+                        new IndentedTextWriter(sw),
+                        new CodeGeneratorOptions() { BracingStyle = "C" });
 
-                stringWriter.Close();
-
-                File.WriteAllText(outputFile, stringBuilder.ToString(), Encoding.UTF8);
-            }
-            else
-            {
-                Console.WriteLine(importWarning);
-            }
+            File.WriteAllText(outputFile, sb.ToString());
 
             return null;
         }
 
-        private Dictionary<String, Import> loadImport(string filePath, string tempDir, Uri sourseUri)
+        private IEnumerable<String> downloadImport(string filePath, string tempDir, Uri sourseUri)
         {
-            var res = new Dictionary<String, Import>();
+            var res = new HashSet<string>();
             XNamespace xsdNS = "http://www.w3.org/2001/XMLSchema";
             XNamespace wsdlNS = "http://schemas.xmlsoap.org/wsdl/";
             XDocument xdocfile = XDocument.Load(filePath);
@@ -137,7 +156,7 @@ namespace Arcas.BL
             string importName = null;
             string fileinTemp = null;
 
-            Action<XAttribute> lartImp = (locationAttrib) =>
+            Action<XAttribute, string> lartImp = (locationAttrib, fileintemp) =>
             {
                 Boolean importIsFile = true;
 
@@ -151,7 +170,7 @@ namespace Arcas.BL
                 if (importIsFile & sourseUri.IsFile)
                 {
                     var sourceFile = Path.Combine(Path.GetDirectoryName(sourseUri.AbsolutePath), locationAttrib.Value);
-                    File.Copy(sourceFile, fileinTemp);
+                    File.Copy(sourceFile, fileintemp);
                 }
 
                 // если какоето имя в локации, но читали по сети, то суем имя локации в Query
@@ -160,15 +179,15 @@ namespace Arcas.BL
                     UriBuilder ub = new UriBuilder(sourseUri);
                     ub.Query = locationAttrib.Value;
 
-                    HttpDownloadFile(ub.Uri.PathAndQuery, fileinTemp);
+                    HttpDownloadFile(ub.Uri.PathAndQuery, fileintemp);
                 }
 
                 // если в локации ссылка, то читаем по ней.
                 if (!importIsFile)
-                    HttpDownloadFile(locationAttrib.Value, fileinTemp);
+                    HttpDownloadFile(locationAttrib.Value, fileintemp);
 
-                foreach (var item in loadImport(fileinTemp, tempDir, sourseUri))
-                    res[item.Key] = item.Value;
+                foreach (var item in downloadImport(fileintemp, tempDir, sourseUri))
+                    res.Add(item);
             };
 
             foreach (var item in xdocfile.Descendants(xsdNS + "import"))
@@ -184,13 +203,14 @@ namespace Arcas.BL
                 importName = locationAttrib.Value.ComputeMD5ChecksumString().ToString();
                 fileinTemp = Path.Combine(tempDir, importName);
 
-                lartImp(locationAttrib);
+                lartImp(locationAttrib, fileinTemp);
 
                 locationAttrib.Value = fileinTemp;
-                res[fileinTemp] = new Import() { Location = fileinTemp, Namespace = item.Attribute("namespace").Value };
+
+                res.Add(fileinTemp);
             }
 
-            foreach (var item in xdocfile.Descendants(wsdlNS + "import"))
+            foreach (var item in xdocfile.Descendants(wsdlNS + "import").ToArray())
             {
                 var locationAttrib = item.Attribute("location");
 
@@ -203,10 +223,13 @@ namespace Arcas.BL
                 importName = locationAttrib.Value.ComputeMD5ChecksumString().ToString();
                 fileinTemp = Path.Combine(tempDir, importName);
 
-                lartImp(locationAttrib);
+                lartImp(locationAttrib, fileinTemp);
 
-                locationAttrib.Value = fileinTemp;
-                //res.Add(fileinTemp);
+                var wsdlI = XDocument.Load(fileinTemp);
+                foreach (var el in wsdlI.Root.Elements())
+                    xdocfile.Root.Add(el);
+
+                item.Remove();
             }
 
             xdocfile.Save(filePath);
@@ -221,3 +244,4 @@ namespace Arcas.BL
         }
     }
 }
+
