@@ -37,12 +37,12 @@ namespace Arcas.Controls
         private void btSelFileForSave_Click(object sender, System.EventArgs e)
         {
             var pathfile = Dialogs.SaveFile(
-            Owner: this,
-            Title: "Сохранить код в файл",
-            Filter: "C# файл| *.cs",
-            FileName: tbSaveTo.Text.GetNullIfIsNullOrWhiteSpace(),
-            DefaultExt: "cs",
-            RestoreDirectory: true);
+                Owner: this,
+                Title: "Сохранить код в файл",
+                Filter: "C# файл| *.cs",
+                FileName: tbSaveTo.Text.GetNullIfIsNullOrWhiteSpace(),
+                DefaultExt: "cs",
+                RestoreDirectory: true);
 
             tbSaveTo.Text = pathfile.GetNullIfIsNullOrWhiteSpace();
         }
