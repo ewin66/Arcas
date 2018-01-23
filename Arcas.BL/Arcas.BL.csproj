@@ -76,7 +76,6 @@
     <Compile Include="IbmMq\IbmMqClient.cs" />
     <Compile Include="IbmMq\MqBL.cs" />
     <Compile Include="IbmMq\MqMessageGeneric.cs" />
-    <Compile Include="IbmMq\MqSettingGeneric.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingClass.cs" />
     <Compile Include="TfsDBSaveBL.cs" />

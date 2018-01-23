@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Arcas.BL.IbmMq;
 using Arcas.Settings;
 using Cav.Configuration;
 
@@ -16,10 +15,33 @@ namespace Arcas
         /// <summary>
         /// Последние успешно использованные настройки при работе с Mq
         /// </summary>
-        public MqSettingGeneric MqSets { get; set; }
+        public MqSettingT MqSets { get; set; }
         /// <summary>
         /// Коллекция настроек связок TFS-DB
         /// </summary>
         public List<TfsDbLink> TfsDbSets { get; set; }
+
+        /// <summary>
+        /// Настройки для генаратора из wsdl и xsd
+        /// </summary>
+        public WsdlXsdGenSettingT WsdlXsdGenSetting { get; set; }
+    }
+
+
+    public struct WsdlXsdGenSettingT
+    {
+        public String Wsdl_PathToWsdl { get; set; }
+        public String Wsdl_PathToSaveFile { get; set; }
+        public String Wsdl_Namespace { get; set; }
+    }
+
+    public struct MqSettingT
+    {
+        public string Host { get; set; }
+        public string ManagerName { get; set; }
+        public string ChannelName { get; set; }
+        public string QueueName { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
     }
 }

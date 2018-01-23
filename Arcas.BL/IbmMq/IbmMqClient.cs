@@ -25,7 +25,7 @@ namespace Arcas.BL.IbmMq
         /// </summary>
         /// <param name="mqSetting">Настройки очереди</param>
         /// <returns></returns>
-        public static IBMMqClient CreateClient(MqSettingGeneric mqSetting)
+        public static IBMMqClient CreateClient(MqSettingT mqSetting)
         {
             return new IBMMqClient()
             {

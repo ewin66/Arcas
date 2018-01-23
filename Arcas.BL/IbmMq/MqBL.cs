@@ -7,7 +7,7 @@ namespace Arcas.BL.IbmMq
 {
     public class MqBL
     {
-        private void ChekSettings(MqSettingGeneric sets)
+        private void ChekSettings(MqSettingT sets)
         {
             if (sets.Host.IsNullOrWhiteSpace())
                 throw new ArgumentException("Не указан хост");
@@ -20,7 +20,7 @@ namespace Arcas.BL.IbmMq
         }
 
         public string Send(
-            MqSettingGeneric sets,
+            MqSettingT sets,
             String body,
             Dictionary<String, string> propMessage
             )
@@ -46,7 +46,7 @@ namespace Arcas.BL.IbmMq
         }
 
         public MqMessageGeneric Get(
-            MqSettingGeneric sets,
+            MqSettingT sets,
             Boolean rolbackGet)
         {
             ChekSettings(sets);

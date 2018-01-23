@@ -22,10 +22,10 @@ namespace Arcas.BL
             string uriWsdl,
             bool createAsync,
             string targetNamespace,
-            string reflectAssembly,
             string outputFile,
             Boolean generateClient)
         {
+
             if (uriWsdl.IsNullOrWhiteSpace())
                 return "Не указан uri wsdl";
 
@@ -41,6 +41,7 @@ namespace Arcas.BL
 
             var sourseUri = new Uri(uriWsdl);
 
+
             if (!sourseUri.IsFile)
             {
                 if (outputFile.IsNullOrWhiteSpace())
@@ -50,6 +51,7 @@ namespace Arcas.BL
             }
             else
                 File.Copy(uriWsdl, wsdlTempFile);
+
 
             String sourseDir = null;
 
@@ -75,15 +77,33 @@ namespace Arcas.BL
                     targetNamespace = Path.GetFileNameWithoutExtension(uriWsdl);
             }
 
-            // проверяем доступность места записи
+            #region проверяем доступность места записи
+
             if (File.Exists(outputFile))
                 File.Delete(outputFile);
 
             File.WriteAllText(outputFile, null);
             File.Delete(outputFile);
 
-            var imperts = downloadImport(wsdlTempFile, tempPath, sourseUri);
+            #endregion
 
+            #region проверка пространства имен
+
+            if (targetNamespace.IsNullOrWhiteSpace())
+                targetNamespace = "CodeFromWsdl_" + DateTime.Now.ToString("yyyy_MM_dd__HH_mm_ss");
+
+            targetNamespace = targetNamespace.Trim('.');
+
+            if (Char.IsDigit(targetNamespace[0]))
+                targetNamespace = "_" + targetNamespace;
+
+            foreach (var c in targetNamespace)
+                if (!char.IsDigit(c) & !char.IsLetter(c) & c != '_' & c != '.')
+                    return "В прострвнстве имен могут быть только буквы, цифры, знак подчеркивания и точка";
+
+            #endregion
+
+            var imperts = downloadImport(wsdlTempFile, tempPath, sourseUri);
 
             MetadataSet mdSet = new MetadataSet();
             mdSet.MetadataSections.Add(MetadataSection.CreateFromServiceDescription(WebDescription.ServiceDescription.Read(wsdlTempFile)));
@@ -93,14 +113,6 @@ namespace Arcas.BL
                     mdSet.MetadataSections.Add(MetadataSection.CreateFromSchema(XmlSchema.Read(xr, null)));
 
             WsdlImporter importer = new WsdlImporter(mdSet);
-
-            if (targetNamespace.IsNullOrWhiteSpace())
-                targetNamespace = "CodeFromWsdl_" + DateTime.Now.ToString("yyyy_MM_dd__HH_mm_ss");
-
-            if (Char.IsDigit(targetNamespace[0]))
-                targetNamespace = "_" + targetNamespace;
-
-            importer.State.Remove(typeof(XsdDataContractImporter));
 
             var xsdDCImporter = new XsdDataContractImporter();
             xsdDCImporter.Options = new ImportOptions();
@@ -115,7 +127,8 @@ namespace Arcas.BL
             var generator = new ServiceContractGenerator();
             generator.NamespaceMappings.Add("*", targetNamespace);
 
-            var options = ServiceContractGenerationOptions.TypedMessages;
+            //var options = ServiceContractGenerationOptions.TypedMessages;
+            var options = ServiceContractGenerationOptions.None;
 
             if (generateClient)
                 options |= ServiceContractGenerationOptions.ClientClass;
@@ -130,8 +143,6 @@ namespace Arcas.BL
 
             if (generator.Errors.Count != 0)
                 return generator.Errors.Select(x => x.Message).JoinValuesToString(separator: Environment.NewLine);
-
-            // ссылочные сборки для ссылок
 
             StringBuilder sb = new StringBuilder();
             using (var sw = new StringWriter(sb))

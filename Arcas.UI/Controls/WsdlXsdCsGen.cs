@@ -15,6 +15,10 @@ namespace Arcas.Controls
 
             this.csGenFromWsdlXsd = csGenFromWsdlXsd;
 
+
+            tbWsdlUri.Text = Config.Instance.WsdlXsdGenSetting.Wsdl_PathToWsdl;
+            tbSaveTo.Text = Config.Instance.WsdlXsdGenSetting.Wsdl_PathToSaveFile;
+            tbTargetNamespace.Text = Config.Instance.WsdlXsdGenSetting.Wsdl_Namespace;
         }
 
         private CsGenFromWsdlXsd csGenFromWsdlXsd;
@@ -30,17 +34,6 @@ namespace Arcas.Controls
             tbWsdlUri.Text = pathfile;
         }
 
-        private void btSelRefAssembly_Click(object sender, System.EventArgs e)
-        {
-            var pathfile = Dialogs.FileBrowser(
-                    Owner: this,
-                    Title: "Сборка с типами",
-                    Filter: "Сборки(*.dll; *.exe)|*.dll;*.exe",
-                    RestoreDirectory: true).FirstOrDefault();
-
-            tbRefAssembly.Text = pathfile;
-        }
-
         private void btSelFileForSave_Click(object sender, System.EventArgs e)
         {
             var pathfile = Dialogs.SaveFile(
@@ -54,15 +47,28 @@ namespace Arcas.Controls
             tbSaveTo.Text = pathfile.GetNullIfIsNullOrWhiteSpace();
         }
 
+        private WsdlXsdGenSettingT CreateSetting()
+        {
+            return new WsdlXsdGenSettingT()
+            {
+                Wsdl_PathToWsdl = tbWsdlUri.Text,
+                Wsdl_PathToSaveFile = tbSaveTo.Text,
+                Wsdl_Namespace = tbTargetNamespace.Text
+            };
+        }
+
         private void btGenerateCsFromWsdl_Click(object sender, System.EventArgs e)
         {
             try
             {
+
+                Config.Instance.WsdlXsdGenSetting = CreateSetting();
+                Config.Instance.Save();
+
                 var msg = csGenFromWsdlXsd.GenFromWsdl(
                     uriWsdl: tbWsdlUri.Text,
                     createAsync: chbCreateAsuncMethod.Checked,
                     targetNamespace: tbTargetNamespace.Text,
-                    reflectAssembly: tbRefAssembly.Text,
                     outputFile: tbSaveTo.Text,
                     generateClient: rbGenClient.Checked);
 

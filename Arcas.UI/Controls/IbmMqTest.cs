@@ -22,17 +22,14 @@ namespace Arcas.Controls
             APKeyCol.DataPropertyName = nameof(KeyValuePair<string, string>.Key);
             APValueCol.DataPropertyName = nameof(KeyValuePair<string, string>.Value);
 
-            if ((Config.Instance.MqSets) != null)
-            {
-                var st = Config.Instance.MqSets;
+            var st = Config.Instance.MqSets;
 
-                tbHost.Text = st.Host;
-                tbManagerName.Text = st.ManagerName;
-                tbChannelName.Text = st.ChannelName;
-                tbQueueName.Text = st.QueueName;
-                tbUser.Text = st.UserName;
-                tbPass.Text = st.Password;
-            }
+            tbHost.Text = st.Host;
+            tbManagerName.Text = st.ManagerName;
+            tbChannelName.Text = st.ChannelName;
+            tbQueueName.Text = st.QueueName;
+            tbUser.Text = st.UserName;
+            tbPass.Text = st.Password;
 
             this.mqBL = mqBL;
         }
@@ -47,7 +44,7 @@ namespace Arcas.Controls
 
             try
             {
-                MqSettingGeneric sets = CreateMqSetting();
+                MqSettingT sets = CreateMqSetting();
 
                 tbMessageID.Text = mqBL.Send(
                     sets,
@@ -64,9 +61,9 @@ namespace Arcas.Controls
             }
         }
 
-        private MqSettingGeneric CreateMqSetting()
+        private MqSettingT CreateMqSetting()
         {
-            MqSettingGeneric sets = new MqSettingGeneric();
+            MqSettingT sets = new MqSettingT();
             sets.Host = tbHost.Text.GetNullIfIsNullOrWhiteSpace();
             sets.ManagerName = tbManagerName.Text.GetNullIfIsNullOrWhiteSpace();
             sets.ChannelName = tbChannelName.Text.GetNullIfIsNullOrWhiteSpace();
@@ -82,7 +79,7 @@ namespace Arcas.Controls
             tbPutDate.Text = null;
             tbBodyMessage.Text = null;
 
-            MqSettingGeneric sets = CreateMqSetting();
+            MqSettingT sets = CreateMqSetting();
 
             try
             {
@@ -153,7 +150,7 @@ namespace Arcas.Controls
                     tbBodyMessage.Text = File.ReadAllText(file);
                     FillAddProp(tbBodyMessage.Text);
 
-                    MqSettingGeneric sets = CreateMqSetting();
+                    MqSettingT sets = CreateMqSetting();
 
                     tbMessageID.Text = mqBL.Send(
                         sets,
