@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using Arcas.BL;
 using Cav;
@@ -17,8 +18,12 @@ namespace Arcas.Controls
 
 
             tbWsdlUri.Text = Config.Instance.WsdlXsdGenSetting.Wsdl_PathToWsdl;
-            tbSaveTo.Text = Config.Instance.WsdlXsdGenSetting.Wsdl_PathToSaveFile;
-            tbTargetNamespace.Text = Config.Instance.WsdlXsdGenSetting.Wsdl_Namespace;
+            tbSaveWsdlTo.Text = Config.Instance.WsdlXsdGenSetting.Wsdl_PathToSaveFile;
+            tbTargetNamespaceWsdl.Text = Config.Instance.WsdlXsdGenSetting.Wsdl_Namespace;
+
+            tbXsdUri.Text = Config.Instance.WsdlXsdGenSetting.Xsd_PathToXsd;
+            tbSaveXsdTo.Text = Config.Instance.WsdlXsdGenSetting.Xsd_PathToSaveFile;
+            tbTargetNamespaceXsd.Text = Config.Instance.WsdlXsdGenSetting.Xsd_Namespace;
         }
 
         private CsGenFromWsdlXsd csGenFromWsdlXsd;
@@ -40,11 +45,11 @@ namespace Arcas.Controls
                 Owner: this,
                 Title: "Сохранить код в файл",
                 Filter: "C# файл| *.cs",
-                FileName: tbSaveTo.Text.GetNullIfIsNullOrWhiteSpace(),
+                FileName: tbSaveWsdlTo.Text.GetNullIfIsNullOrWhiteSpace(),
                 DefaultExt: "cs",
                 RestoreDirectory: true);
 
-            tbSaveTo.Text = pathfile.GetNullIfIsNullOrWhiteSpace();
+            tbSaveWsdlTo.Text = pathfile.GetNullIfIsNullOrWhiteSpace();
         }
 
         private WsdlXsdGenSettingT CreateSetting()
@@ -52,8 +57,12 @@ namespace Arcas.Controls
             return new WsdlXsdGenSettingT()
             {
                 Wsdl_PathToWsdl = tbWsdlUri.Text,
-                Wsdl_PathToSaveFile = tbSaveTo.Text,
-                Wsdl_Namespace = tbTargetNamespace.Text
+                Wsdl_PathToSaveFile = tbSaveWsdlTo.Text,
+                Wsdl_Namespace = tbTargetNamespaceWsdl.Text,
+
+                Xsd_PathToXsd = tbXsdUri.Text,
+                Xsd_PathToSaveFile = tbSaveXsdTo.Text,
+                Xsd_Namespace = tbTargetNamespaceXsd.Text,
             };
         }
 
@@ -66,16 +75,46 @@ namespace Arcas.Controls
                 Config.Instance.Save();
 
                 var msg = csGenFromWsdlXsd.GenFromWsdl(
-                    uriWsdl: tbWsdlUri.Text,
+                    uri: tbWsdlUri.Text,
                     createAsync: chbCreateAsuncMethod.Checked,
-                    targetNamespace: tbTargetNamespace.Text,
-                    outputFile: tbSaveTo.Text,
+                    targetNamespace: tbTargetNamespaceWsdl.Text,
+                    outputFile: tbSaveWsdlTo.Text,
                     generateClient: rbGenClient.Checked);
 
                 if (!msg.IsNullOrWhiteSpace())
                     Dialogs.ErrorF(this, msg);
                 else
-                    Dialogs.InformationF(this, "Готово");
+                {
+                    if (Dialogs.QuestionOKCancelF(this, "Готово. Открыть файл?"))
+                        Process.Start(tbSaveWsdlTo.Text);
+                }
+            }
+            catch (Exception ex)
+            {
+                Dialogs.ErrorF(this, ex.Expand());
+            }
+        }
+
+        private void btGenerateCsFromXsd_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                Config.Instance.WsdlXsdGenSetting = CreateSetting();
+                Config.Instance.Save();
+
+                var msg = csGenFromWsdlXsd.GenFromXsd(
+                    uri: tbXsdUri.Text,
+                    targetNamespace: tbTargetNamespaceXsd.Text,
+                    outputFile: tbSaveXsdTo.Text);
+
+                if (!msg.IsNullOrWhiteSpace())
+                    Dialogs.ErrorF(this, msg);
+                else
+                {
+                    if (Dialogs.QuestionOKCancelF(this, "Готово. Открыть файл?"))
+                        Process.Start(tbSaveXsdTo.Text);
+                }
             }
             catch (Exception ex)
             {

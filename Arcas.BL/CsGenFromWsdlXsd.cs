@@ -16,30 +16,118 @@ using WebDescription = System.Web.Services.Description;
 
 namespace Arcas.BL
 {
+    class prepareData
+    {
+        public string MainTempFile { get; set; }
+        public IEnumerable<String> Imperts { get; set; }
+        public string TargetNamespace { get; internal set; }
+    }
+
     public class CsGenFromWsdlXsd
     {
         public string GenFromWsdl(
-            string uriWsdl,
+            string uri,
             bool createAsync,
             string targetNamespace,
             string outputFile,
             Boolean generateClient)
         {
+            var pd = new prepareData();
 
-            if (uriWsdl.IsNullOrWhiteSpace())
-                return "Не указан uri wsdl";
+            var msg = checkAndPrepareData(uri, outputFile, targetNamespace, pd);
+
+            if (!msg.IsNullOrWhiteSpace())
+                return msg;
+
+
+            MetadataSet mdSet = new MetadataSet();
+            mdSet.MetadataSections.Add(MetadataSection.CreateFromServiceDescription(WebDescription.ServiceDescription.Read(pd.MainTempFile)));
+
+            foreach (var item in pd.Imperts)
+                using (var xr = XmlReader.Create(item))
+                    mdSet.MetadataSections.Add(MetadataSection.CreateFromSchema(XmlSchema.Read(xr, null)));
+
+            WsdlImporter importer = new WsdlImporter(mdSet);
+
+            var xsdDCImporter = new XsdDataContractImporter();
+            xsdDCImporter.Options = new ImportOptions();
+            xsdDCImporter.Options.Namespaces.Add("*", pd.TargetNamespace);
+
+            importer.State.Add(typeof(XsdDataContractImporter), xsdDCImporter);
+
+            var xmlOptions = new XmlSerializerImportOptions();
+            xmlOptions.ClrNamespace = pd.TargetNamespace;
+            importer.State.Add(typeof(XmlSerializerImportOptions), xmlOptions);
+
+            var generator = new ServiceContractGenerator();
+            generator.NamespaceMappings.Add("*", pd.TargetNamespace);
+
+            //var options = ServiceContractGenerationOptions.TypedMessages;
+            var options = ServiceContractGenerationOptions.None;
+
+            if (generateClient)
+                options |= ServiceContractGenerationOptions.ClientClass;
+
+            if (createAsync)
+                options |= ServiceContractGenerationOptions.TaskBasedAsynchronousMethod;
+
+            generator.Options = options;
+
+            foreach (var contract in importer.ImportAllContracts())
+                generator.GenerateServiceContractType(contract);
+
+            if (generator.Errors.Count != 0)
+                return generator.Errors.Select(x => x.Message).JoinValuesToString(separator: Environment.NewLine);
+
+            StringBuilder sb = new StringBuilder();
+            using (var sw = new StringWriter(sb))
+                CodeDomProvider.CreateProvider("C#")
+                    .GenerateCodeFromCompileUnit(
+                        generator.TargetCompileUnit,
+                        new IndentedTextWriter(sw),
+                        new CodeGeneratorOptions() { BracingStyle = "C" });
+
+            File.WriteAllText(outputFile, sb.ToString());
+
+            return null;
+        }
+
+        public string GenFromXsd(
+            string uri,
+            string targetNamespace,
+            string outputFile)
+        {
+            var pd = new prepareData();
+
+            var msg = checkAndPrepareData(uri, outputFile, targetNamespace, pd);
+
+            if (!msg.IsNullOrWhiteSpace())
+                return msg;
+
+
+            return "gg";
+        }
+
+        private string checkAndPrepareData(
+            string uri,
+            string outputFile,
+            string targetNamespace,
+            prepareData pd)
+        {
+            if (uri.IsNullOrWhiteSpace())
+                return "Не указан uri";
 
             var tempPath = Path.Combine(DomainContext.TempPath, Guid.NewGuid().ToString());
 
             if (!Directory.Exists(tempPath))
                 Directory.CreateDirectory(tempPath);
 
-            var wsdlTempFile = Path.Combine(tempPath, uriWsdl.ComputeMD5ChecksumString().ToString());
+            var mainTempFile = Path.Combine(tempPath, uri.ComputeMD5ChecksumString().ToString());
 
-            if (File.Exists(wsdlTempFile))
-                File.Delete(wsdlTempFile);
+            if (File.Exists(mainTempFile))
+                File.Delete(mainTempFile);
 
-            var sourseUri = new Uri(uriWsdl);
+            var sourseUri = new Uri(uri);
 
 
             if (!sourseUri.IsFile)
@@ -47,18 +135,18 @@ namespace Arcas.BL
                 if (outputFile.IsNullOrWhiteSpace())
                     return "Не указан выходной файл";
 
-                HttpDownloadFile(uriWsdl, wsdlTempFile);
+                HttpDownloadFile(uri, mainTempFile);
             }
             else
-                File.Copy(uriWsdl, wsdlTempFile);
+                File.Copy(uri, mainTempFile);
 
 
             String sourseDir = null;
 
             if (outputFile.IsNullOrWhiteSpace())
             {
-                sourseDir = Path.GetDirectoryName(uriWsdl);
-                outputFile = Path.Combine(sourseDir, Path.GetFileNameWithoutExtension(uriWsdl) + ".cs");
+                sourseDir = Path.GetDirectoryName(uri);
+                outputFile = Path.Combine(sourseDir, Path.GetFileNameWithoutExtension(uri) + ".cs");
                 try
                 {
                     // проверяем доступность места записи
@@ -74,7 +162,7 @@ namespace Arcas.BL
                 }
 
                 if (targetNamespace.IsNullOrWhiteSpace())
-                    targetNamespace = Path.GetFileNameWithoutExtension(uriWsdl);
+                    targetNamespace = Path.GetFileNameWithoutExtension(uri);
             }
 
             #region проверяем доступность места записи
@@ -103,56 +191,9 @@ namespace Arcas.BL
 
             #endregion
 
-            var imperts = downloadImport(wsdlTempFile, tempPath, sourseUri);
-
-            MetadataSet mdSet = new MetadataSet();
-            mdSet.MetadataSections.Add(MetadataSection.CreateFromServiceDescription(WebDescription.ServiceDescription.Read(wsdlTempFile)));
-
-            foreach (var item in imperts)
-                using (var xr = XmlReader.Create(item))
-                    mdSet.MetadataSections.Add(MetadataSection.CreateFromSchema(XmlSchema.Read(xr, null)));
-
-            WsdlImporter importer = new WsdlImporter(mdSet);
-
-            var xsdDCImporter = new XsdDataContractImporter();
-            xsdDCImporter.Options = new ImportOptions();
-            xsdDCImporter.Options.Namespaces.Add("*", targetNamespace);
-
-            importer.State.Add(typeof(XsdDataContractImporter), xsdDCImporter);
-
-            var xmlOptions = new XmlSerializerImportOptions();
-            xmlOptions.ClrNamespace = targetNamespace;
-            importer.State.Add(typeof(XmlSerializerImportOptions), xmlOptions);
-
-            var generator = new ServiceContractGenerator();
-            generator.NamespaceMappings.Add("*", targetNamespace);
-
-            //var options = ServiceContractGenerationOptions.TypedMessages;
-            var options = ServiceContractGenerationOptions.None;
-
-            if (generateClient)
-                options |= ServiceContractGenerationOptions.ClientClass;
-
-            if (createAsync)
-                options |= ServiceContractGenerationOptions.TaskBasedAsynchronousMethod;
-
-            generator.Options = options;
-
-            foreach (var contract in importer.ImportAllContracts())
-                generator.GenerateServiceContractType(contract);
-
-            if (generator.Errors.Count != 0)
-                return generator.Errors.Select(x => x.Message).JoinValuesToString(separator: Environment.NewLine);
-
-            StringBuilder sb = new StringBuilder();
-            using (var sw = new StringWriter(sb))
-                CodeDomProvider.CreateProvider("C#")
-                    .GenerateCodeFromCompileUnit(
-                        generator.TargetCompileUnit,
-                        new IndentedTextWriter(sw),
-                        new CodeGeneratorOptions() { BracingStyle = "C" });
-
-            File.WriteAllText(outputFile, sb.ToString());
+            pd.Imperts = downloadImport(mainTempFile, tempPath, sourseUri);
+            pd.TargetNamespace = targetNamespace;
+            pd.MainTempFile = mainTempFile;
 
             return null;
         }

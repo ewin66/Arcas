@@ -32,10 +32,10 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.rbGenClient = new System.Windows.Forms.RadioButton();
             this.rbGenService = new System.Windows.Forms.RadioButton();
-            this.btSelFileForSave = new System.Windows.Forms.Button();
-            this.tbSaveTo = new System.Windows.Forms.TextBox();
+            this.btSelFileForSaveWsdl = new System.Windows.Forms.Button();
+            this.tbSaveWsdlTo = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.tbTargetNamespace = new System.Windows.Forms.TextBox();
+            this.tbTargetNamespaceWsdl = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.btGenerateCsFromWsdl = new System.Windows.Forms.Button();
             this.chbCreateAsuncMethod = new System.Windows.Forms.CheckBox();
@@ -44,15 +44,15 @@
             this.label1 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.btSelFileForSaveXsd = new System.Windows.Forms.Button();
+            this.tbSaveXsdTo = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.tbTargetNamespaceXsd = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.btXsdFile = new System.Windows.Forms.Button();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.btGenerateCsFromXsd = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
+            this.btSetXsdFile = new System.Windows.Forms.Button();
+            this.tbXsdUri = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -64,10 +64,10 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.groupBox2);
-            this.groupBox1.Controls.Add(this.btSelFileForSave);
-            this.groupBox1.Controls.Add(this.tbSaveTo);
+            this.groupBox1.Controls.Add(this.btSelFileForSaveWsdl);
+            this.groupBox1.Controls.Add(this.tbSaveWsdlTo);
             this.groupBox1.Controls.Add(this.label4);
-            this.groupBox1.Controls.Add(this.tbTargetNamespace);
+            this.groupBox1.Controls.Add(this.tbTargetNamespaceWsdl);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.btGenerateCsFromWsdl);
             this.groupBox1.Controls.Add(this.chbCreateAsuncMethod);
@@ -114,26 +114,26 @@
             this.rbGenService.Text = "Сервис";
             this.rbGenService.UseVisualStyleBackColor = true;
             // 
-            // btSelFileForSave
+            // btSelFileForSaveWsdl
             // 
-            this.btSelFileForSave.Location = new System.Drawing.Point(117, 122);
-            this.btSelFileForSave.Name = "btSelFileForSave";
-            this.btSelFileForSave.Size = new System.Drawing.Size(37, 23);
-            this.btSelFileForSave.TabIndex = 12;
-            this.btSelFileForSave.Text = "...";
-            this.btSelFileForSave.UseVisualStyleBackColor = true;
-            this.btSelFileForSave.Click += new System.EventHandler(this.btSelFileForSave_Click);
+            this.btSelFileForSaveWsdl.Location = new System.Drawing.Point(117, 122);
+            this.btSelFileForSaveWsdl.Name = "btSelFileForSaveWsdl";
+            this.btSelFileForSaveWsdl.Size = new System.Drawing.Size(37, 23);
+            this.btSelFileForSaveWsdl.TabIndex = 12;
+            this.btSelFileForSaveWsdl.Text = "...";
+            this.btSelFileForSaveWsdl.UseVisualStyleBackColor = true;
+            this.btSelFileForSaveWsdl.Click += new System.EventHandler(this.btSelFileForSave_Click);
             // 
-            // tbSaveTo
+            // tbSaveWsdlTo
             // 
-            this.tbSaveTo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbSaveWsdlTo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSaveTo.Location = new System.Drawing.Point(160, 124);
-            this.tbSaveTo.MaxLength = 250;
-            this.tbSaveTo.Name = "tbSaveTo";
-            this.tbSaveTo.ReadOnly = true;
-            this.tbSaveTo.Size = new System.Drawing.Size(481, 20);
-            this.tbSaveTo.TabIndex = 11;
+            this.tbSaveWsdlTo.Location = new System.Drawing.Point(160, 124);
+            this.tbSaveWsdlTo.MaxLength = 250;
+            this.tbSaveWsdlTo.Name = "tbSaveWsdlTo";
+            this.tbSaveWsdlTo.ReadOnly = true;
+            this.tbSaveWsdlTo.Size = new System.Drawing.Size(481, 20);
+            this.tbSaveWsdlTo.TabIndex = 11;
             // 
             // label4
             // 
@@ -144,15 +144,15 @@
             this.label4.TabIndex = 10;
             this.label4.Text = "Сохранить в файл";
             // 
-            // tbTargetNamespace
+            // tbTargetNamespaceWsdl
             // 
-            this.tbTargetNamespace.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbTargetNamespaceWsdl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbTargetNamespace.Location = new System.Drawing.Point(182, 56);
-            this.tbTargetNamespace.MaxLength = 250;
-            this.tbTargetNamespace.Name = "tbTargetNamespace";
-            this.tbTargetNamespace.Size = new System.Drawing.Size(459, 20);
-            this.tbTargetNamespace.TabIndex = 6;
+            this.tbTargetNamespaceWsdl.Location = new System.Drawing.Point(182, 56);
+            this.tbTargetNamespaceWsdl.MaxLength = 250;
+            this.tbTargetNamespaceWsdl.Name = "tbTargetNamespaceWsdl";
+            this.tbTargetNamespaceWsdl.Size = new System.Drawing.Size(459, 20);
+            this.tbTargetNamespaceWsdl.TabIndex = 6;
             // 
             // label2
             // 
@@ -226,14 +226,14 @@
             // 
             this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox3.Controls.Add(this.button1);
-            this.groupBox3.Controls.Add(this.textBox1);
+            this.groupBox3.Controls.Add(this.btSetXsdFile);
+            this.groupBox3.Controls.Add(this.tbXsdUri);
+            this.groupBox3.Controls.Add(this.btSelFileForSaveXsd);
+            this.groupBox3.Controls.Add(this.tbSaveXsdTo);
             this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Controls.Add(this.textBox2);
+            this.groupBox3.Controls.Add(this.tbTargetNamespaceXsd);
             this.groupBox3.Controls.Add(this.label5);
-            this.groupBox3.Controls.Add(this.button2);
-            this.groupBox3.Controls.Add(this.btXsdFile);
-            this.groupBox3.Controls.Add(this.textBox3);
+            this.groupBox3.Controls.Add(this.btGenerateCsFromXsd);
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Location = new System.Drawing.Point(3, 197);
             this.groupBox3.Name = "groupBox3";
@@ -242,25 +242,25 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Генерация из XSD";
             // 
-            // button1
+            // btSelFileForSaveXsd
             // 
-            this.button1.Location = new System.Drawing.Point(117, 82);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(37, 23);
-            this.button1.TabIndex = 12;
-            this.button1.Text = "...";
-            this.button1.UseVisualStyleBackColor = true;
+            this.btSelFileForSaveXsd.Location = new System.Drawing.Point(117, 82);
+            this.btSelFileForSaveXsd.Name = "btSelFileForSaveXsd";
+            this.btSelFileForSaveXsd.Size = new System.Drawing.Size(37, 23);
+            this.btSelFileForSaveXsd.TabIndex = 12;
+            this.btSelFileForSaveXsd.Text = "...";
+            this.btSelFileForSaveXsd.UseVisualStyleBackColor = true;
             // 
-            // textBox1
+            // tbSaveXsdTo
             // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbSaveXsdTo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.Location = new System.Drawing.Point(160, 84);
-            this.textBox1.MaxLength = 250;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(481, 20);
-            this.textBox1.TabIndex = 11;
+            this.tbSaveXsdTo.Location = new System.Drawing.Point(160, 84);
+            this.tbSaveXsdTo.MaxLength = 250;
+            this.tbSaveXsdTo.Name = "tbSaveXsdTo";
+            this.tbSaveXsdTo.ReadOnly = true;
+            this.tbSaveXsdTo.Size = new System.Drawing.Size(481, 20);
+            this.tbSaveXsdTo.TabIndex = 11;
             // 
             // label3
             // 
@@ -271,15 +271,15 @@
             this.label3.TabIndex = 10;
             this.label3.Text = "Сохранить в файл";
             // 
-            // textBox2
+            // tbTargetNamespaceXsd
             // 
-            this.textBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbTargetNamespaceXsd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox2.Location = new System.Drawing.Point(182, 56);
-            this.textBox2.MaxLength = 250;
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(459, 20);
-            this.textBox2.TabIndex = 6;
+            this.tbTargetNamespaceXsd.Location = new System.Drawing.Point(182, 56);
+            this.tbTargetNamespaceXsd.MaxLength = 250;
+            this.tbTargetNamespaceXsd.Name = "tbTargetNamespaceXsd";
+            this.tbTargetNamespaceXsd.Size = new System.Drawing.Size(459, 20);
+            this.tbTargetNamespaceXsd.TabIndex = 6;
             // 
             // label5
             // 
@@ -290,34 +290,15 @@
             this.label5.TabIndex = 5;
             this.label5.Text = "Целевое пространство имен C#";
             // 
-            // button2
+            // btGenerateCsFromXsd
             // 
-            this.button2.Location = new System.Drawing.Point(9, 115);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 4;
-            this.button2.Text = "Генерация кода";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
-            // btXsdFile
-            // 
-            this.btXsdFile.Location = new System.Drawing.Point(117, 23);
-            this.btXsdFile.Name = "btXsdFile";
-            this.btXsdFile.Size = new System.Drawing.Size(37, 23);
-            this.btXsdFile.TabIndex = 2;
-            this.btXsdFile.Text = "...";
-            this.btXsdFile.UseVisualStyleBackColor = true;
-            // 
-            // textBox3
-            // 
-            this.textBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox3.Location = new System.Drawing.Point(160, 25);
-            this.textBox3.MaxLength = 250;
-            this.textBox3.Name = "textBox3";
-            this.textBox3.ReadOnly = true;
-            this.textBox3.Size = new System.Drawing.Size(481, 20);
-            this.textBox3.TabIndex = 1;
+            this.btGenerateCsFromXsd.Location = new System.Drawing.Point(9, 115);
+            this.btGenerateCsFromXsd.Name = "btGenerateCsFromXsd";
+            this.btGenerateCsFromXsd.Size = new System.Drawing.Size(75, 23);
+            this.btGenerateCsFromXsd.TabIndex = 4;
+            this.btGenerateCsFromXsd.Text = "Генерация кода";
+            this.btGenerateCsFromXsd.UseVisualStyleBackColor = true;
+            this.btGenerateCsFromXsd.Click += new System.EventHandler(this.btGenerateCsFromXsd_Click);
             // 
             // label6
             // 
@@ -327,6 +308,25 @@
             this.label6.Size = new System.Drawing.Size(65, 13);
             this.label6.TabIndex = 0;
             this.label6.Text = "Путь к XSD";
+            // 
+            // btSetXsdFile
+            // 
+            this.btSetXsdFile.Location = new System.Drawing.Point(87, 23);
+            this.btSetXsdFile.Name = "btSetXsdFile";
+            this.btSetXsdFile.Size = new System.Drawing.Size(67, 23);
+            this.btSetXsdFile.TabIndex = 14;
+            this.btSetXsdFile.Text = "Из файла";
+            this.btSetXsdFile.UseVisualStyleBackColor = true;
+            // 
+            // tbUriXsd
+            // 
+            this.tbXsdUri.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbXsdUri.Location = new System.Drawing.Point(160, 25);
+            this.tbXsdUri.MaxLength = 250;
+            this.tbXsdUri.Name = "tbUriXsd";
+            this.tbXsdUri.Size = new System.Drawing.Size(481, 20);
+            this.tbXsdUri.TabIndex = 13;
             // 
             // WsdlXsdCsGen
             // 
@@ -354,24 +354,24 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btGenerateCsFromWsdl;
         private System.Windows.Forms.CheckBox chbCreateAsuncMethod;
-        private System.Windows.Forms.TextBox tbTargetNamespace;
+        private System.Windows.Forms.TextBox tbTargetNamespaceWsdl;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button btSelFileForSave;
-        private System.Windows.Forms.TextBox tbSaveTo;
+        private System.Windows.Forms.Button btSelFileForSaveWsdl;
+        private System.Windows.Forms.TextBox tbSaveWsdlTo;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.RadioButton rbGenClient;
         private System.Windows.Forms.RadioButton rbGenService;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button btSelFileForSaveXsd;
+        private System.Windows.Forms.TextBox tbSaveXsdTo;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox tbTargetNamespaceXsd;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button btXsdFile;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Button btGenerateCsFromXsd;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Button btSetXsdFile;
+        private System.Windows.Forms.TextBox tbXsdUri;
     }
 }

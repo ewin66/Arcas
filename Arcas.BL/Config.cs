@@ -33,6 +33,9 @@ namespace Arcas
         public String Wsdl_PathToWsdl { get; set; }
         public String Wsdl_PathToSaveFile { get; set; }
         public String Wsdl_Namespace { get; set; }
+        public string Xsd_PathToXsd { get; set; }
+        public string Xsd_PathToSaveFile { get; set; }
+        public string Xsd_Namespace { get; set; }
     }
 
     public struct MqSettingT
