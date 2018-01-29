@@ -12,6 +12,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using Cav;
+using Cav.DynamicCode;
 using WebDescription = System.Web.Services.Description;
 
 namespace Arcas.BL
@@ -20,7 +21,7 @@ namespace Arcas.BL
     {
         public string MainTempFile { get; set; }
         public IEnumerable<String> Imperts { get; set; }
-        public string TargetNamespace { get; internal set; }
+        public string TargetCSNamespace { get; internal set; }
     }
 
     public class CsGenFromWsdlXsd
@@ -51,16 +52,16 @@ namespace Arcas.BL
 
             var xsdDCImporter = new XsdDataContractImporter();
             xsdDCImporter.Options = new ImportOptions();
-            xsdDCImporter.Options.Namespaces.Add("*", pd.TargetNamespace);
+            xsdDCImporter.Options.Namespaces.Add("*", pd.TargetCSNamespace);
 
             importer.State.Add(typeof(XsdDataContractImporter), xsdDCImporter);
 
             var xmlOptions = new XmlSerializerImportOptions();
-            xmlOptions.ClrNamespace = pd.TargetNamespace;
+            xmlOptions.ClrNamespace = pd.TargetCSNamespace;
             importer.State.Add(typeof(XmlSerializerImportOptions), xmlOptions);
 
             var generator = new ServiceContractGenerator();
-            generator.NamespaceMappings.Add("*", pd.TargetNamespace);
+            generator.NamespaceMappings.Add("*", pd.TargetCSNamespace);
 
             //var options = ServiceContractGenerationOptions.TypedMessages;
             var options = ServiceContractGenerationOptions.None;
@@ -104,8 +105,11 @@ namespace Arcas.BL
             if (!msg.IsNullOrWhiteSpace())
                 return msg;
 
+            var sb = DynamicCodeHelper.GenerateCodeFromXsd(XDocument.Load(pd.MainTempFile), pd.TargetCSNamespace, pd.Imperts.Select(x => XDocument.Load(x)).ToArray());
 
-            return "gg";
+            File.WriteAllText(outputFile, sb.ToString());
+
+            return null;
         }
 
         private string checkAndPrepareData(
@@ -117,10 +121,12 @@ namespace Arcas.BL
             if (uri.IsNullOrWhiteSpace())
                 return "Не указан uri";
 
-            var tempPath = Path.Combine(DomainContext.TempPath, Guid.NewGuid().ToString());
+            var tempPath = Path.Combine(DomainContext.TempPath, uri.ComputeMD5ChecksumString().ToString());
 
-            if (!Directory.Exists(tempPath))
-                Directory.CreateDirectory(tempPath);
+            if (Directory.Exists(tempPath))
+                Utils.DeleteDirectory(tempPath);
+
+            Directory.CreateDirectory(tempPath);
 
             var mainTempFile = Path.Combine(tempPath, uri.ComputeMD5ChecksumString().ToString());
 
@@ -191,19 +197,20 @@ namespace Arcas.BL
 
             #endregion
 
-            pd.Imperts = downloadImport(mainTempFile, tempPath, sourseUri);
-            pd.TargetNamespace = targetNamespace;
+            pd.Imperts = downloadImport(mainTempFile, tempPath, sourseUri, sourseUri.IsFile ? sourseUri.AbsolutePath : null);
+            pd.TargetCSNamespace = targetNamespace;
             pd.MainTempFile = mainTempFile;
 
             return null;
         }
 
-        private IEnumerable<String> downloadImport(string filePath, string tempDir, Uri sourseUri)
+        private IEnumerable<String> downloadImport(string filePath, string tempDir, Uri sourseUri, String originLocationFile)
         {
             var res = new HashSet<string>();
             XNamespace xsdNS = "http://www.w3.org/2001/XMLSchema";
             XNamespace wsdlNS = "http://schemas.xmlsoap.org/wsdl/";
             XDocument xdocfile = XDocument.Load(filePath);
+            String sourceForTargetImport = null;
 
             string importName = null;
             string fileinTemp = null;
@@ -221,8 +228,19 @@ namespace Arcas.BL
                 // если в локации какоето имя и читали файл, то смотрим в тойже папке файл с именем локации
                 if (importIsFile & sourseUri.IsFile)
                 {
+                    if (File.Exists(fileintemp))
+                        return;
+
                     var sourceFile = Path.Combine(Path.GetDirectoryName(sourseUri.AbsolutePath), locationAttrib.Value);
+
+                    if (!File.Exists(sourceFile) && !originLocationFile.IsNullOrWhiteSpace())
+                        sourceFile = Path.Combine(Path.GetDirectoryName(originLocationFile), locationAttrib.Value);
+
+                    if (!File.Exists(sourceFile))
+                        throw new InvalidOperationException($"для файла {Path.GetFullPath(originLocationFile)} не обнаружен файл импорта {locationAttrib.Value}");
+
                     File.Copy(sourceFile, fileintemp);
+                    sourceForTargetImport = sourceFile;
                 }
 
                 // если какоето имя в локации, но читали по сети, то суем имя локации в Query
@@ -236,9 +254,12 @@ namespace Arcas.BL
 
                 // если в локации ссылка, то читаем по ней.
                 if (!importIsFile)
+                {
                     HttpDownloadFile(locationAttrib.Value, fileintemp);
+                    sourceForTargetImport = null;
+                }
 
-                foreach (var item in downloadImport(fileintemp, tempDir, sourseUri))
+                foreach (var item in downloadImport(fileintemp, tempDir, sourseUri, sourceForTargetImport))
                     res.Add(item);
             };
 
@@ -252,7 +273,7 @@ namespace Arcas.BL
                 if (locationAttrib.Value.IsNullOrWhiteSpace())
                     throw new ArgumentException($"Не заполнен атрибут schemaLocation в элементе {item.Name}");
 
-                importName = locationAttrib.Value.ComputeMD5ChecksumString().ToString();
+                importName = item.Attribute("namespace").Value.ComputeMD5ChecksumString().ToString();
                 fileinTemp = Path.Combine(tempDir, importName);
 
                 lartImp(locationAttrib, fileinTemp);
@@ -272,7 +293,7 @@ namespace Arcas.BL
                 if (locationAttrib.Value.IsNullOrWhiteSpace())
                     throw new ArgumentException($"Не заполнен атрибут location в элементе {item.Name}");
 
-                importName = locationAttrib.Value.ComputeMD5ChecksumString().ToString();
+                importName = item.Attribute("namespace").Value.ComputeMD5ChecksumString().ToString();
                 fileinTemp = Path.Combine(tempDir, importName);
 
                 lartImp(locationAttrib, fileinTemp);

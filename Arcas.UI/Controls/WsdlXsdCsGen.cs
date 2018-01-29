@@ -36,6 +36,9 @@ namespace Arcas.Controls
                  Filter: "*.wsdl|*.wsdl",
                  RestoreDirectory: true).FirstOrDefault();
 
+            if (pathfile.IsNullOrWhiteSpace())
+                return;
+
             tbWsdlUri.Text = pathfile;
         }
 
@@ -49,7 +52,10 @@ namespace Arcas.Controls
                 DefaultExt: "cs",
                 RestoreDirectory: true);
 
-            tbSaveWsdlTo.Text = pathfile.GetNullIfIsNullOrWhiteSpace();
+            if (pathfile.IsNullOrWhiteSpace())
+                return;
+
+            tbSaveWsdlTo.Text = pathfile;
         }
 
         private WsdlXsdGenSettingT CreateSetting()
@@ -120,6 +126,36 @@ namespace Arcas.Controls
             {
                 Dialogs.ErrorF(this, ex.Expand());
             }
+        }
+
+        private void btSelFileForSaveXsd_Click(object sender, EventArgs e)
+        {
+            var pathfile = Dialogs.SaveFile(
+                   Owner: this,
+                   Title: "Сохранить код в файл",
+                   Filter: "C# файл| *.cs",
+                   FileName: tbSaveXsdTo.Text.GetNullIfIsNullOrWhiteSpace(),
+                   DefaultExt: "cs",
+                   RestoreDirectory: true);
+
+            if (pathfile.IsNullOrWhiteSpace())
+                return;
+
+            tbSaveXsdTo.Text = pathfile;
+        }
+
+        private void btSetXsdFile_Click(object sender, EventArgs e)
+        {
+            var pathfile = Dialogs.FileBrowser(
+                    Owner: this,
+                    Title: "Файл с XSD",
+                    Filter: "*.xsd|*.xsd",
+                    RestoreDirectory: true).FirstOrDefault();
+
+            if (pathfile.IsNullOrWhiteSpace())
+                return;
+
+            tbXsdUri.Text = pathfile;
         }
     }
 }

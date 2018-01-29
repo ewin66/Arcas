@@ -44,6 +44,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btSetXsdFile = new System.Windows.Forms.Button();
+            this.tbXsdUri = new System.Windows.Forms.TextBox();
             this.btSelFileForSaveXsd = new System.Windows.Forms.Button();
             this.tbSaveXsdTo = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -51,8 +53,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.btGenerateCsFromXsd = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
-            this.btSetXsdFile = new System.Windows.Forms.Button();
-            this.tbXsdUri = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -242,6 +242,26 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Генерация из XSD";
             // 
+            // btSetXsdFile
+            // 
+            this.btSetXsdFile.Location = new System.Drawing.Point(87, 23);
+            this.btSetXsdFile.Name = "btSetXsdFile";
+            this.btSetXsdFile.Size = new System.Drawing.Size(67, 23);
+            this.btSetXsdFile.TabIndex = 14;
+            this.btSetXsdFile.Text = "Из файла";
+            this.btSetXsdFile.UseVisualStyleBackColor = true;
+            this.btSetXsdFile.Click += new System.EventHandler(this.btSetXsdFile_Click);
+            // 
+            // tbXsdUri
+            // 
+            this.tbXsdUri.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbXsdUri.Location = new System.Drawing.Point(160, 25);
+            this.tbXsdUri.MaxLength = 250;
+            this.tbXsdUri.Name = "tbXsdUri";
+            this.tbXsdUri.Size = new System.Drawing.Size(481, 20);
+            this.tbXsdUri.TabIndex = 13;
+            // 
             // btSelFileForSaveXsd
             // 
             this.btSelFileForSaveXsd.Location = new System.Drawing.Point(117, 82);
@@ -250,6 +270,7 @@
             this.btSelFileForSaveXsd.TabIndex = 12;
             this.btSelFileForSaveXsd.Text = "...";
             this.btSelFileForSaveXsd.UseVisualStyleBackColor = true;
+            this.btSelFileForSaveXsd.Click += new System.EventHandler(this.btSelFileForSaveXsd_Click);
             // 
             // tbSaveXsdTo
             // 
@@ -308,25 +329,6 @@
             this.label6.Size = new System.Drawing.Size(65, 13);
             this.label6.TabIndex = 0;
             this.label6.Text = "Путь к XSD";
-            // 
-            // btSetXsdFile
-            // 
-            this.btSetXsdFile.Location = new System.Drawing.Point(87, 23);
-            this.btSetXsdFile.Name = "btSetXsdFile";
-            this.btSetXsdFile.Size = new System.Drawing.Size(67, 23);
-            this.btSetXsdFile.TabIndex = 14;
-            this.btSetXsdFile.Text = "Из файла";
-            this.btSetXsdFile.UseVisualStyleBackColor = true;
-            // 
-            // tbUriXsd
-            // 
-            this.tbXsdUri.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbXsdUri.Location = new System.Drawing.Point(160, 25);
-            this.tbXsdUri.MaxLength = 250;
-            this.tbXsdUri.Name = "tbUriXsd";
-            this.tbXsdUri.Size = new System.Drawing.Size(481, 20);
-            this.tbXsdUri.TabIndex = 13;
             // 
             // WsdlXsdCsGen
             // 
