@@ -246,10 +246,21 @@ namespace Arcas.BL
                 // если какоето имя в локации, но читали по сети, то суем имя локации в Query
                 if (importIsFile & !sourseUri.IsFile)
                 {
-                    UriBuilder ub = new UriBuilder(sourseUri);
-                    ub.Query = locationAttrib.Value;
+                    try
+                    {
+                        UriBuilder ub = new UriBuilder(sourseUri);
 
-                    HttpDownloadFile(ub.Uri.PathAndQuery, fileintemp);
+                        //Бывает прямой ссылкой
+                        ub.Path = Path.Combine(Path.GetDirectoryName(ub.Path), locationAttrib.Value);
+                        HttpDownloadFile(ub.Uri.AbsoluteUri, fileintemp);
+                    }
+                    catch
+                    {
+                        // Бывает в Query
+                        UriBuilder ub = new UriBuilder(sourseUri);
+                        ub.Query = locationAttrib.Value;
+                        HttpDownloadFile(ub.Uri.PathAndQuery, fileintemp);
+                    }
                 }
 
                 // если в локации ссылка, то читаем по ней.
