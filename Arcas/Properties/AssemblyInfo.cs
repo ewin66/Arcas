@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // Общие сведения об этой сборке предоставляются следующим набором 
@@ -9,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Утилита для разработчика")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Сам сделал")]
-[assembly: AssemblyProduct("CAV.Arcas")]
+[assembly: AssemblyProduct("Cav.Arcas")]
 [assembly: AssemblyCopyright("Черненко А.В.")]
-[assembly: AssemblyTrademark("©CAV")]
+[assembly: AssemblyTrademark("©Cav")]
 [assembly: AssemblyCulture("")]
 
 // Установка значения False в параметре ComVisible делает типы в этой сборке невидимыми 

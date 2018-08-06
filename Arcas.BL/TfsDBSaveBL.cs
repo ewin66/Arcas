@@ -319,6 +319,7 @@ namespace Arcas.BL
             {
                 var cmd = this.CreateCommandObject();
                 cmd.CommandText = SqlText;
+                cmd.CommandTimeout = (int)TimeSpan.FromMinutes(5).TotalSeconds;
                 ExecuteNonQuery(cmd);
             }
         }
