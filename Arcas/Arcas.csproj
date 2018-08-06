@@ -72,7 +72,6 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="cav.snk" />
-    <None Include="ChernenkoAV.p12" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>
   <ItemGroup>
