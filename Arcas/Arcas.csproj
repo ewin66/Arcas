@@ -65,7 +65,7 @@
     <TargetZone>LocalIntranet</TargetZone>
     <GenerateManifests>true</GenerateManifests>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
-    <ManifestCertificateThumbprint>9C4FB03292A3A5AC256DCD99BE7DA3BD6B73F2C8</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>339DB9C4E7C1C98C48B38ACE620700BE8989F774</ManifestCertificateThumbprint>
     <ManifestKeyFile>
     </ManifestKeyFile>
   </PropertyGroup>
