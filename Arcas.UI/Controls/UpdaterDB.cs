@@ -188,8 +188,10 @@ namespace Arcas.Controls
 
                 if (lbLinkedWirkItem.Items.Cast<Lwi>().Any(x => x.ID == si.ID))
                     continue;
-                lbLinkedWirkItem.Items.Add(si);
+                lbLinkedWirkItem.Items.Add(si);                
             }
+
+            lbWorkItems.SelectedItems.Clear();
         }
 
         private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
