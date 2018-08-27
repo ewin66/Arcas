@@ -238,8 +238,8 @@ namespace Arcas.Controls
         {
             if (e.KeyCode != Keys.Delete)
                 return;
-            foreach (var item in lbLinkedWirkItem.SelectedItems.Cast<Object>().ToArray())
-                lbLinkedWirkItem.Items.Remove(item);
+
+            deleteToolStripMenuItem_Click(null, null);
         }
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
