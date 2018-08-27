@@ -154,7 +154,7 @@ namespace Arcas.BL
 
                     SendStat("Обработка файла версионности");
 
-                    String VerFileName = ".lastVer.xml";
+                    String VerFileName = "_lastVer.xml";
                     String PathVerFile = Path.Combine(tfsbl.Tempdir, VerFileName);
 
                     if (tfsbl.GetLastFile(VerFileName) == 0)
