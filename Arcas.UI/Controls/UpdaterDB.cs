@@ -188,7 +188,7 @@ namespace Arcas.Controls
 
                 if (lbLinkedWirkItem.Items.Cast<Lwi>().Any(x => x.ID == si.ID))
                     continue;
-                lbLinkedWirkItem.Items.Add(si);                
+                lbLinkedWirkItem.Items.Add(si);
             }
 
             lbWorkItems.SelectedItems.Clear();
@@ -412,6 +412,17 @@ namespace Arcas.Controls
         private void rtbScriptBody_MouseDown(object sender, MouseEventArgs e)
         {
             rtbScriptBody.Focus();
+        }
+
+        private void tbIdTask_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (tbIdTask.Text.IsNullOrWhiteSpace())
+                return;
+
+            if (e.KeyCode == Keys.Enter)
+                btAddInIDTask_Click(null, null);
+
+
         }
     }
 }

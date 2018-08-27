@@ -307,6 +307,7 @@
             this.tbIdTask.Name = "tbIdTask";
             this.tbIdTask.Size = new System.Drawing.Size(92, 20);
             this.tbIdTask.TabIndex = 10;
+            this.tbIdTask.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbIdTask_KeyDown);
             this.tbIdTask.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox1_KeyPress);
             // 
             // label4
