@@ -57,7 +57,6 @@ namespace Arcas.BL
                 if (!linkedTask.Any())
                     return "Для накатки необходимо привязать задачу.";
 
-
                 Func<String, String> trimLines = (a) =>
                 {
                     a = a.Trim();
@@ -142,6 +141,10 @@ namespace Arcas.BL
                             return $"Не удалось найти тип DbConnection '{upsets.TypeConnectionFullName}'";
                         useSqlConnection = false;
                     }
+
+                    SendStat("Проверка несохраненных данных в шельве");
+                    if (tfsbl.ExistsShelveset())
+                        return $"В шельве присутствуют несохраненные изменения";
 
                     SendStat("Подключаемся к БД");
                     DomainContext.InitConnection(conn, upsets.ConnectionStringModelDb);
@@ -234,18 +237,29 @@ namespace Arcas.BL
 
                         File.WriteAllText(FileNameNewVer, sb.ToString());
                         CurVerDB.XMLSerialize(PathVerFile);
+                        tfsbl.AddFile(FileNameNewVer);
+
+                        SendStat("Кладем в шельву в TFS");
+
+                        tfsbl.CreateShelveset(comment, linkedTask);
+
+                        if (tran != null)
+                        {
+                            tran.Complete();
+                            ((IDisposable)tran).Dispose();
+                            tran = null;
+                        }
 
                         SendStat("Чекин в TFS");
-
-                        tfsbl.AddFile(FileNameNewVer);
                         tfsbl.CheckIn(comment, linkedTask);
+
+                        SendStat("Удаление шельвы в TFS");
+                        tfsbl.DeleteShelveset();
 
                         SendStat("Готово");
 
                         #endregion
 
-                        if (tran != null)
-                            tran.Complete();
                     }
                     catch
                     {

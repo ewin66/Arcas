@@ -24,7 +24,11 @@ namespace Arcas.BL.TFS
 
         private WrapTfs wrapTfs = new WrapTfs();
 
-        private IVersionControlServer vcs = null;
+        private VersionControlServer vcs = null;
+
+
+        private const string arcasWorkspaceName = "Arcas Workspace";
+        private const string arcasShelveName = "Arcas Roll DB";
         /// <summary>
         /// Получение сервиса управления хранилищем
         /// </summary>
@@ -43,11 +47,11 @@ namespace Arcas.BL.TFS
 
         private String tempdir = Path.Combine(DomainContext.TempPath, Guid.NewGuid().ToString());
 
-        private IWorkspace tempWorkspace = null;
+        private Workspace tempWorkspace = null;
         private String serverPath = null;
 
         // Создаем временную рабочую область
-        private IWorkspace getTempWorkspace()
+        private Workspace getTempWorkspace()
         {
             if (vcs == null)
                 throw new ArgumentException("Не установленна связь с TFS");
@@ -55,7 +59,7 @@ namespace Arcas.BL.TFS
             if (tempWorkspace != null)
                 return tempWorkspace;
 
-            tempWorkspace = wrapTfs.WorkspaceCreate(vcs, Guid.NewGuid().ToString(), "Arcas Workspace", true);
+            tempWorkspace = wrapTfs.WorkspaceCreate(vcs, Guid.NewGuid().ToString(), arcasWorkspaceName, true);
 
             return tempWorkspace;
         }
@@ -153,6 +157,22 @@ namespace Arcas.BL.TFS
         public bool CheckOut(string PathFileName)
         {
             return wrapTfs.WorkspaceCheckOut(getTempWorkspace(), PathFileName);
+        }
+
+        public bool ExistsShelveset()
+        {
+            var shlvs = wrapTfs.ShelvesetsCurrenUserLoad(vcs);
+            return shlvs.Any(x => x.Name == arcasShelveName);
+        }
+
+        public void DeleteShelveset()
+        {
+            wrapTfs.ShelvesetDelete(vcs, arcasShelveName);
+        }
+
+        public void CreateShelveset(string comment, List<int> linkedTask)
+        {
+            wrapTfs.WorkspaceShelvesetCreate(getTempWorkspace(), arcasShelveName, comment, linkedTask);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly")]
