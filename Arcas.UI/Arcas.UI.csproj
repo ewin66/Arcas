@@ -40,13 +40,11 @@
     <AssemblyOriginatorKeyFile>cav.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Cav.Core, Version=5.0.0.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cav.Core.5.0.0\lib\net461\Cav.Core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Cav.Core, Version=5.1.0.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cav.Core.5.1.0\lib\net461\Cav.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Cav.Tfs, Version=3.0.0.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cav.Tfs.3.0.0\lib\net461\Cav.Tfs.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Cav.Tfs, Version=3.1.0.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cav.Tfs.3.1.0\lib\net461\Cav.Tfs.dll</HintPath>
     </Reference>
     <Reference Include="Cav.WinForms, Version=3.0.0.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
       <HintPath>..\packages\Cav.WinForms.3.0.0\lib\net461\Cav.WinForms.dll</HintPath>
@@ -113,7 +111,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="cav.snk" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\UpdaterDB.resx">
