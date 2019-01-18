@@ -5,5 +5,10 @@
         Height="400"        
         WindowStartupLocation="CenterScreen"
         Title="Аркас"
-        Icon="Res/gear_wheel.jpg">    
+        >
+    <Grid>
+        <Button Content="QWERT" Click="Button_Click">
+            
+        </Button>
+    </Grid>
 </Window>
