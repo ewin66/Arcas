@@ -75,7 +75,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Res\gear_wheel.jpg" />
+    <Resource Include="Res\gear_wheel.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Res\gear_wheel.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
