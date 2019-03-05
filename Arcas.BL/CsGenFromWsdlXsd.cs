@@ -249,6 +249,8 @@ namespace Arcas.BL
                     try
                     {
                         UriBuilder ub = new UriBuilder(sourseUri);
+                        if (ub.Query == "?wsdl")
+                            ub.Query = null;
 
                         //Бывает прямой ссылкой
                         ub.Path = Path.Combine(Path.GetDirectoryName(ub.Path), locationAttrib.Value);
