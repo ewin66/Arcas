@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 using Arcas.BL.IbmMq;
 using Cav;
@@ -85,17 +84,21 @@ namespace Arcas.Controls
             {
                 var msg = mqBL.Get(sets, chbRollbakGet.Checked);
 
+                if (msg == null)
+                {
+                    Dialogs.InformationF(this, "Сообщений нет");
+                    msg = new MqMessageGeneric();
+                }
+
                 addpoplist.Clear();
                 foreach (var item in msg.AddedProperties)
                     addpoplist.Add(item);
 
-                StringBuilder sb = new StringBuilder(msg.MessageID.Length * 2);
-                foreach (var b in msg.MessageID)
-                    sb.AppendFormat("{0:X2}", b);
+                tbMessageID.Text = msg.MessageID.JoinValuesToString(distinct: false, format: "{0:X2}");
 
-                tbMessageID.Text = sb.ToString();
+                if (msg.PutDateTime.HasValue)
+                    tbPutDate.Text = msg.PutDateTime.Value.ToString("dd.MM.yyyy HH:mm:ss");
 
-                tbPutDate.Text = msg.PutDateTime.ToString("dd.MM.yyyy HH:mm:ss");
                 tbBodyMessage.Text = msg.Body;
 
                 Config.Instance.MqSets = sets;

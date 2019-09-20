@@ -58,11 +58,6 @@ namespace Arcas.BL.IbmMq
                 clnt = IBMMqClient.CreateClient(sets);
                 var msg = clnt.GetNextMessage();
 
-                if (msg == null)
-                {
-                    throw new Exception("В очереди нет сообщений");
-                }
-
                 if (rolbackGet)
                     clnt.RollbackGet();
                 else

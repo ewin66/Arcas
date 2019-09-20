@@ -10,12 +10,12 @@ namespace Arcas
         [STAThread]
         static void Main()
         {
-            //System.Windows.Forms.Application.EnableVisualStyles();
-            //System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-            //System.Windows.Forms.Application.Run(new ArcasMain());
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+            System.Windows.Forms.Application.Run(new ArcasMain());
 
-            System.Windows.Application app = new System.Windows.Application();
-            app.Run(new Arcas.WPF.View.MainWindow());
+            //System.Windows.Application app = new System.Windows.Application();
+            //app.Run(new Arcas.WPF.View.MainWindow());
 
         }
     }

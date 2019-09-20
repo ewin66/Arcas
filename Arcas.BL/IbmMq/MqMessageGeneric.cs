@@ -12,6 +12,6 @@ namespace Arcas.BL.IbmMq
         public Dictionary<String, String> AddedProperties { get; private set; }
         public string Body { get; set; }
         public byte[] MessageID { get; set; }
-        public DateTime PutDateTime { get; set; }
+        public DateTime? PutDateTime { get; set; }
     }
 }
