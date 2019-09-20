@@ -82,9 +82,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -107,6 +109,10 @@
     <ProjectReference Include="..\Arcas.UI\Arcas.UI.csproj">
       <Project>{dc1b475c-b6d8-49a5-8bba-3b9730e4a6d2}</Project>
       <Name>Arcas.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Arcas.WPF\Arcas.WPF.csproj">
+      <Project>{A9922D5D-B41A-4E29-BBEA-955368921407}</Project>
+      <Name>Arcas.WPF</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

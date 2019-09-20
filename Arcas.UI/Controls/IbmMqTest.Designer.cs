@@ -79,7 +79,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 94);
+            this.label3.Location = new System.Drawing.Point(12, 68);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(90, 13);
             this.label3.TabIndex = 2;
@@ -88,7 +88,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(64, 120);
+            this.label4.Location = new System.Drawing.Point(64, 133);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(38, 13);
             this.label4.TabIndex = 3;
@@ -97,7 +97,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(29, 68);
+            this.label5.Location = new System.Drawing.Point(29, 93);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(73, 13);
             this.label5.TabIndex = 4;
@@ -106,7 +106,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(57, 146);
+            this.label6.Location = new System.Drawing.Point(57, 159);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(45, 13);
             this.label6.TabIndex = 5;
@@ -121,7 +121,7 @@
             // 
             // tbManagerName
             // 
-            this.tbManagerName.Location = new System.Drawing.Point(108, 91);
+            this.tbManagerName.Location = new System.Drawing.Point(108, 65);
             this.tbManagerName.Name = "tbManagerName";
             this.tbManagerName.Size = new System.Drawing.Size(206, 20);
             this.tbManagerName.TabIndex = 7;
@@ -135,21 +135,21 @@
             // 
             // tbQueueName
             // 
-            this.tbQueueName.Location = new System.Drawing.Point(108, 65);
+            this.tbQueueName.Location = new System.Drawing.Point(108, 90);
             this.tbQueueName.Name = "tbQueueName";
             this.tbQueueName.Size = new System.Drawing.Size(206, 20);
             this.tbQueueName.TabIndex = 9;
             // 
             // tbUser
             // 
-            this.tbUser.Location = new System.Drawing.Point(108, 117);
+            this.tbUser.Location = new System.Drawing.Point(108, 130);
             this.tbUser.Name = "tbUser";
             this.tbUser.Size = new System.Drawing.Size(206, 20);
             this.tbUser.TabIndex = 10;
             // 
             // tbPass
             // 
-            this.tbPass.Location = new System.Drawing.Point(108, 143);
+            this.tbPass.Location = new System.Drawing.Point(108, 156);
             this.tbPass.Name = "tbPass";
             this.tbPass.Size = new System.Drawing.Size(206, 20);
             this.tbPass.TabIndex = 11;
@@ -206,8 +206,8 @@
             // 
             // tbBodyMessage
             // 
-            this.tbBodyMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbBodyMessage.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbBodyMessage.Location = new System.Drawing.Point(3, 282);
             this.tbBodyMessage.Multiline = true;
