@@ -121,8 +121,15 @@ namespace Arcas.BL.IbmMq
                     mqManager = createManager();
 
                 message = new MQMessage();
+
+                using (var queue = mqManager.AccessQueue(queueName, MQC.MQOO_INQUIRE))
+                    if (queue.CurrentDepth == 0)
+                        return res;
+
                 using (var q = mqManager.AccessQueue(qname, MQC.MQOO_INPUT_AS_Q_DEF + MQC.MQOO_FAIL_IF_QUIESCING))
+
                     q.Get(message, getMessageOptions);
+
 
                 res = new MqMessageGeneric();
                 res.Body = Encoding.UTF8.GetString(message.ReadBytes(message.MessageLength));
