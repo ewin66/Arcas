@@ -48,12 +48,13 @@
       <HintPath>..\packages\WebSphereMqClient.8.0.0.7\lib\net20\amqmdnet.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Cav.Core, Version=5.2.6.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cav.Core.5.2.6\lib\net461\Cav.Core.dll</HintPath>
+    <Reference Include="Cav.Core, Version=6.0.0.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cav.Core.6.0.0\lib\net461\Cav.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Cav.Tfs, Version=3.1.0.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Cav.Tfs.3.1.0\lib\net461\Cav.Tfs.dll</HintPath>
+    <Reference Include="Cav.Tfs, Version=4.0.0.0, Culture=neutral, PublicKeyToken=f136b1fd0b87e3f0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cav.Tfs.4.0.0\lib\net461\Cav.Tfs.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
