@@ -28,6 +28,48 @@ namespace Arcas.BL
         Adapter adapter = new Adapter();
 
         /// <summary>
+        /// Проверка данных в шельве
+        /// </summary>
+        /// <param name="tdlink"></param>
+        /// <returns></returns>
+        public Boolean ChekExistsShelveset(TfsDbLink tdlink)
+        {
+            using (TFSRoutineBL tfsbl = new TFSRoutineBL())
+            {
+                // Проверяем настройки TFS
+                SendStat("Подключаемся к TFS");
+                tfsbl.VersionControl(tdlink.ServerUri);
+
+                SendStat("Проверка несохраненных данных в шельве");
+                return tfsbl.ExistsShelveset();
+            }
+        }
+
+        /// <summary>
+        /// Удаление из шельвы TFS данных неудачной накатки
+        /// </summary>
+        /// <param name="tdlink"></param>
+        /// <returns></returns>
+        public void DeleteShelveset(TfsDbLink tdlink)
+        {
+            using (TFSRoutineBL tfsbl = new TFSRoutineBL())
+            {
+                // Проверяем настройки TFS
+                SendStat("Подключаемся к TFS");
+                tfsbl.VersionControl(tdlink.ServerUri);
+
+                SendStat("Проверка несохраненных данных в шельве");
+                if (!tfsbl.ExistsShelveset())
+                    return;
+
+                SendStat("Удаление шельвы в TFS");
+                tfsbl.DeleteShelveset();
+            }
+        }
+
+
+
+        /// <summary>
         /// Накатить скрипт
         /// </summary>
         /// <param name="tdlink">Настройка связки TFS-DB</param>

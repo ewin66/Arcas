@@ -9,6 +9,7 @@ using Arcas.Settings;
 using Cav;
 using Cav.Tfs;
 
+
 namespace Arcas.Controls
 {
     public partial class UpdaterDB : TabControlBase
@@ -28,17 +29,34 @@ namespace Arcas.Controls
                 if (!Dialogs.QuestionOKCancelF(this, "Текст скрипта не изменился с предыдущего запуска. Повторить?"))
                     return;
 
+            String msg = null;
+
             btSaveScript.Enabled = false;
             Cursor.Current = Cursors.WaitCursor;
 
             var savbl = new TfsDBSaveBL();
             savbl.StatusMessages += savbl_StatusMessages;
-            var msg = savbl.SaveScript(
-                (TfsDbLink)cbxTfsDbLinc.SelectedItem,
-                rtbScriptBody.Text,
-                tbComment.Text,
-                chbTransaction.Checked,
-                lbLinkedWirkItem.Items.Cast<Lwi>().Select(x => x.ID).ToList());
+            try
+            {
+                if (savbl.ChekExistsShelveset((TfsDbLink)cbxTfsDbLinc.SelectedItem) &&
+                    Dialogs.QuestionOKCancelF(this, "В шельве присутствуют несохраненные изменения. Удалить?"))
+                    savbl.DeleteShelveset((TfsDbLink)cbxTfsDbLinc.SelectedItem);
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Expand();
+                if (ex.GetType().Name == "TargetInvocationException" && ex.InnerException != null)
+                    msg = ex.InnerException.Message;
+            }
+
+
+            if (msg.IsNullOrWhiteSpace())
+                msg = savbl.SaveScript(
+                    (TfsDbLink)cbxTfsDbLinc.SelectedItem,
+                    rtbScriptBody.Text,
+                    tbComment.Text,
+                    chbTransaction.Checked,
+                    lbLinkedWirkItem.Items.Cast<Lwi>().Select(x => x.ID).ToList());
             if (msg.IsNullOrWhiteSpace())
                 Dialogs.InformationF(this, "Успешно");
             else
